@@ -79,8 +79,9 @@ A estrutura abaixo é uma sugestão para organização do repositório:
 Antes de executar o projeto, é necessário ter instalado:
 
 - **PHP 8.0 ou superior**
-- **MySQL ou MariaDB**
-- **Apache/Nginx** ou ambiente local como **XAMPP**
+- **MySQL ou MariaDB** apenas quando a parte de banco for implementada
+
+Atualmente, a versão presente neste repositório funciona como um protótipo PHP com rotas simples e dados simulados, então **não depende de Composer nem de banco de dados para abrir as telas já existentes**.
 
 ### Passos para instalação
 1. Clone o repositório:
@@ -93,24 +94,35 @@ Antes de executar o projeto, é necessário ter instalado:
    cd web-servidor
    ```
 
-3. Configure o ambiente:
-   - copie o arquivo `.env.example` para `.env`, se existir;
-   - ajuste as credenciais do banco de dados;
-   - configure a URL base do sistema.
-
-4. Crie o banco de dados no MySQL/MariaDB.
-
-5. Importe o arquivo de estrutura do banco:
+3. Inicie o servidor embutido do PHP apontando para a pasta `projeto/public`:
    ```bash
-   mysql -u root -p nome_do_banco < database/schema.sql
+   php -S localhost:8000 -t projeto/public
    ```
 
-6. Caso existam dependências com Composer:
-   ```bash
-   composer install
+4. Abra no navegador:
+   ```text
+   http://localhost:8000
    ```
 
-7. Inicie o servidor local.
+### Acesso local atual
+- Página inicial: `http://localhost:8000/index.php?url=home`
+- Login: `http://localhost:8000/index.php?url=login`
+- Painel de posts: `http://localhost:8000/index.php?url=admin/posts`
+- Configurações: `http://localhost:8000/index.php?url=admin/configuracoes`
+
+### Credenciais de teste atuais
+Como o login ainda é simulado no arquivo `projeto/public/index.php`, use:
+
+- **E-mail:** `admin@admin.com`
+- **Senha:** `123456`
+
+### Quando o projeto evoluir
+Quando forem adicionados banco de dados, `.env`, `schema.sql` e dependências externas, o fluxo de instalação poderá incluir:
+
+```bash
+composer install
+mysql -u root -p nome_do_banco < database/schema.sql
+```
 
 ### Arquivos de configuração que devem ser atualizados
 Os nomes exatos podem variar conforme a implementação final, mas o README do projeto deve manter atualizados principalmente os seguintes arquivos:

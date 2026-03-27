@@ -4,6 +4,5 @@
     </div>
 </footer>
 
-<script src="/projeto/public/js/script.js"></script>
 </body>
 </html>

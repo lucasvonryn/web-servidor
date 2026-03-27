@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal O Editorial</title>
-    <link rel="stylesheet" href="/projeto/public/css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
@@ -13,11 +13,11 @@
         <h1>O Editorial</h1>
         <nav>
     <ul>
-        <li><a href="/projeto/public/index.php?url=home">Home</a></li>
+        <li><a href="/index.php?url=home">Home</a></li>
         
-        <li><a href="/projeto/public/index.php?url=admin/posts">Painel Admin</a></li>
+        <li><a href="/index.php?url=admin/posts">Painel Admin</a></li>
         
-        <li><a href="/projeto/public/index.php?url=login">Sair</a></li>
+        <li><a href="/index.php?url=login">Sair</a></li>
     </ul>
     </nav>
     </div>
