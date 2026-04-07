@@ -41,7 +41,7 @@ a {
 }
 
 .container {
-    width: min(1180px, calc(100% - 32px));
+    width: min(1260px, calc(100% - 48px));
     margin: 0 auto;
 }
 
@@ -50,13 +50,14 @@ a {
 }
 
 .page-main {
-    padding: 32px 0 56px;
+    padding: 0 0 64px;
 }
 
 .public-topbar {
-    background: var(--color-navy);
-    color: rgba(255, 255, 255, 0.92);
-    font-size: 0.92rem;
+    background: #08142d;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.68rem;
+    letter-spacing: 0.01em;
 }
 
 .public-topbar .container,
@@ -71,44 +72,45 @@ a {
 }
 
 .public-topbar .container {
-    padding: 12px 0;
+    min-height: 22px;
+    padding: 0;
 }
 
 .public-navbar {
-    background: rgba(255, 255, 255, 0.95);
-    border-bottom: 1px solid rgba(33, 67, 111, 0.08);
-    backdrop-filter: blur(18px);
+    background: rgba(255, 255, 255, 0.98);
+    border-bottom: 1px solid rgba(17, 28, 56, 0.08);
 }
 
 .public-navbar .container {
-    padding: 16px 0;
+    min-height: 56px;
+    padding: 0;
 }
 
 .brand {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     text-decoration: none;
     font-weight: 800;
-    font-size: 1.9rem;
-    letter-spacing: -0.03em;
+    font-size: 1rem;
+    letter-spacing: -0.02em;
 }
 
 .brand-badge {
-    width: 40px;
-    height: 40px;
+    width: 20px;
+    height: 20px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 2px;
     background: var(--color-navy);
     color: #fff;
-    font-size: 1rem;
+    font-size: 0.52rem;
     font-weight: 800;
 }
 
 .brand-name {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     color: var(--color-text);
 }
 
@@ -122,34 +124,35 @@ a {
 
 .nav-links a {
     text-decoration: none;
-    color: var(--color-blue);
-    padding: 10px 12px;
-    border-radius: 999px;
+    color: #51627f;
+    padding: 8px 10px;
+    border-radius: 8px;
     font-weight: 500;
+    font-size: 0.74rem;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .nav-links a:hover,
 .nav-links a.is-active {
-    background: rgba(78, 70, 255, 0.08);
-    color: var(--color-accent);
+    background: rgba(78, 70, 255, 0.06);
+    color: var(--color-text);
 }
 
 .navbar-actions {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
 }
 
 .search-icon {
-    width: 40px;
-    height: 40px;
+    width: 28px;
+    height: 28px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border-radius: 999px;
     border: 1px solid transparent;
-    color: var(--color-blue);
+    color: #7b879d;
     background: transparent;
     text-decoration: none;
 }
@@ -163,9 +166,9 @@ a {
 .btn-secondary,
 .btn-neutral {
     border: none;
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-size: 1rem;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 0.82rem;
     font-weight: 700;
     text-decoration: none;
     display: inline-flex;
@@ -185,6 +188,7 @@ a {
 .btn-secondary {
     background: var(--color-navy);
     color: #fff;
+    box-shadow: none;
 }
 
 .btn-neutral {
@@ -224,98 +228,326 @@ a {
     border-color: #f8c8d3;
 }
 
+.portal-home {
+    background: #f7f7f8;
+}
+
 .hero-home {
-    padding: 56px 0 32px;
+    padding: 0;
 }
 
-.hero-home-card {
-    background: linear-gradient(135deg, rgba(17, 28, 56, 0.98), rgba(33, 67, 111, 0.92));
-    border-radius: 32px;
-    color: #fff;
-    padding: 48px;
-    box-shadow: var(--shadow-soft);
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-home-card::after {
-    content: "";
-    position: absolute;
-    inset: auto -80px -80px auto;
-    width: 240px;
-    height: 240px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(124, 92, 255, 0.35), transparent 70%);
+.hero-home-panel {
+    background: #111f44;
+    padding: 28px 0 32px;
 }
 
 .hero-home-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.9fr);
-    gap: 32px;
+    grid-template-columns: minmax(0, 1.62fr) minmax(320px, 1fr);
+    gap: 16px;
+}
+
+.featured-card {
     position: relative;
-    z-index: 1;
+    min-height: 348px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #1a294f;
+    box-shadow: 0 12px 24px rgba(7, 14, 30, 0.18);
 }
 
-.eyebrow {
-    display: inline-flex;
-    padding: 8px 14px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.12);
-    font-size: 0.9rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    margin-bottom: 18px;
+.featured-card-small {
+    min-height: 348px;
 }
 
-.hero-home h2 {
-    margin: 0 0 14px;
-    font-size: clamp(2rem, 4vw, 3.3rem);
-    line-height: 1.05;
-    letter-spacing: -0.04em;
-}
-
-.hero-home p {
-    margin: 0;
-    font-size: 1.05rem;
-    max-width: 620px;
-    color: rgba(255, 255, 255, 0.82);
-}
-
-.hero-highlights {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 24px;
-    padding: 24px;
-}
-
-.hero-highlights h3 {
-    margin: 0 0 16px;
-    font-size: 1rem;
-}
-
-.hero-highlights ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: grid;
-    gap: 14px;
-}
-
-.hero-highlights li {
-    padding-left: 18px;
-    position: relative;
-    color: rgba(255, 255, 255, 0.82);
-}
-
-.hero-highlights li::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
+.featured-card-media,
+.news-card-media {
     position: absolute;
-    left: 0;
-    top: 0.52rem;
-    background: #9f9bff;
+    inset: 0;
+}
+
+.featured-card-media img,
+.news-card-media img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.featured-card-media img {
+    object-position: center;
+}
+
+.featured-card-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 28px 20px 18px;
+    background: linear-gradient(180deg, rgba(10, 22, 45, 0.02) 0%, rgba(6, 12, 24, 0.3) 46%, rgba(5, 8, 18, 0.86) 100%);
+    color: #fff;
+}
+
+.featured-card h2,
+.news-card h4 {
+    margin: 0;
+    letter-spacing: -0.03em;
+}
+
+.featured-card h2 {
+    font-size: 1.05rem;
+    line-height: 1.24;
+}
+
+.featured-card p,
+.news-card p {
+    margin: 0;
+}
+
+.featured-card p {
+    max-width: 95%;
+    font-size: 0.72rem;
+    line-height: 1.48;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.post-tag {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 0.56rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.post-tag-tecnologia {
+    background: #dfe6ff;
+    color: #4d60d8;
+}
+
+.post-tag-meio-ambiente {
+    background: #d9f7df;
+    color: #198248;
+}
+
+.post-tag-politica {
+    background: #ffd7de;
+    color: #d25370;
+}
+
+.post-tag-ciencia {
+    background: #daf7ff;
+    color: #2a8ab0;
+}
+
+.post-tag-cultura {
+    background: #f3ddff;
+    color: #a451ca;
+}
+
+.post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.62rem;
+    color: rgba(255, 255, 255, 0.64);
+}
+
+.news-card .post-meta {
+    color: #96a0b4;
+}
+
+.headline-strip {
+    background: linear-gradient(90deg, #5e46ff, #8e64ff);
+    color: #fff;
+    font-size: 0.64rem;
+}
+
+.headline-strip .container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 40px;
+}
+
+.headline-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.22);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.headline-track {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 22px;
+    white-space: nowrap;
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.latest-section,
+.categories-section {
+    padding: 42px 0 0;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.section-heading h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    letter-spacing: -0.03em;
+    color: #1b2742;
+}
+
+.section-heading h3::before {
+    content: "◔";
+    margin-right: 8px;
+    color: #5b5fff;
+    font-size: 0.9rem;
+}
+
+.section-heading a {
+    font-size: 0.75rem;
+    color: #6666f4;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.post-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.news-card {
+    background: #fff;
+    border: 1px solid #eceef4;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 18px rgba(16, 23, 39, 0.04);
+}
+
+.news-card-media {
+    position: relative;
+    display: block;
+    min-height: 178px;
+}
+
+.news-card-body {
+    min-height: 184px;
+    padding: 18px 16px 18px;
+}
+
+.news-card h4 {
+    font-size: 0.92rem;
+    line-height: 1.32;
+    color: #1b2742;
+    margin-top: 12px;
+}
+
+.news-card p {
+    margin-top: 10px;
+    font-size: 0.74rem;
+    line-height: 1.6;
+    color: #66748c;
+}
+
+.news-card .post-meta {
+    margin-top: 14px;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+    padding-bottom: 40px;
+}
+
+.category-card {
+    display: block;
+    text-decoration: none;
+    background: #fff;
+    border: 1px solid #e8eaf0;
+    border-radius: 16px;
+    padding: 18px 16px;
+    box-shadow: 0 8px 18px rgba(16, 23, 39, 0.04);
+}
+
+.category-name {
+    display: inline-flex;
+    margin-bottom: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.category-card p {
+    margin: 0;
+    min-height: 56px;
+    font-size: 0.74rem;
+    line-height: 1.55;
+    color: #748197;
+}
+
+.category-meta {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.68rem;
+    color: #97a1b4;
+}
+
+.accent-tech {
+    border-color: #dfe5ff;
+}
+
+.accent-tech .category-name {
+    color: #5a69e5;
+}
+
+.accent-politics {
+    border-color: #ffdfe6;
+}
+
+.accent-politics .category-name {
+    color: #d05d72;
+}
+
+.accent-science {
+    border-color: #d8f3ff;
+}
+
+.accent-science .category-name {
+    color: #3188b8;
+}
+
+.accent-green {
+    border-color: #daf2dd;
+}
+
+.accent-green .category-name {
+    color: #359459;
+}
+
+.accent-culture {
+    border-color: #f0defd;
+}
+
+.accent-culture .category-name {
+    color: #a35cd4;
 }
 
 .public-auth-page {
@@ -528,12 +760,12 @@ a {
 
 .public-footer {
     margin-top: auto;
-    background: var(--color-navy);
+    background: #111f44;
     color: rgba(255, 255, 255, 0.84);
 }
 
 .public-footer-main {
-    padding: 40px 0 28px;
+    padding: 42px 0 28px;
     align-items: flex-start;
 }
 
@@ -544,18 +776,20 @@ a {
 
 .footer-column h3,
 .footer-column h4 {
-    margin: 0 0 16px;
+    margin: 0 0 12px;
     color: #fff;
+    font-size: 0.74rem;
 }
 
 .footer-brand {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     font-weight: 800;
     text-decoration: none;
     color: #fff;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+    font-size: 0.92rem;
 }
 
 .footer-brand .brand-badge {
@@ -565,12 +799,21 @@ a {
 
 .footer-links {
     display: grid;
-    gap: 12px;
+    gap: 8px;
 }
 
 .footer-links a {
     color: rgba(255, 255, 255, 0.82);
     text-decoration: none;
+    font-size: 0.7rem;
+}
+
+.footer-column p {
+    margin: 0 0 8px;
+    max-width: 290px;
+    font-size: 0.7rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.64);
 }
 
 .footer-newsletter {
@@ -601,8 +844,8 @@ a {
 
 .public-footer-bottom {
     border-top: 1px solid rgba(255, 255, 255, 0.12);
-    padding: 18px 0 28px;
-    font-size: 0.92rem;
+    padding: 18px 0 20px;
+    font-size: 0.64rem;
 }
 
 .footer-legal {
@@ -708,20 +951,40 @@ select.form-control {
         justify-content: center;
     }
 
-    .hero-home-grid {
+    .hero-home-grid,
+    .post-grid,
+    .category-grid {
         grid-template-columns: 1fr;
+    }
+
+    .featured-card,
+    .featured-card-small {
+        min-height: 240px;
     }
 }
 
 @media (max-width: 720px) {
     .page-main {
-        padding-top: 24px;
+        padding-top: 18px;
     }
 
-    .hero-home-card,
     .auth-body,
     .container-admin {
         padding: 24px;
+    }
+
+    .hero-home-panel {
+        padding: 10px;
+    }
+
+    .public-navbar .container {
+        padding: 10px 0;
+    }
+
+    .headline-strip .container,
+    .section-heading,
+    .post-meta {
+        white-space: normal;
     }
 
     .auth-card {

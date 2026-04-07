@@ -4,9 +4,9 @@
     <h2>Acesso administrativo</h2>
     <p>Esta tela permanece exclusiva para a equipe editorial.</p>
 
-    <form action="/index.php?url=processar-login" method="POST">
+    <form action="<?= htmlspecialchars($routeUrl('processar-login')) ?>" method="POST">
         <div class="form-group">
-            <label for="email">E-mail de usuario</label>
+            <label for="email">E-mail de usuário</label>
             <input type="email" name="email" id="email" class="form-control" placeholder="admin@admin.com" value="<?= htmlspecialchars($_SESSION['old']['email'] ?? '') ?>">
             <?php if (isset($_SESSION['erros']['email'])): ?>
                 <small class="field-error"><?= htmlspecialchars($_SESSION['erros']['email']) ?></small>

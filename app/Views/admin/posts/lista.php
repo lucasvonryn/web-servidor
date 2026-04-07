@@ -23,7 +23,7 @@
         </thead>
         <tbody>
             <?php 
-            // Simulação de dados (Já que não temos SQL por enquanto)
+            // Simulação de dados (já que não temos SQL por enquanto)
             $posts_fake = [
                 ['id' => 1, 'titulo' => 'Bem-vindo ao nosso Blog', 'categoria' => 'Geral', 'status' => 'Publicado'],
                 ['id' => 2, 'titulo' => 'Novidades de PHP 8', 'categoria' => 'Tecnologia', 'status' => 'Rascunho'],

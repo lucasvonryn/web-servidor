@@ -11,8 +11,8 @@ include __DIR__ . '/../partials/header.php';
         <div class="auth-frame">
             <div class="auth-card">
                 <div class="auth-tabs">
-                    <a href="/index.php?url=login&modo=entrar" class="<?= $modo === 'entrar' ? 'is-active' : '' ?>">Entrar</a>
-                    <a href="/index.php?url=login&modo=criar" class="<?= $modo === 'criar' ? 'is-active' : '' ?>">Criar Conta</a>
+                    <a href="<?= htmlspecialchars($routeUrl('login', ['modo' => 'entrar'])) ?>" class="<?= $modo === 'entrar' ? 'is-active' : '' ?>">Entrar</a>
+                    <a href="<?= htmlspecialchars($routeUrl('login', ['modo' => 'criar'])) ?>" class="<?= $modo === 'criar' ? 'is-active' : '' ?>">Criar Conta</a>
                 </div>
 
                 <div class="auth-body">
@@ -21,10 +21,10 @@ include __DIR__ . '/../partials/header.php';
                     <?php if ($modo === 'entrar'): ?>
                         <div class="auth-heading">
                             <h1>Bem-vindo de volta</h1>
-                            <p>Entre para comentar nas publicacoes.</p>
+                            <p>Entre para comentar nas publicações.</p>
                         </div>
 
-                        <form action="/index.php?url=processar-login-publico" method="POST" class="form-stack">
+                        <form action="<?= htmlspecialchars($routeUrl('processar-login-publico')) ?>" method="POST" class="form-stack">
                             <div class="field">
                                 <label for="email">E-mail</label>
                                 <div class="input-shell">
@@ -42,7 +42,7 @@ include __DIR__ . '/../partials/header.php';
                             <div class="field">
                                 <div class="field-row">
                                     <label for="senha">Senha</label>
-                                    <a class="field-link" href="/index.php?url=login&modo=criar">Esqueci minha senha</a>
+                                    <a class="field-link" href="<?= htmlspecialchars($routeUrl('login', ['modo' => 'criar'])) ?>">Esqueci minha senha</a>
                                 </div>
                                 <div class="input-shell">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -66,15 +66,15 @@ include __DIR__ . '/../partials/header.php';
                                 <button type="submit" class="btn-secondary">Entrar</button>
                             </div>
 
-                            <p class="auth-switch">Nao tem conta? <a href="/index.php?url=login&modo=criar">Cadastre-se</a></p>
+                            <p class="auth-switch">Não tem conta? <a href="<?= htmlspecialchars($routeUrl('login', ['modo' => 'criar'])) ?>">Cadastre-se</a></p>
                         </form>
                     <?php else: ?>
                         <div class="auth-heading">
                             <h1>Crie sua conta</h1>
-                            <p>Cadastre-se e participe das discussoes.</p>
+                            <p>Cadastre-se e participe das discussões.</p>
                         </div>
 
-                        <form action="/index.php?url=processar-cadastro-publico" method="POST" class="form-stack">
+                        <form action="<?= htmlspecialchars($routeUrl('processar-cadastro-publico')) ?>" method="POST" class="form-stack">
                             <div class="field">
                                 <label for="nome">Nome completo</label>
                                 <div class="input-shell">
@@ -110,7 +110,7 @@ include __DIR__ . '/../partials/header.php';
                                         <rect x="5" y="11" width="14" height="9" rx="2"></rect>
                                         <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
                                     </svg>
-                                    <input type="password" name="senha" id="cadastro-senha" placeholder="Minimo de 6 caracteres" data-password-toggle>
+                                    <input type="password" name="senha" id="cadastro-senha" placeholder="Mínimo de 6 caracteres" data-password-toggle>
                                     <button type="button" class="password-toggle" aria-label="Mostrar senha" data-toggle-button>
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                             <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"></path>
@@ -137,7 +137,7 @@ include __DIR__ . '/../partials/header.php';
                                 <?php endif; ?>
                             </div>
 
-                            <p class="terms-copy">Ao se cadastrar voce concorda com os <a href="/index.php?url=login&modo=criar">Termos de Uso</a> e a <a href="/index.php?url=login&modo=criar">Politica de Privacidade</a>.</p>
+                            <p class="terms-copy">Ao se cadastrar, você concorda com os <a href="<?= htmlspecialchars($routeUrl('login', ['modo' => 'criar'])) ?>">Termos de Uso</a> e a <a href="<?= htmlspecialchars($routeUrl('login', ['modo' => 'criar'])) ?>">Política de Privacidade</a>.</p>
 
                             <div class="auth-actions">
                                 <button type="submit" class="btn-primary">Criar conta</button>
@@ -147,7 +147,7 @@ include __DIR__ . '/../partials/header.php';
                 </div>
             </div>
 
-            <a class="auth-back" href="/index.php?url=home">
+            <a class="auth-back" href="<?= htmlspecialchars($routeUrl('home')) ?>">
                 <span>&larr;</span>
                 <span>Voltar ao site</span>
             </a>

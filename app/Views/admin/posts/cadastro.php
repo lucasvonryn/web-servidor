@@ -69,5 +69,5 @@
 // Limpa os dados temporários para não aparecerem em uma nova visita
 unset($_SESSION['erros']);
 unset($_SESSION['old']);
-include __DIR__ . '/../../partials/header.php'; 
+include __DIR__ . '/../../partials/footer.php'; 
 ?>

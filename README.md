@@ -94,15 +94,17 @@ Atualmente, a versão presente neste repositório funciona como um protótipo PH
    cd web-servidor
    ```
 
-3. Inicie o servidor embutido do PHP apontando para a pasta `projeto/public`:
+3. Inicie o servidor embutido do PHP apontando para a pasta `public`:
    ```bash
-   php -S localhost:8000 -t projeto/public
+   php -S localhost:8000 -t public
    ```
 
 4. Abra no navegador:
    ```text
    http://localhost:8000
    ```
+
+Importante: não abra `public/index.php` diretamente com `file://` ou só clicando no arquivo no explorador. Para validar o frontend, rode o projeto em um servidor PHP local, porque o CSS e as rotas dependem disso.
 
 ### Acesso local atual
 - Página inicial: `http://localhost:8000/index.php?url=home`

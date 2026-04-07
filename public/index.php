@@ -2,6 +2,19 @@
 
 session_start();
 
+$scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '/index.php');
+$basePath = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
+$basePath = $basePath === '.' ? '' : $basePath;
+
+$routeUrl = static function (string $route = 'home', array $params = []) use ($basePath): string {
+    $query = http_build_query(array_merge(['url' => $route], $params));
+    return ($basePath ?: '') . '/index.php' . ($query ? '?' . $query : '');
+};
+
+$assetUrl = static function (string $path) use ($basePath): string {
+    return ($basePath ?: '') . '/' . ltrim($path, '/');
+};
+
 $url = $_GET['url'] ?? 'home';
 $viewsPath = __DIR__ . '/../app/Views/';
 
@@ -65,7 +78,7 @@ switch ($url) {
         $_SESSION['usuario_publico_nome'] = $usuarioPublico['nome'];
         $_SESSION['alerta'] = [
             'tipo' => 'success',
-            'mensagem' => 'Login realizado com sucesso. Agora voce pode interagir com a comunidade.'
+            'mensagem' => 'Login realizado com sucesso. Agora você pode interagir com a comunidade.'
         ];
         header('Location: index.php?url=home');
         exit;
@@ -83,7 +96,7 @@ switch ($url) {
         }
 
         if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $erros['email'] = 'Informe um e-mail valido.';
+            $erros['email'] = 'Informe um e-mail válido.';
         }
 
         if (strlen($senha) < 6) {
@@ -108,7 +121,7 @@ switch ($url) {
         $_SESSION['usuario_publico_nome'] = $nome;
         $_SESSION['alerta'] = [
             'tipo' => 'success',
-            'mensagem' => 'Conta criada com sucesso. O prototipo ja considera voce conectado.'
+            'mensagem' => 'Conta criada com sucesso. O protótipo já considera você conectado.'
         ];
         header('Location: index.php?url=home');
         exit;
@@ -140,7 +153,7 @@ switch ($url) {
         if (empty($nome)) {
             $_SESSION['alerta'] = [
                 'tipo' => 'danger',
-                'mensagem' => 'Erro: O nome do portal nao pode estar vazio!'
+                'mensagem' => 'Erro: o nome do portal não pode estar vazio!'
             ];
             header('Location: index.php?url=admin/configuracoes');
             exit;
@@ -148,7 +161,7 @@ switch ($url) {
 
         $_SESSION['alerta'] = [
             'tipo' => 'success',
-            'mensagem' => 'Configuracoes atualizadas com sucesso!'
+            'mensagem' => 'Configurações atualizadas com sucesso!'
         ];
 
         header('Location: index.php?url=admin/configuracoes');
@@ -156,6 +169,6 @@ switch ($url) {
 
     default:
         http_response_code(404);
-        echo "<h1>Pagina nao encontrada!</h1><a href='index.php'>Voltar para Home</a>";
+        echo "<h1>Página não encontrada!</h1><a href='index.php'>Voltar para Home</a>";
         break;
 }
