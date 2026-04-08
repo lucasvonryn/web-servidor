@@ -1,10 +1,9 @@
-@ -1,70 +1,92 @@
 <?php
-
+session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-session_start();
+
 
 $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '/index.php');
 $basePath = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
@@ -72,57 +71,47 @@ switch ($url) {
             'nome' => 'Leitor O Editorial',
         ];
 
-        if (!$erros && ($email !== $usuarioPublico['email'] || $senha !== $usuarioPublico['senha'])) {
-            $erros['email'] = 'E-mail ou senha incorretos.';
-        if ($email === '') { $erros['email'] = 'Informe seu e-mail.'; }
-        if ($senha === '') { $erros['senha'] = 'Informe sua senha.'; }
+// Dados para comparação
+$adminEmail = 'admin@admin.com';
+$adminSenha = '123456';
 
-        // Dados para comparação
-        $adminEmail = 'admin@admin.com';
-        $adminSenha = '123456';
-        
-        $leitorEmail = 'leitor@oeditorial.com.br';
-        $leitorSenha = '123456';
+$leitorEmail = 'leitor@oeditorial.com.br';
+$leitorSenha = '123456';
 
-        if (!$erros) {
-            // 1. Tenta logar como ADMIN
-            if ($email === $adminEmail && $senha === $adminSenha) {
-                $_SESSION['usuario_logado'] = true;
-                $_SESSION['usuario_nome'] = 'Administrador';
-                $_SESSION['alerta'] = ['tipo' => 'success', 'mensagem' => 'Bem-vindo ao Painel!'];
-                header('Location: index.php?url=admin/posts');
-                exit;
-            } 
-            // 2. Tenta logar como LEITOR
-            elseif ($email === $leitorEmail && $senha === $leitorSenha) {
-                $_SESSION['usuario_publico_logado'] = true;
-                $_SESSION['usuario_public_nome'] = 'Leitor O Editorial';
-                $_SESSION['alerta'] = ['tipo' => 'success', 'mensagem' => 'Login realizado com sucesso!'];
-                header('Location: index.php?url=home');
-                exit;
-            } 
-            // 3. Falhou em ambos
-            else {
-                $erros['email'] = 'E-mail ou senha incorretos.';
-            }
-        }
-
-        if ($erros) {
-@ -73,6 +95,7 @@ switch ($url) {
-            header('Location: index.php?url=login&modo=entrar');
-            exit;
-        }
-<<<<<<< Updated upstream
-
+if (!$erros) {
+    // 1. Tenta logar como ADMIN
+    if ($email === $adminEmail && $senha === $adminSenha) {
+        $_SESSION['usuario_logado'] = true;
+        $_SESSION['usuario_nome'] = 'Administrador';
+        $_SESSION['alerta'] = ['tipo' => 'success', 'mensagem' => 'Bem-vindo ao Painel!'];
+        header('Location: index.php?url=admin/posts');
+        exit;
+    } 
+    // 2. Tenta logar como LEITOR
+    elseif ($email === $leitorEmail && $senha === $leitorSenha) {
         $_SESSION['usuario_publico_logado'] = true;
-        $_SESSION['usuario_publico_nome'] = $usuarioPublico['nome'];
-@ -83,92 +106,129 @@
+        $_SESSION['usuario_public_nome'] = 'Leitor O Editorial';
+        $_SESSION['alerta'] = ['tipo' => 'success', 'mensagem' => 'Login realizado com sucesso!'];
         header('Location: index.php?url=home');
         exit;
+    } 
+    // 3. Falhou em ambos
+    else {
+        $erros['email'] = 'E-mail ou senha incorretos.';
+    }
+}
 
-=======
-        break;
->>>>>>> Stashed changes
+if ($erros) {
+    $_SESSION['erros_publico'] = $erros;
+    header('Location: index.php?url=login&modo=entrar');
+    exit;
+}
+
+$_SESSION['usuario_publico_logado'] = true;
+$_SESSION['usuario_publico_nome'] = $email;
+$_SESSION['alerta'] = ['tipo' => 'success', 'mensagem' => 'Login realizado com sucesso!'];
+header('Location: index.php?url=home');
+exit;
     case 'processar-cadastro-publico':
         $nome = trim($_POST['nome'] ?? '');
         $email = trim($_POST['email'] ?? '');
@@ -187,36 +176,29 @@ switch ($url) {
         header('Location: index.php?url=admin/login');
         exit;
 
-    case 'admin/configuracoes/salvar':
-        $nome = $_POST['nome_site'] ?? '';
+case 'admin/configuracoes/salvar':
+    $nome = $_POST['nome_site'] ?? '';
 
-        if (empty($nome)) {
-            $_SESSION['alerta'] = [
-                'tipo' => 'danger',
-                'mensagem' => 'Erro: o nome do portal não pode estar vazio!'
-            ];
-            header('Location: index.php?url=admin/configuracoes');
-            exit;
-        }
-
+    if (empty($nome)) {
         $_SESSION['alerta'] = [
-            'tipo' => 'success',
-            'mensagem' => 'Configurações atualizadas com sucesso!'
+            'tipo' => 'danger',
+            'mensagem' => 'Erro: o nome do portal não pode estar vazio!'
         ];
-
         header('Location: index.php?url=admin/configuracoes');
         exit;
-<<<<<<< Updated upstream
+    }
 
-    default:
-        http_response_code(404);
-        echo "<h1>Página não encontrada!</h1><a href='index.php'>Voltar para Home</a>";
-=======
-        // Rota para Usuários (Equipe)
-    case 'admin/usuarios':
-        include $viewsPath . 'admin/usuarios/lista.php';
->>>>>>> Stashed changes
-        break;
+    $_SESSION['alerta'] = [
+        'tipo' => 'success',
+        'mensagem' => 'Configurações atualizadas com sucesso!'
+    ];
+
+    header('Location: index.php?url=admin/configuracoes');
+    exit;
+
+case 'admin/usuarios':
+    include $viewsPath . 'admin/usuarios/lista.php';
+    break;
     case 'admin/usuarios/salvar':
         // No protótipo, apenas simulamos o sucesso e redirecionamos
         $_SESSION['alerta'] = [
@@ -246,4 +228,3 @@ default:
         echo "URL atual: " . htmlspecialchars($url);
         break;
 }
-} 
