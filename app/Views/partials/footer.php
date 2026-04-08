@@ -23,11 +23,11 @@
                 <div class="footer-column">
                     <h4>Categorias</h4>
                     <div class="footer-links">
-                        <a href="<?= htmlspecialchars($routeUrl('home')) ?>#tecnologia">Tecnologia</a>
-                        <a href="<?= htmlspecialchars($routeUrl('home')) ?>#politica">Política</a>
-                        <a href="<?= htmlspecialchars($routeUrl('home')) ?>#ciencia">Ciência</a>
-                        <a href="<?= htmlspecialchars($routeUrl('home')) ?>#meio-ambiente">Meio Ambiente</a>
-                        <a href="<?= htmlspecialchars($routeUrl('home')) ?>#cultura">Cultura</a>
+                        <a href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => 'tecnologia'])) ?>">Tecnologia</a>
+                        <a href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => 'politica'])) ?>">Política</a>
+                        <a href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => 'ciencia'])) ?>">Ciência</a>
+                        <a href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => 'meio-ambiente'])) ?>">Meio Ambiente</a>
+                        <a href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => 'cultura'])) ?>">Cultura</a>
                     </div>
                 </div>
 
@@ -53,5 +53,70 @@
         </footer>
     <?php endif; ?>
 </div>
+<script>
+var currentDateLabel = document.querySelector('[data-current-date]');
+if (currentDateLabel) {
+    var formatter = new Intl.DateTimeFormat('pt-BR', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+    currentDateLabel.textContent = formatter.format(new Date());
+}
+
+var carousel = document.querySelector('[data-carousel]');
+if (carousel) {
+    var slides = Array.from(carousel.querySelectorAll('[data-carousel-slide]'));
+    var dots = Array.from(carousel.querySelectorAll('[data-carousel-dot]'));
+    var prevButton = carousel.querySelector('[data-carousel-prev]');
+    var nextButton = carousel.querySelector('[data-carousel-next]');
+    var currentIndex = 0;
+    var autoPlayId = null;
+
+    var renderCarousel = function (index) {
+        currentIndex = (index + slides.length) % slides.length;
+        slides.forEach(function (slide, slideIndex) {
+            slide.classList.toggle('is-active', slideIndex === currentIndex);
+        });
+        dots.forEach(function (dot, dotIndex) {
+            dot.classList.toggle('is-active', dotIndex === currentIndex);
+        });
+    };
+
+    var restartAutoPlay = function () {
+        if (autoPlayId) {
+            window.clearInterval(autoPlayId);
+        }
+        autoPlayId = window.setInterval(function () {
+            renderCarousel(currentIndex + 1);
+        }, 5000);
+    };
+
+    if (prevButton) {
+        prevButton.addEventListener('click', function () {
+            renderCarousel(currentIndex - 1);
+            restartAutoPlay();
+        });
+    }
+
+    if (nextButton) {
+        nextButton.addEventListener('click', function () {
+            renderCarousel(currentIndex + 1);
+            restartAutoPlay();
+        });
+    }
+
+    dots.forEach(function (dot, dotIndex) {
+        dot.addEventListener('click', function () {
+            renderCarousel(dotIndex);
+            restartAutoPlay();
+        });
+    });
+
+    renderCarousel(0);
+    restartAutoPlay();
+}
+</script>
 </body>
 </html>

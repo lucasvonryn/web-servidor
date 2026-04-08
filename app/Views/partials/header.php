@@ -1,10 +1,10 @@
 <?php
 $currentRoute = $_GET['url'] ?? 'home';
+$currentCategorySlug = $_GET['slug'] ?? '';
 $isAdminArea = str_starts_with($currentRoute, 'admin/');
 $isPublicLogin = $currentRoute === 'login';
 $publicMode = $_GET['modo'] ?? 'entrar';
 $publicMode = $publicMode === 'criar' ? 'criar' : 'entrar';
-$todayLabel = 'terça-feira, 24 de março de 2026';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -36,7 +36,7 @@ $todayLabel = 'terça-feira, 24 de março de 2026';
     <header class="public-header">
         <div class="public-topbar">
             <div class="container">
-                <span><?= $todayLabel ?></span>
+                <span data-current-date>Carregando data...</span>
                 <span>contato@oeditorial.com.br</span>
             </div>
         </div>
@@ -50,11 +50,11 @@ $todayLabel = 'terça-feira, 24 de março de 2026';
 
                 <nav class="nav-links">
                     <a href="<?= htmlspecialchars($routeUrl('home')) ?>" class="<?= $currentRoute === 'home' ? 'is-active' : '' ?>">Home</a>
-                    <a href="<?= htmlspecialchars($routeUrl('home')) ?>#tecnologia">Tecnologia</a>
-                    <a href="<?= htmlspecialchars($routeUrl('home')) ?>#politica">Política</a>
-                    <a href="<?= htmlspecialchars($routeUrl('home')) ?>#ciencia">Ciência</a>
-                    <a href="<?= htmlspecialchars($routeUrl('home')) ?>#meio-ambiente">Meio Ambiente</a>
-                    <a href="<?= htmlspecialchars($routeUrl('home')) ?>#cultura">Cultura</a>
+                    <a href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => 'tecnologia'])) ?>" class="<?= $currentRoute === 'categoria' && $currentCategorySlug === 'tecnologia' ? 'is-active' : '' ?>">Tecnologia</a>
+                    <a href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => 'politica'])) ?>" class="<?= $currentRoute === 'categoria' && $currentCategorySlug === 'politica' ? 'is-active' : '' ?>">Política</a>
+                    <a href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => 'ciencia'])) ?>" class="<?= $currentRoute === 'categoria' && $currentCategorySlug === 'ciencia' ? 'is-active' : '' ?>">Ciência</a>
+                    <a href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => 'meio-ambiente'])) ?>" class="<?= $currentRoute === 'categoria' && $currentCategorySlug === 'meio-ambiente' ? 'is-active' : '' ?>">Meio Ambiente</a>
+                    <a href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => 'cultura'])) ?>" class="<?= $currentRoute === 'categoria' && $currentCategorySlug === 'cultura' ? 'is-active' : '' ?>">Cultura</a>
                 </nav>
 
                 <div class="navbar-actions">
