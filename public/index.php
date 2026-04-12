@@ -30,6 +30,10 @@ switch ($url) {
         include $viewsPath . 'public/login.php';
         break;
 
+    case 'categoria':
+        include $viewsPath . 'public/categoria.php';
+        break;
+
     case 'admin/login':
         include $viewsPath . 'admin/login.php';
         break;
