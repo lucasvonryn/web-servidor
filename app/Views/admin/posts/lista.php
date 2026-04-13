@@ -1,58 +1,107 @@
-<?php include __DIR__ . '/../../partials/header.php'; ?>
+<?php
+$portalData = $portalData ?? require __DIR__ . '/../../../Data/portal_content.php';
+$categories = $portalData['categories'];
+$posts = $portalData['posts'];
 
-<div class="breadcrumb">
-    <a href="index.php?url=home">Site Público</a> &raquo; 
-    <span>Gerenciar Posts</span>
-</div>
+$publishedCount = 0;
+$draftCount = 0;
+foreach ($posts as $postItem) {
+    if (($postItem['status'] ?? '') === 'Publicado') {
+        $publishedCount++;
+    } else {
+        $draftCount++;
+    }
+}
 
-<div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h2>Gerenciar Publicações</h2>
-    <a href="index.php?url=admin/posts/novo" class="btn-primary" style="text-decoration: none; padding: 10px 15px;">+ Nova Postagem</a>
-</div>
+include __DIR__ . '/../../partials/header.php';
+?>
 
-<div style="overflow-x: auto;">
-    <table class="tabela-gerencial" style="width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-        <thead>
-            <tr style="background: #2c3e50; color: white; text-align: left;">
-                <th style="padding: 12px;">ID</th>
-                <th style="padding: 12px;">Título</th>
-                <th style="padding: 12px;">Categoria</th>
-                <th style="padding: 12px;">Status</th>
-                <th style="padding: 12px; text-align: center;">Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php 
-            // Simulação de dados (já que não temos SQL por enquanto)
-            $posts_fake = [
-                ['id' => 1, 'titulo' => 'Bem-vindo ao nosso Blog', 'categoria' => 'Geral', 'status' => 'Publicado'],
-                ['id' => 2, 'titulo' => 'Novidades de PHP 8', 'categoria' => 'Tecnologia', 'status' => 'Rascunho'],
-            ];
+<section class="admin-page-shell" data-admin-posts-page data-admin-posts-page-size="5">
+    <header class="admin-page-header">
+        <div>
+            <h1>Publicações</h1>
+            <div class="admin-breadcrumb">Painel <span>&rsaquo;</span> Publicações</div>
+        </div>
+        <a href="<?= htmlspecialchars($routeUrl('admin/posts/novo')) ?>" class="admin-primary-button">+ Nova publicação</a>
+    </header>
 
-            if (empty($posts_fake)): ?>
+    <div class="admin-toolbar admin-toolbar-wide">
+        <label class="admin-search">
+            <span>&#8981;</span>
+            <input type="search" placeholder="Buscar publicação ou autor..." data-admin-posts-search>
+        </label>
+        <div class="admin-filter-chips">
+            <button type="button" class="admin-filter-chip is-active" data-admin-posts-filter="todos">Todos</button>
+            <button type="button" class="admin-filter-chip" data-admin-posts-filter="publicado">Publicado</button>
+            <button type="button" class="admin-filter-chip" data-admin-posts-filter="rascunho">Rascunho</button>
+        </div>
+    </div>
+
+    <div class="admin-stats-grid admin-stats-grid-3">
+        <article class="admin-stat-card">
+            <strong><?= count($posts) ?></strong>
+            <span>Total</span>
+        </article>
+        <article class="admin-stat-card admin-stat-card-success">
+            <strong><?= $publishedCount ?></strong>
+            <span>Publicados</span>
+        </article>
+        <article class="admin-stat-card admin-stat-card-warning">
+            <strong><?= $draftCount ?></strong>
+            <span>Rascunhos</span>
+        </article>
+    </div>
+
+    <p class="admin-results-copy" data-admin-posts-count><?= count($posts) ?> registros encontrados</p>
+
+    <section class="admin-table-card">
+        <table class="admin-table">
+            <thead>
                 <tr>
-                    <td colspan="5" style="text-align: center; padding: 20px;">Nenhuma publicação encontrada.</td>
+                    <th>Publicação</th>
+                    <th>Categoria</th>
+                    <th>Autor</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                    <th class="admin-table-actions">Ações</th>
                 </tr>
-            <?php else: 
-                foreach ($posts_fake as $post): ?>
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <td style="padding: 12px;"><?= $post['id'] ?></td>
-                    <td style="padding: 12px;"><strong><?= htmlspecialchars($post['titulo']) ?></strong></td>
-                    <td style="padding: 12px;"><?= $post['categoria'] ?></td>
-                    <td style="padding: 12px;">
-                        <span style="padding: 4px 8px; border-radius: 4px; font-size: 12px; color: white; background: <?= $post['status'] == 'Publicado' ? '#27ae60' : '#f39c12' ?>;">
-                            <?= $post['status'] ?>
-                        </span>
-                    </td>
-                    <td style="padding: 12px; text-align: center;">
-                        <a href="index.php?url=admin/posts/editar&id=<?= $post['id'] ?>" style="color: #3498db; text-decoration: none; margin-right: 10px;">Editar</a>
-                        <a href="index.php?url=admin/posts/excluir&id=<?= $post['id'] ?>" style="color: #e74c3c; text-decoration: none;" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
-                    </td>
-                </tr>
-            <?php endforeach; 
-            endif; ?>
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                <?php foreach ($posts as $postItem): ?>
+                    <?php
+                    $postCategory = $categories[$postItem['category']] ?? null;
+                    $postCover = $postItem['cover'] ?? ($postCategory['cover'] ?? '');
+                    $statusClass = ($postItem['status'] ?? '') === 'Publicado' ? 'admin-badge-success' : 'admin-badge-warning';
+                    ?>
+                    <tr data-admin-post-row data-title="<?= htmlspecialchars(strtolower($postItem['title'])) ?>" data-slug="<?= htmlspecialchars(strtolower($postItem['slug'])) ?>" data-author="<?= htmlspecialchars(strtolower($postItem['author'])) ?>" data-category="<?= htmlspecialchars(strtolower($postCategory['name'] ?? '')) ?>" data-status="<?= htmlspecialchars(strtolower($postItem['status'])) ?>">
+                        <td>
+                            <div class="admin-post-cell">
+                                <img src="<?= htmlspecialchars($postCover) ?>" alt="<?= htmlspecialchars($postItem['title']) ?>">
+                                <div>
+                                    <strong><?= htmlspecialchars($postItem['title']) ?></strong>
+                                    <span><?= htmlspecialchars($postItem['slug']) ?></span>
+                                    <?php if (!empty($postItem['featured'])): ?>
+                                        <em class="admin-inline-label">destaque</em>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </td>
+                        <td><?= htmlspecialchars($postCategory['name'] ?? 'Sem categoria') ?></td>
+                        <td><?= htmlspecialchars($postItem['author_short'] ?? $postItem['author']) ?></td>
+                        <td><?= htmlspecialchars($postItem['date']) ?></td>
+                        <td><span class="admin-badge <?= $statusClass ?>"><?= htmlspecialchars($postItem['status']) ?></span></td>
+                        <td class="admin-table-actions">
+                            <a href="<?= htmlspecialchars($routeUrl('publicacao', ['slug' => $postItem['slug']])) ?>" class="admin-icon-action" aria-label="Visualizar">◌</a>
+                            <a href="<?= htmlspecialchars($routeUrl('admin/posts/editar', ['id' => $postItem['id']])) ?>" class="admin-icon-action" aria-label="Editar">✎</a>
+                            <a href="<?= htmlspecialchars($routeUrl('admin/posts/excluir', ['id' => $postItem['id']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir esta publicação?')">🗑</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </section>
+
+    <div class="admin-pagination" data-admin-posts-pagination></div>
+</section>
 
 <?php include __DIR__ . '/../../partials/footer.php'; ?>

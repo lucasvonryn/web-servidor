@@ -1,7 +1,9 @@
 <?php
-$portalData = require __DIR__ . '/../../Data/portal_content.php';
+$portalData = $portalData ?? require __DIR__ . '/../../Data/portal_content.php';
 $categories = $portalData['categories'];
-$allPosts = $portalData['posts'];
+$allPosts = array_values(array_filter($portalData['posts'], static function (array $post): bool {
+    return ($post['status'] ?? 'Publicado') === 'Publicado';
+}));
 $categorySlug = $_GET['slug'] ?? 'tecnologia';
 $category = $categories[$categorySlug] ?? null;
 
@@ -24,6 +26,7 @@ if (!$category) {
 $categoryPosts = array_values(array_filter($allPosts, static function (array $post) use ($categorySlug): bool {
     return $post['category'] === $categorySlug;
 }));
+$categoryPostsCount = count($categoryPosts);
 
 include __DIR__ . '/../partials/header.php';
 ?>
@@ -42,14 +45,14 @@ include __DIR__ . '/../partials/header.php';
             <div class="category-hero-copy">
                 <h1><?= htmlspecialchars($category['name']) ?></h1>
                 <p><?= htmlspecialchars($category['description']) ?></p>
-                <span class="category-pill"><?= count($categoryPosts) ?> publicações</span>
+                <span class="category-pill"><?= htmlspecialchars($categoryPostsCount . ' ' . ($categoryPostsCount === 1 ? 'publicação' : 'publicações')) ?></span>
             </div>
         </div>
     </div>
 
     <div class="container category-content">
         <div class="category-toolbar">
-            <p>Mostrando <?= count($categoryPosts) ?> publicações em <strong><?= htmlspecialchars($category['name']) ?></strong></p>
+            <p>Mostrando <?= htmlspecialchars($categoryPostsCount . ' ' . ($categoryPostsCount === 1 ? 'publicação' : 'publicações')) ?> em <strong><?= htmlspecialchars($category['name']) ?></strong></p>
             <div class="category-toolbar-actions">
                 <button type="button" class="category-sort-chip">Mais recentes</button>
                 <button type="button" class="category-view-toggle is-active" aria-label="Visualização em grade">▦</button>
@@ -59,15 +62,16 @@ include __DIR__ . '/../partials/header.php';
 
         <div class="category-post-grid">
             <?php foreach ($categoryPosts as $post): ?>
+                <?php $postCategory = $categories[$post['category']] ?? $category; ?>
                 <article class="category-post-card">
-                    <div class="category-post-media">
-                        <img src="<?= htmlspecialchars($category['cover']) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
-                    </div>
+                    <a class="category-post-media" href="<?= htmlspecialchars($routeUrl('publicacao', ['slug' => $post['slug']])) ?>">
+                        <img src="<?= htmlspecialchars($postCategory['cover']) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
+                    </a>
                     <div class="category-post-body">
-                        <a class="post-tag post-tag-<?= htmlspecialchars($category['tag_class']) ?>" href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => $categorySlug])) ?>">
-                            <?= htmlspecialchars($category['name']) ?>
+                        <a class="post-tag post-tag-<?= htmlspecialchars($postCategory['tag_class']) ?>" href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => $post['category']])) ?>">
+                            <?= htmlspecialchars($postCategory['name']) ?>
                         </a>
-                        <h2><?= htmlspecialchars($post['title']) ?></h2>
+                        <h2><a href="<?= htmlspecialchars($routeUrl('publicacao', ['slug' => $post['slug']])) ?>"><?= htmlspecialchars($post['title']) ?></a></h2>
                         <p><?= htmlspecialchars($post['excerpt']) ?></p>
                         <div class="category-post-meta">
                             <span><?= htmlspecialchars($post['author']) ?></span>
@@ -83,8 +87,16 @@ include __DIR__ . '/../partials/header.php';
             <div class="category-related-links">
                 <?php foreach ($categories as $slug => $item): ?>
                     <?php if ($slug === $categorySlug) continue; ?>
+                    <?php
+                    $relatedCount = 0;
+                    foreach ($allPosts as $post) {
+                        if ($post['category'] === $slug) {
+                            $relatedCount++;
+                        }
+                    }
+                    ?>
                     <a class="category-link-pill accent-<?= htmlspecialchars($item['accent']) ?>" href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => $slug])) ?>">
-                        <?= htmlspecialchars($item['name']) ?> (<?= htmlspecialchars($item['count_label']) ?>)
+                        <?= htmlspecialchars($item['name']) ?> (<?= htmlspecialchars($relatedCount) ?>)
                     </a>
                 <?php endforeach; ?>
             </div>

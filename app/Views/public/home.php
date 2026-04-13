@@ -1,58 +1,73 @@
 <?php
-$portalData = require __DIR__ . '/../../Data/portal_content.php';
+$portalData = $portalData ?? require __DIR__ . '/../../Data/portal_content.php';
+$settings = $portalData['settings'];
 $categories = $portalData['categories'];
-$latestPosts = $portalData['posts'];
-$featuredSlides = $portalData['featured_slides'];
+$publishedPosts = array_values(array_filter($portalData['posts'], static function (array $post): bool {
+    return ($post['status'] ?? 'Publicado') === 'Publicado';
+}));
+$latestPosts = $publishedPosts;
+$latestPosts = array_slice($latestPosts, 0, (int) ($settings['itens_home'] ?? 6));
+$featuredSlides = array_values(array_filter($portalData['featured_slides'], static function (array $post): bool {
+    return ($post['status'] ?? 'Publicado') === 'Publicado';
+}));
+
+$postsCountByCategory = [];
+foreach ($publishedPosts as $post) {
+    $slug = $post['category'];
+    $postsCountByCategory[$slug] = ($postsCountByCategory[$slug] ?? 0) + 1;
+}
 
 include __DIR__ . '/../partials/header.php';
 ?>
 
 <div class="portal-home">
-    <section class="hero-home">
-        <div class="container">
-            <div class="hero-home-panel hero-carousel" data-carousel>
-                <div class="hero-carousel-viewport">
-                    <div class="hero-carousel-track" data-carousel-track>
-                        <?php foreach ($featuredSlides as $index => $post): ?>
-                            <?php $category = $categories[$post['category']]; ?>
-                            <section class="hero-carousel-slide<?= $index === 0 ? ' is-active' : '' ?>" data-carousel-slide>
-                                <article class="featured-card featured-card-hero">
-                                    <div class="featured-card-media">
-                                        <img src="<?= htmlspecialchars($category['cover']) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
-                                    </div>
-                                    <div class="featured-card-overlay">
-                                        <a class="post-tag post-tag-<?= htmlspecialchars($category['tag_class']) ?>" href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => $post['category']])) ?>">
-                                            <?= htmlspecialchars($category['name']) ?>
+    <?php if (!empty($settings['show_featured'])): ?>
+        <section class="hero-home">
+            <div class="container">
+                <div class="hero-home-panel hero-carousel" data-carousel>
+                    <div class="hero-carousel-viewport">
+                        <div class="hero-carousel-track" data-carousel-track>
+                            <?php foreach ($featuredSlides as $index => $post): ?>
+                                <?php $category = $categories[$post['category']]; ?>
+                                <section class="hero-carousel-slide<?= $index === 0 ? ' is-active' : '' ?>" data-carousel-slide>
+                                    <article class="featured-card featured-card-hero">
+                                        <a class="featured-card-media" href="<?= htmlspecialchars($routeUrl('publicacao', ['slug' => $post['slug']])) ?>">
+                                            <img src="<?= htmlspecialchars($category['cover']) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
                                         </a>
-                                        <h2><?= htmlspecialchars($post['title']) ?></h2>
-                                        <p><?= htmlspecialchars($post['excerpt']) ?></p>
-                                        <div class="post-meta">
-                                            <span><?= htmlspecialchars($post['author']) ?></span>
-                                            <span><?= htmlspecialchars($post['date']) ?></span>
+                                        <div class="featured-card-overlay">
+                                            <a class="post-tag post-tag-<?= htmlspecialchars($category['tag_class']) ?>" href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => $post['category']])) ?>">
+                                                <?= htmlspecialchars($category['name']) ?>
+                                            </a>
+                                            <h2><a href="<?= htmlspecialchars($routeUrl('publicacao', ['slug' => $post['slug']])) ?>"><?= htmlspecialchars($post['title']) ?></a></h2>
+                                            <p><?= htmlspecialchars($post['excerpt']) ?></p>
+                                            <div class="post-meta">
+                                                <span><?= htmlspecialchars($post['author']) ?></span>
+                                                <span><?= htmlspecialchars($post['date']) ?></span>
+                                            </div>
                                         </div>
-                                    </div>
-                                </article>
-                            </section>
-                        <?php endforeach; ?>
+                                    </article>
+                                </section>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
-                </div>
 
-                <div class="hero-carousel-controls">
-                    <button type="button" class="hero-carousel-arrow" data-carousel-prev aria-label="Slide anterior">
-                        &larr;
-                    </button>
-                    <div class="hero-carousel-dots">
-                        <?php foreach ($featuredSlides as $index => $slide): ?>
-                            <button type="button" class="hero-carousel-dot<?= $index === 0 ? ' is-active' : '' ?>" data-carousel-dot="<?= $index ?>" aria-label="Ir para o slide <?= $index + 1 ?>"></button>
-                        <?php endforeach; ?>
+                    <div class="hero-carousel-controls">
+                        <button type="button" class="hero-carousel-arrow" data-carousel-prev aria-label="Slide anterior">
+                            &larr;
+                        </button>
+                        <div class="hero-carousel-dots">
+                            <?php foreach ($featuredSlides as $index => $slide): ?>
+                                <button type="button" class="hero-carousel-dot<?= $index === 0 ? ' is-active' : '' ?>" data-carousel-dot="<?= $index ?>" aria-label="Ir para o slide <?= $index + 1 ?>"></button>
+                            <?php endforeach; ?>
+                        </div>
+                        <button type="button" class="hero-carousel-arrow" data-carousel-next aria-label="Próximo slide">
+                            &rarr;
+                        </button>
                     </div>
-                    <button type="button" class="hero-carousel-arrow" data-carousel-next aria-label="Próximo slide">
-                        &rarr;
-                    </button>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    <?php endif; ?>
 
     <section class="headline-strip">
         <div class="container">
@@ -65,57 +80,62 @@ include __DIR__ . '/../partials/header.php';
         </div>
     </section>
 
-    <section class="latest-section">
-        <div class="container">
-            <div class="section-heading">
-                <h3>Últimas Publicações</h3>
-                <a href="<?= htmlspecialchars($routeUrl('home')) ?>#todas">Ver todas</a>
-            </div>
+    <?php if (!empty($settings['show_latest'])): ?>
+        <section class="latest-section">
+            <div class="container">
+                <div class="section-heading">
+                    <h3>Últimas Publicações</h3>
+                    <a href="<?= htmlspecialchars($routeUrl('publicacoes')) ?>">Ver todas</a>
+                </div>
 
-            <div class="post-grid" id="todas">
-                <?php foreach ($latestPosts as $post): ?>
-                    <?php $category = $categories[$post['category']]; ?>
-                    <article class="news-card">
-                        <div class="news-card-media">
-                            <img src="<?= htmlspecialchars($category['cover']) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
-                        </div>
-                        <div class="news-card-body">
-                            <a class="post-tag post-tag-<?= htmlspecialchars($category['tag_class']) ?>" href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => $post['category']])) ?>">
-                                <?= htmlspecialchars($category['name']) ?>
+                <div class="post-grid" id="todas">
+                    <?php foreach ($latestPosts as $post): ?>
+                        <?php $category = $categories[$post['category']]; ?>
+                        <article class="news-card">
+                            <a class="news-card-media" href="<?= htmlspecialchars($routeUrl('publicacao', ['slug' => $post['slug']])) ?>">
+                                <img src="<?= htmlspecialchars($category['cover']) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
                             </a>
-                            <h4><?= htmlspecialchars($post['title']) ?></h4>
-                            <p><?= htmlspecialchars($post['excerpt']) ?></p>
-                            <div class="post-meta">
-                                <span><?= htmlspecialchars($post['author']) ?></span>
-                                <span><?= htmlspecialchars($post['date']) ?></span>
+                            <div class="news-card-body">
+                                <a class="post-tag post-tag-<?= htmlspecialchars($category['tag_class']) ?>" href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => $post['category']])) ?>">
+                                    <?= htmlspecialchars($category['name']) ?>
+                                </a>
+                                <h4><a href="<?= htmlspecialchars($routeUrl('publicacao', ['slug' => $post['slug']])) ?>"><?= htmlspecialchars($post['title']) ?></a></h4>
+                                <p><?= htmlspecialchars($post['excerpt']) ?></p>
+                                <div class="post-meta">
+                                    <span><?= htmlspecialchars($post['author']) ?></span>
+                                    <span><?= htmlspecialchars($post['date']) ?></span>
+                                </div>
                             </div>
-                        </div>
-                    </article>
-                <?php endforeach; ?>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    <?php endif; ?>
 
-    <section class="categories-section">
-        <div class="container">
-            <div class="section-heading">
-                <h3>Explore por Categoria</h3>
-            </div>
+    <?php if (!empty($settings['show_categories'])): ?>
+        <section class="categories-section">
+            <div class="container">
+                <div class="section-heading">
+                    <h3>Explore por Categoria</h3>
+                </div>
 
-            <div class="category-grid">
-                <?php foreach ($categories as $slug => $category): ?>
-                    <a class="category-card accent-<?= htmlspecialchars($category['accent']) ?>" href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => $slug])) ?>">
-                        <span class="category-name"><?= htmlspecialchars($category['name']) ?></span>
-                        <p><?= htmlspecialchars($category['description']) ?></p>
-                        <div class="category-meta">
-                            <span><?= htmlspecialchars($category['count_label']) ?></span>
-                            <span>&rarr;</span>
-                        </div>
-                    </a>
-                <?php endforeach; ?>
+                <div class="category-grid">
+                    <?php foreach ($categories as $slug => $category): ?>
+                        <?php $categoryPostsCount = $postsCountByCategory[$slug] ?? 0; ?>
+                        <a class="category-card accent-<?= htmlspecialchars($category['accent']) ?>" href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => $slug])) ?>">
+                            <span class="category-name"><?= htmlspecialchars($category['name']) ?></span>
+                            <p><?= htmlspecialchars($category['description']) ?></p>
+                            <div class="category-meta">
+                                <span><?= htmlspecialchars($categoryPostsCount . ' ' . ($categoryPostsCount === 1 ? 'publicação' : 'publicações')) ?></span>
+                                <span>&rarr;</span>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    <?php endif; ?>
 </div>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>

@@ -1,55 +1,104 @@
-<?php include __DIR__ . '/../../partials/header.php'; ?>
+<?php
+$portalData = $portalData ?? require __DIR__ . '/../../../Data/portal_content.php';
+$users = $portalData['users'];
 
-<div class="container" style="margin-top: 30px; max-width: 900px;">
-    <nav class="breadcrumb" style="margin-bottom: 20px; font-size: 0.9rem;">
-        <a href="index.php?url=admin/usuarios" style="text-decoration: none; color: #3498db;">👥 Gerenciar Equipe</a> 
-        <span style="margin: 0 10px; color: #bdc3c7;">&raquo;</span> 
-        <span style="font-weight: bold; color: #2c3e50;">Novo Integrante</span>
-    </nav>
+$activeUsers = 0;
+$adminUsers = 0;
+$editorUsers = 0;
+foreach ($users as $teamUser) {
+    if (($teamUser['status'] ?? '') === 'Ativo') {
+        $activeUsers++;
+    }
+    if (($teamUser['papel'] ?? '') === 'Administrador') {
+        $adminUsers++;
+    } else {
+        $editorUsers++;
+    }
+}
 
-    <section style="background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #edf2f7;">
-        <div style="border-bottom: 2px solid #f1f3f5; margin-bottom: 30px; padding-bottom: 10px;">
-            <h2 style="color: #2c3e50; margin: 0;">Cadastrar Usuário</h2>
-            <p style="color: #95a5a6; font-size: 0.9rem;">Adicione novos administradores ou editores para o portal.</p>
+include __DIR__ . '/../../partials/header.php';
+?>
+
+<section class="admin-page-shell" data-admin-users-page>
+    <header class="admin-page-header">
+        <div>
+            <h1>Usuários da Equipe</h1>
+            <div class="admin-breadcrumb">Painel <span>&rsaquo;</span> Usuários</div>
         </div>
+        <a href="<?= htmlspecialchars($routeUrl('admin/usuarios/novo')) ?>" class="admin-primary-button">+ Novo usuário</a>
+    </header>
 
-        <form action="index.php?url=admin/usuarios/salvar" method="POST">
-            
-            <div style="margin-bottom: 25px;">
-                <label for="nome" style="display: block; font-weight: 600; color: #34495e; margin-bottom: 8px;">Nome Completo</label>
-                <input type="text" name="nome" id="nome" placeholder="Ex: Julio Silva"
-                       style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem;">
-            </div>
+    <div class="admin-toolbar">
+        <label class="admin-search">
+            <span>&#8981;</span>
+            <input type="search" placeholder="Buscar usuário..." data-admin-users-search>
+        </label>
+    </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
-                <div>
-                    <label for="email" style="display: block; font-weight: 600; color: #34495e; margin-bottom: 8px;">E-mail Acadêmico/Profissional</label>
-                    <input type="email" name="email" id="email" placeholder="julio@utfpr.edu.br"
-                           style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem;">
-                </div>
-                <div>
-                    <label for="papel" style="display: block; font-weight: 600; color: #34495e; margin-bottom: 8px;">Papel (Nível de Acesso)</label>
-                    <select name="papel" id="papel" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; background: white;">
-                        <option value="editor">Editor (Cria posts)</option>
-                        <option value="admin">Administrador (Acesso total)</option>
-                    </select>
-                </div>
-            </div>
+    <div class="admin-stats-grid admin-stats-grid-4">
+        <article class="admin-stat-card">
+            <strong><?= count($users) ?></strong>
+            <span>Total</span>
+        </article>
+        <article class="admin-stat-card admin-stat-card-success">
+            <strong><?= $activeUsers ?></strong>
+            <span>Ativos</span>
+        </article>
+        <article class="admin-stat-card admin-stat-card-accent">
+            <strong><?= $adminUsers ?></strong>
+            <span>Admins</span>
+        </article>
+        <article class="admin-stat-card admin-stat-card-info">
+            <strong><?= $editorUsers ?></strong>
+            <span>Editores</span>
+        </article>
+    </div>
 
-            <div style="margin-bottom: 30px;">
-                <label for="senha" style="display: block; font-weight: 600; color: #34495e; margin-bottom: 8px;">Senha Temporária</label>
-                <input type="password" name="senha" id="senha" placeholder="No mínimo 6 caracteres"
-                       style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem;">
-            </div>
+    <p class="admin-results-copy" data-admin-users-count><?= count($users) ?> usuários encontrados</p>
 
-            <div style="display: flex; justify-content: flex-end; gap: 15px; border-top: 2px solid #f1f3f5; padding-top: 25px;">
-                <a href="index.php?url=admin/usuarios" style="padding: 12px 25px; color: #7f8c8d; text-decoration: none; font-weight: 600;">Cancelar</a>
-                <button type="submit" class="btn-primary" style="padding: 12px 35px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem;">
-                    Salvar Usuário
-                </button>
-            </div>
-        </form>
+    <section class="admin-table-card" data-admin-users-page-size="5">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Usuário</th>
+                    <th>Papel</th>
+                    <th>Status</th>
+                    <th>Criado em</th>
+                    <th class="admin-table-actions">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($users as $teamUser): ?>
+                    <?php
+                    $parts = preg_split('/\s+/', trim($teamUser['nome'])) ?: [];
+                    $initials = strtoupper(substr($parts[0] ?? 'U', 0, 1) . substr($parts[1] ?? '', 0, 1));
+                    $roleClass = ($teamUser['papel'] ?? '') === 'Administrador' ? 'admin-badge-accent' : 'admin-badge-info';
+                    $statusClass = ($teamUser['status'] ?? '') === 'Ativo' ? 'admin-badge-success' : 'admin-badge-muted';
+                    ?>
+                    <tr data-admin-user-row data-name="<?= htmlspecialchars(strtolower($teamUser['nome'])) ?>" data-email="<?= htmlspecialchars(strtolower($teamUser['email'])) ?>" data-role="<?= htmlspecialchars(strtolower($teamUser['papel'])) ?>" data-status="<?= htmlspecialchars(strtolower($teamUser['status'])) ?>">
+                        <td>
+                            <div class="admin-table-user">
+                                <span class="admin-user-avatar"><?= htmlspecialchars($initials) ?></span>
+                                <div>
+                                    <strong><?= htmlspecialchars($teamUser['nome']) ?></strong>
+                                    <span><?= htmlspecialchars($teamUser['email']) ?></span>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="admin-badge <?= $roleClass ?>"><?= htmlspecialchars($teamUser['papel']) ?></span></td>
+                        <td><span class="admin-badge <?= $statusClass ?>"><?= htmlspecialchars($teamUser['status']) ?></span></td>
+                        <td><?= htmlspecialchars($teamUser['created_at'] ?? '—') ?></td>
+                        <td class="admin-table-actions">
+                            <a href="<?= htmlspecialchars($routeUrl('admin/usuarios/editar', ['id' => $teamUser['id']])) ?>" class="admin-icon-action" aria-label="Editar">✎</a>
+                            <a href="<?= htmlspecialchars($routeUrl('admin/usuarios/excluir', ['id' => $teamUser['id']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir este usuário?')">🗑</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     </section>
-</div>
+
+    <div class="admin-pagination" data-admin-users-pagination></div>
+</section>
 
 <?php include __DIR__ . '/../../partials/footer.php'; ?>

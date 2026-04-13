@@ -1,73 +1,108 @@
-<?php include __DIR__ . '/../../partials/header.php'; ?>
+<?php
+$portalData = $portalData ?? require __DIR__ . '/../../../Data/portal_content.php';
+$categories = $portalData['categories'];
+$postId = (int) ($_GET['id'] ?? 0);
+$editingPost = null;
+foreach ($portalData['posts'] as $postItem) {
+    if ((int) ($postItem['id'] ?? 0) === $postId) {
+        $editingPost = $postItem;
+        break;
+    }
+}
+include __DIR__ . '/../../partials/header.php';
+?>
 
-<div class="container" style="margin-top: 30px; max-width: 900px;">
-    <nav class="breadcrumb" style="margin-bottom: 20px; font-size: 0.9rem;">
-        <a href="index.php?url=admin/posts" style="text-decoration: none; color: #3498db;">📋 Gerenciar Posts</a> 
-        <span style="margin: 0 10px; color: #bdc3c7;">&raquo;</span> 
-        <span style="font-weight: bold; color: #2c3e50;">Nova Postagem</span>
-    </nav>
-
-    <section style="background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #edf2f7;">
-        <div style="border-bottom: 2px solid #f1f3f5; margin-bottom: 30px; padding-bottom: 10px;">
-            <h2 style="color: #2c3e50; margin: 0;">Criar Nova Publicação</h2>
-            <p style="color: #95a5a6; font-size: 0.9rem;">Preencha os campos abaixo para publicar um novo artigo no portal.</p>
+<section class="admin-page-shell admin-form-shell">
+    <div class="admin-modal-card admin-modal-card-lg">
+        <div class="admin-modal-header">
+            <div>
+                <h1><?= $editingPost ? 'Editar publicação' : 'Nova publicação' ?></h1>
+                <p><?= $editingPost ? 'Atualize a matéria selecionada.' : 'Crie uma matéria usando os dados dinâmicos do portal.' ?></p>
+            </div>
+            <a href="<?= htmlspecialchars($routeUrl('admin/posts')) ?>" class="admin-modal-close">&times;</a>
         </div>
 
-        <form action="index.php?url=admin/posts/salvar" method="POST">
-            
-            <div style="margin-bottom: 25px;">
-                <label for="titulo" style="display: block; font-weight: 600; color: #34495e; margin-bottom: 8px;">Título da Postagem</label>
-                <input type="text" name="titulo" id="titulo" 
-                       placeholder="Ex: As novidades do PHP em 2026"
-                       style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s;"
-                       value="<?= $_SESSION['old']['titulo'] ?? '' ?>" required>
-                <?php if(isset($_SESSION['erros']['titulo'])): ?>
-                    <small style="color: #e74c3c; font-weight: bold;"><?= $_SESSION['erros']['titulo'] ?></small>
-                <?php endif; ?>
-            </div>
+        <div class="admin-tab-nav">
+            <button type="button" class="admin-tab-button" data-admin-tab="informacoes">Informações</button>
+            <button type="button" class="admin-tab-button" data-admin-tab="conteudo">Conteúdo</button>
+        </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
-                <div>
-                    <label for="categoria" style="display: block; font-weight: 600; color: #34495e; margin-bottom: 8px;">Categoria</label>
-                    <select name="categoria" id="categoria" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; background: white;">
-                        <option value="">Selecione uma categoria...</option>
-                        <option value="Tecnologia">Tecnologia</option>
-                        <option value="Design">Design</option>
-                        <option value="Educação">Educação</option>
-                        <option value="Geral">Geral</option>
+        <form action="<?= htmlspecialchars($routeUrl('admin/posts/salvar')) ?>" method="POST" class="admin-form-grid">
+            <input type="hidden" name="id" value="<?= htmlspecialchars((string) ($editingPost['id'] ?? 0)) ?>">
+            <div class="admin-tab-pane is-active" data-admin-pane="informacoes">
+                <div class="admin-field admin-field-full">
+                    <label for="titulo">Título *</label>
+                    <input type="text" name="titulo" id="titulo" placeholder="Título da publicação" value="<?= htmlspecialchars($_SESSION['old']['titulo'] ?? ($editingPost['title'] ?? '')) ?>" required>
+                </div>
+
+                <div class="admin-field admin-field-full">
+                    <label for="slug">Slug *</label>
+                    <input type="text" name="slug" id="slug" placeholder="url-da-publicacao" value="<?= htmlspecialchars($_SESSION['old']['slug'] ?? ($editingPost['slug'] ?? '')) ?>">
+                    <small>URL: `/publicacao/...`</small>
+                </div>
+
+                <div class="admin-field admin-field-full">
+                    <label for="resumo">Resumo *</label>
+                    <textarea name="resumo" id="resumo" rows="4" placeholder="Breve descrição da publicação (aparece nos cards)"><?= htmlspecialchars($_SESSION['old']['resumo'] ?? ($editingPost['excerpt'] ?? '')) ?></textarea>
+                </div>
+
+                <div class="admin-field">
+                    <label for="categoria">Categoria *</label>
+                    <select name="categoria" id="categoria">
+                        <?php foreach ($categories as $slug => $postCategory): ?>
+                            <option value="<?= htmlspecialchars($slug) ?>" <?= ($_SESSION['old']['categoria'] ?? ($editingPost['category'] ?? '')) === $slug ? 'selected' : '' ?>><?= htmlspecialchars($postCategory['name']) ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
-                <div>
-                    <label for="status" style="display: block; font-weight: 600; color: #34495e; margin-bottom: 8px;">Status de Publicação</label>
-                    <select name="status" id="status" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; background: white;">
-                        <option value="Rascunho">Rascunho (Privado)</option>
-                        <option value="Publicado">Publicado (Visível)</option>
+
+                <div class="admin-field">
+                    <label for="status">Status *</label>
+                    <select name="status" id="status">
+                        <option value="Rascunho" <?= ($_SESSION['old']['status'] ?? ($editingPost['status'] ?? '')) === 'Rascunho' ? 'selected' : '' ?>>Rascunho</option>
+                        <option value="Publicado" <?= ($_SESSION['old']['status'] ?? ($editingPost['status'] ?? '')) === 'Publicado' ? 'selected' : '' ?>>Publicado</option>
                     </select>
+                </div>
+
+                <div class="admin-field">
+                    <label for="autor">Autor *</label>
+                    <input type="text" name="autor" id="autor" placeholder="Nome do autor" value="<?= htmlspecialchars($_SESSION['old']['autor'] ?? ($editingPost['author'] ?? ($_SESSION['usuario_nome'] ?? 'Administrador'))) ?>">
+                </div>
+
+                <div class="admin-field">
+                    <label for="data_publicacao">Data de publicação *</label>
+                    <input type="text" name="data_publicacao" id="data_publicacao" placeholder="25/03/2026" value="<?= htmlspecialchars($_SESSION['old']['data_publicacao'] ?? ($editingPost['date'] ?? '')) ?>">
+                </div>
+
+                <div class="admin-field admin-field-full">
+                    <label for="cover">URL da imagem de capa</label>
+                    <input type="text" name="cover" id="cover" placeholder="https://..." value="<?= htmlspecialchars($_SESSION['old']['cover'] ?? ($editingPost['cover'] ?? '')) ?>">
+                </div>
+
+                <label class="admin-checkbox-line admin-field-full">
+                    <input type="checkbox" name="featured" value="1" <?= !empty($_SESSION['old']['featured'] ?? $editingPost['featured'] ?? false) ? 'checked' : '' ?>>
+                    <span>Marcar como publicação em destaque na Home</span>
+                </label>
+            </div>
+
+            <div class="admin-tab-pane" data-admin-pane="conteudo">
+                <div class="admin-field admin-field-full">
+                    <label for="conteudo">Conteúdo *</label>
+                    <textarea name="conteudo" id="conteudo" rows="14" placeholder="Escreva aqui o texto da publicação..." required><?= htmlspecialchars($_SESSION['old']['conteudo'] ?? ($editingPost['content'] ?? '')) ?></textarea>
                 </div>
             </div>
 
-            <div style="margin-bottom: 30px;">
-                <label for="conteudo" style="display: block; font-weight: 600; color: #34495e; margin-bottom: 8px;">Conteúdo do Artigo</label>
-                <textarea name="conteudo" id="conteudo" rows="12" 
-                          placeholder="Comece a escrever seu texto aqui..."
-                          style="width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 1rem; resize: vertical;"><?= $_SESSION['old']['conteudo'] ?? '' ?></textarea>
-            </div>
-
-            <div style="display: flex; justify-content: flex-end; gap: 15px; border-top: 2px solid #f1f3f5; padding-top: 25px;">
-                <a href="index.php?url=admin/posts" style="padding: 12px 25px; color: #7f8c8d; text-decoration: none; font-weight: 600; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='transparent'">
-                    Cancelar
-                </a>
-                <button type="submit" class="btn-primary" style="padding: 12px 35px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);">
-                    Publicar Postagem
-                </button>
+            <div class="admin-form-actions admin-form-actions-spread">
+                <button type="button" class="admin-link-button" data-admin-switch="conteudo">Ir para Conteúdo</button>
+                <div class="admin-form-actions-inline">
+                    <a href="<?= htmlspecialchars($routeUrl('admin/posts')) ?>" class="admin-secondary-button">Cancelar</a>
+                    <button type="submit" class="admin-primary-button"><?= $editingPost ? 'Salvar publicação' : 'Criar publicação' ?></button>
+                </div>
             </div>
         </form>
-    </section>
-</div>
+    </div>
+</section>
 
-<?php 
-// Limpa os dados temporários para não aparecerem em uma nova visita
-unset($_SESSION['erros']);
-unset($_SESSION['old']);
-include __DIR__ . '/../../partials/footer.php'; 
+<?php
+unset($_SESSION['erros'], $_SESSION['old']);
+include __DIR__ . '/../../partials/footer.php';
 ?>

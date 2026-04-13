@@ -1,31 +1,56 @@
-<?php include __DIR__ . '/../partials/header.php'; ?>
-
-<section class="container-admin" style="max-width: 420px; margin: 0 auto;">
-    <h2>Acesso administrativo</h2>
-    <p>Esta tela permanece exclusiva para a equipe editorial.</p>
-
-    <form action="<?= htmlspecialchars($routeUrl('processar-login')) ?>" method="POST">
-        <div class="form-group">
-            <label for="email">E-mail de usuário</label>
-            <input type="email" name="email" id="email" class="form-control" placeholder="admin@admin.com" value="<?= htmlspecialchars($_SESSION['old']['email'] ?? '') ?>">
-            <?php if (isset($_SESSION['erros']['email'])): ?>
-                <small class="field-error"><?= htmlspecialchars($_SESSION['erros']['email']) ?></small>
-            <?php endif; ?>
-        </div>
-
-        <div class="form-group">
-            <label for="senha">Senha</label>
-            <input type="password" name="senha" id="senha" class="form-control" placeholder="123456">
-            <?php if (isset($_SESSION['erros']['senha'])): ?>
-                <small class="field-error"><?= htmlspecialchars($_SESSION['erros']['senha']) ?></small>
-            <?php endif; ?>
-        </div>
-
-        <button type="submit" class="btn-secondary">Entrar no painel</button>
-    </form>
-</section>
-
 <?php
-unset($_SESSION['erros'], $_SESSION['old']);
-include __DIR__ . '/../partials/footer.php';
+$oldAdmin = $_SESSION['old'] ?? [];
+$adminErrors = $_SESSION['erros'] ?? [];
 ?>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - O Editorial</title>
+    <link rel="stylesheet" href="<?= htmlspecialchars($assetUrl('css/style.css')) ?>">
+</head>
+<body>
+<div class="admin-login-page">
+    <div class="admin-login-brand">
+        <span class="admin-login-badge">OE</span>
+        <h1>O Editorial</h1>
+        <p>Painel Administrativo</p>
+    </div>
+
+    <div class="admin-login-card">
+        <div class="admin-login-card-head">
+            <strong>Acesso Restrito</strong>
+            <span>Somente membros da equipe</span>
+        </div>
+
+        <form action="<?= htmlspecialchars($routeUrl('processar-login')) ?>" method="POST" class="admin-login-form">
+            <div class="admin-field admin-field-full">
+                <label for="email">E-mail da equipe</label>
+                <input type="email" name="email" id="email" placeholder="admin@oeditorial.com.br" value="<?= htmlspecialchars($oldAdmin['email'] ?? 'admin@admin.com') ?>">
+                <?php if (isset($adminErrors['email'])): ?>
+                    <small class="field-error"><?= htmlspecialchars($adminErrors['email']) ?></small>
+                <?php endif; ?>
+            </div>
+
+            <div class="admin-field admin-field-full">
+                <label for="senha">Senha</label>
+                <input type="password" name="senha" id="senha" placeholder="123456">
+            </div>
+
+            <div class="admin-login-row">
+                <label><input type="checkbox" checked> Lembrar acesso</label>
+                <a href="<?= htmlspecialchars($routeUrl('admin/login')) ?>">Esqueci</a>
+            </div>
+
+            <button type="submit" class="admin-dark-button admin-dark-button-full">Entrar no Painel</button>
+
+            <div class="admin-inline-alert">Demo: use `admin@admin.com` e senha `123456`.</div>
+        </form>
+    </div>
+
+    <a href="<?= htmlspecialchars($routeUrl('home')) ?>" class="admin-login-back">&larr; Voltar ao site público</a>
+</div>
+</body>
+</html>
+<?php unset($_SESSION['erros'], $_SESSION['old']); ?>

@@ -1,38 +1,87 @@
-<?php include __DIR__ . '/../../partials/header.php'; ?>
+<?php
+$portalData = $portalData ?? require __DIR__ . '/../../../Data/portal_content.php';
+$categories = $portalData['categories'];
+$accentLabels = [
+    'tech' => 'Indigo',
+    'politics' => 'Vermelho',
+    'science' => 'Esmeralda',
+    'green' => 'Verde',
+    'culture' => 'Roxo',
+];
+include __DIR__ . '/../../partials/header.php';
+?>
 
-<div class="container" style="margin-top: 30px;">
-    <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px;">
+<section class="admin-page-shell" data-admin-categories-page data-admin-categories-page-size="4">
+    <header class="admin-page-header">
         <div>
-            <h2 style="margin: 0; color: #2c3e50;">Categorias</h2>
-            <p style="margin: 5px 0 0; color: #95a5a6;">Organize os assuntos do seu portal.</p>
+            <h1>Categorias</h1>
+            <div class="admin-breadcrumb">Painel <span>&rsaquo;</span> Categorias</div>
         </div>
-        <form action="index.php?url=admin/categorias/salvar" method="POST" style="display: flex; gap: 10px;">
-            <input type="text" name="nome" placeholder="Nova Categoria..." style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
-            <button type="submit" class="btn-primary" style="padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">Adicionar</button>
-        </form>
+        <a href="<?= htmlspecialchars($routeUrl('admin/categorias/novo')) ?>" class="admin-primary-button">+ Nova categoria</a>
+    </header>
+
+    <div class="admin-toolbar">
+        <label class="admin-search">
+            <span>&#8981;</span>
+            <input type="search" placeholder="Buscar categoria..." data-admin-categories-search>
+        </label>
     </div>
 
-    <div style="background: #fff; border-radius: 8px; shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden;">
-        <table style="width: 100%; border-collapse: collapse;">
+    <div class="admin-category-grid">
+        <?php foreach ($categories as $adminCategory): ?>
+            <article class="admin-category-card" data-admin-category-card data-name="<?= htmlspecialchars(strtolower($adminCategory['name'])) ?>" data-slug="<?= htmlspecialchars(strtolower($adminCategory['slug'])) ?>" data-description="<?= htmlspecialchars(strtolower($adminCategory['description'])) ?>">
+                <div class="admin-category-card-head">
+                    <div class="admin-category-label-wrap">
+                        <span class="admin-category-dot accent-<?= htmlspecialchars($adminCategory['accent']) ?>"></span>
+                        <span class="post-tag post-tag-<?= htmlspecialchars($adminCategory['tag_class']) ?>"><?= htmlspecialchars($adminCategory['name']) ?></span>
+                    </div>
+                    <div class="admin-card-actions">
+                        <a href="<?= htmlspecialchars($routeUrl('admin/categorias/editar', ['slug' => $adminCategory['slug']])) ?>" class="admin-icon-action" aria-label="Editar">✎</a>
+                        <a href="<?= htmlspecialchars($routeUrl('admin/categorias/excluir', ['slug' => $adminCategory['slug']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir esta categoria?')">🗑</a>
+                    </div>
+                </div>
+                <p><?= htmlspecialchars($adminCategory['description']) ?></p>
+                <div class="admin-category-meta">
+                    <code><?= htmlspecialchars($adminCategory['slug']) ?></code>
+                    <span><?= htmlspecialchars($adminCategory['count'] ?? 0) ?> posts</span>
+                </div>
+                <small>Cor: <?= htmlspecialchars($accentLabels[$adminCategory['accent']] ?? $adminCategory['accent']) ?></small>
+            </article>
+        <?php endforeach; ?>
+    </div>
+
+    <p class="admin-results-copy" data-admin-categories-count><?= count($categories) ?> categorias encontradas</p>
+
+    <section class="admin-table-card">
+        <div class="admin-section-title">Listagem completa</div>
+        <table class="admin-table">
             <thead>
-                <tr style="background: #f8f9fa; text-align: left; border-bottom: 2px solid #eee;">
-                    <th style="padding: 15px;">ID</th>
-                    <th style="padding: 15px;">Nome da Categoria</th>
-                    <th style="padding: 15px; text-align: center;">Ações</th>
+                <tr>
+                    <th>Nome</th>
+                    <th>Slug</th>
+                    <th>Descrição</th>
+                    <th>Posts</th>
+                    <th class="admin-table-actions">Ações</th>
                 </tr>
             </thead>
             <tbody>
-                <tr style="border-bottom: 1px solid #f1f1f1;">
-                    <td style="padding: 15px;">1</td>
-                    <td style="padding: 15px; font-weight: bold;">Tecnologia</td>
-                    <td style="padding: 15px; text-align: center;">
-                        <a href="#" style="color: #3498db; text-decoration: none; margin-right: 10px;">Editar</a>
-                        <a href="#" style="color: #e74c3c; text-decoration: none;">Excluir</a>
-                    </td>
-                </tr>
+                <?php foreach ($categories as $adminCategory): ?>
+                    <tr data-admin-category-row data-name="<?= htmlspecialchars(strtolower($adminCategory['name'])) ?>" data-slug="<?= htmlspecialchars(strtolower($adminCategory['slug'])) ?>" data-description="<?= htmlspecialchars(strtolower($adminCategory['description'])) ?>">
+                        <td><span class="post-tag post-tag-<?= htmlspecialchars($adminCategory['tag_class']) ?>"><?= htmlspecialchars($adminCategory['name']) ?></span></td>
+                        <td><code><?= htmlspecialchars($adminCategory['slug']) ?></code></td>
+                        <td><?= htmlspecialchars($adminCategory['description']) ?></td>
+                        <td><?= htmlspecialchars((string) ($adminCategory['count'] ?? 0)) ?></td>
+                        <td class="admin-table-actions">
+                            <a href="<?= htmlspecialchars($routeUrl('admin/categorias/editar', ['slug' => $adminCategory['slug']])) ?>" class="admin-icon-action" aria-label="Editar">✎</a>
+                            <a href="<?= htmlspecialchars($routeUrl('admin/categorias/excluir', ['slug' => $adminCategory['slug']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir esta categoria?')">🗑</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
-    </div>
-</div>
+    </section>
+
+    <div class="admin-pagination" data-admin-categories-pagination></div>
+</section>
 
 <?php include __DIR__ . '/../../partials/footer.php'; ?>
