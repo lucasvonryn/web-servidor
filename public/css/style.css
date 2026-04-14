@@ -54,7 +54,7 @@ a {
 }
 
 .page-main {
-    padding: 0 0 64px;
+    /* padding: 0 0 64px; */
 }
 
 .public-topbar {
@@ -2091,12 +2091,12 @@ a {
     color: #1b2742;
 }
 
-.section-heading h3::before {
+/* .section-heading h3::before {
     content: "◔";
     margin-right: 8px;
     color: #5b5fff;
     font-size: 0.9rem;
-}
+} */
 
 .section-heading a {
     font-size: 0.95rem;

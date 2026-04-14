@@ -135,14 +135,14 @@ foreach ($portalComments as $adminCommentItem) {
     </header>
 <?php endif; ?>
 
-    <div class="container feedback-area">
-        <?php if (isset($_SESSION['alerta'])): ?>
+    <?php if (isset($_SESSION['alerta'])): ?>
+        <div class="container feedback-area">
             <div class="alert alert-<?= htmlspecialchars($_SESSION['alerta']['tipo']) ?>">
                 <?= htmlspecialchars($_SESSION['alerta']['mensagem']) ?>
             </div>
             <?php unset($_SESSION['alerta']); ?>
-        <?php endif; ?>
-    </div>
+        </div>
+    <?php endif; ?>
 
     <div class="content-shell">
         <main class="<?= $isAdminArea && !$isAdminLogin ? 'admin-main' : ($isAdminArea ? 'admin-auth-main' : 'page-main') ?>">
