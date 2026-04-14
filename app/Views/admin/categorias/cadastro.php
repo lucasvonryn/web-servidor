@@ -36,11 +36,11 @@ include __DIR__ . '/../../partials/header.php';
             <div class="admin-field admin-field-full">
                 <label for="accent">Cor de destaque *</label>
                 <div class="admin-accent-grid">
-                    <label class="admin-accent-option"><input type="radio" name="accent" value="tech" <?= ($editingCategory['accent'] ?? 'tech') === 'tech' ? 'checked' : '' ?>> <span>Indigo</span></label>
-                    <label class="admin-accent-option"><input type="radio" name="accent" value="politics" <?= ($editingCategory['accent'] ?? '') === 'politics' ? 'checked' : '' ?>> <span>Vermelho</span></label>
-                    <label class="admin-accent-option"><input type="radio" name="accent" value="science" <?= ($editingCategory['accent'] ?? '') === 'science' ? 'checked' : '' ?>> <span>Esmeralda</span></label>
-                    <label class="admin-accent-option"><input type="radio" name="accent" value="green" <?= ($editingCategory['accent'] ?? '') === 'green' ? 'checked' : '' ?>> <span>Verde</span></label>
-                    <label class="admin-accent-option"><input type="radio" name="accent" value="culture" <?= ($editingCategory['accent'] ?? '') === 'culture' ? 'checked' : '' ?>> <span>Roxo</span></label>
+                    <label class="admin-accent-option"><input type="radio" name="accent" value="tecnologia" <?= ($editingCategory['accent'] ?? 'tecnologia') === 'tecnologia' ? 'checked' : '' ?>> <span>Indigo</span></label>
+                    <label class="admin-accent-option"><input type="radio" name="accent" value="politica" <?= ($editingCategory['accent'] ?? '') === 'politica' ? 'checked' : '' ?>> <span>Vermelho</span></label>
+                    <label class="admin-accent-option"><input type="radio" name="accent" value="ciencia" <?= ($editingCategory['accent'] ?? '') === 'ciencia' ? 'checked' : '' ?>> <span>Esmeralda</span></label>
+                    <label class="admin-accent-option"><input type="radio" name="accent" value="verde" <?= ($editingCategory['accent'] ?? '') === 'verde' ? 'checked' : '' ?>> <span>Verde</span></label>
+                    <label class="admin-accent-option"><input type="radio" name="accent" value="cultura" <?= ($editingCategory['accent'] ?? '') === 'cultura' ? 'checked' : '' ?>> <span>Roxo</span></label>
                 </div>
             </div>
 
