@@ -23,37 +23,9 @@ include __DIR__ . '/../../partials/header.php';
         </label>
     </div>
 
-    <div class="admin-category-grid">
-        <?php foreach ($categories as $adminCategory): ?>
-            <article class="admin-category-card" data-admin-category-card data-name="<?= htmlspecialchars(strtolower($adminCategory['name'])) ?>" data-slug="<?= htmlspecialchars(strtolower($adminCategory['slug'])) ?>" data-description="<?= htmlspecialchars(strtolower($adminCategory['description'])) ?>">
-                <div class="admin-category-card-head">
-                    <div class="admin-category-label-wrap">
-                        <span class="admin-category-dot accent-<?= htmlspecialchars($adminCategory['accent']) ?>"></span>
-                        <span class="post-tag post-tag-<?= htmlspecialchars($adminCategory['tag_class']) ?>"><?= htmlspecialchars($adminCategory['name']) ?></span>
-                    </div>
-                    <div class="admin-card-actions">
-                        <a href="<?= htmlspecialchars($routeUrl('admin/categorias/editar', ['slug' => $adminCategory['slug']])) ?>" class="admin-icon-action" aria-label="Editar">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        <a href="<?= htmlspecialchars($routeUrl('admin/categorias/excluir', ['slug' => $adminCategory['slug']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir esta categoria?')">
-                            <i class="bi bi-trash"></i>
-                        </a>
-                    </div>
-                </div>
-                <p><?= htmlspecialchars($adminCategory['description']) ?></p>
-                <div class="admin-category-meta">
-                    <code><?= htmlspecialchars($adminCategory['slug']) ?></code>
-                    <span><?= htmlspecialchars($adminCategory['count'] ?? 0) ?> posts</span>
-                </div>
-                <small>Cor: <?= htmlspecialchars($accentLabels[$adminCategory['accent']] ?? $adminCategory['accent']) ?></small>
-            </article>
-        <?php endforeach; ?>
-    </div>
-
     <p class="admin-results-copy" data-admin-categories-count><?= count($categories) ?> categorias encontradas</p>
 
     <section class="admin-table-card">
-        <div class="admin-section-title">Listagem completa</div>
         <table class="admin-table">
             <thead>
                 <tr>

@@ -74,8 +74,6 @@
             <div class="admin-sidebar-label">Menu</div>
 
             <nav class="admin-sidebar-nav">
-                <a href="<?php echo htmlspecialchars($routeUrl('admin/usuarios')) ?>" class="<?php echo str_starts_with($currentRoute, 'admin/usuarios') ? 'is-active' : '' ?>">Usuários</a>
-                <a href="<?php echo htmlspecialchars($routeUrl('admin/categorias')) ?>" class="<?php echo str_starts_with($currentRoute, 'admin/categorias') ? 'is-active' : '' ?>">Categorias</a>
                 <a href="<?php echo htmlspecialchars($routeUrl('admin/posts')) ?>" class="<?php echo str_starts_with($currentRoute, 'admin/posts') ? 'is-active' : '' ?>">Publicações</a>
                 <a href="<?php echo htmlspecialchars($routeUrl('admin/comentarios')) ?>" class="<?php echo str_starts_with($currentRoute, 'admin/comentarios') ? 'is-active' : '' ?>">
                     Comentários
@@ -83,6 +81,8 @@
                         <span class="admin-sidebar-badge"><?php echo $pendingAdminComments ?></span>
                     <?php endif; ?>
                 </a>
+                <a href="<?php echo htmlspecialchars($routeUrl('admin/categorias')) ?>" class="<?php echo str_starts_with($currentRoute, 'admin/categorias') ? 'is-active' : '' ?>">Categorias</a>
+                <a href="<?php echo htmlspecialchars($routeUrl('admin/usuarios')) ?>" class="<?php echo str_starts_with($currentRoute, 'admin/usuarios') ? 'is-active' : '' ?>">Usuários</a>
                 <a href="<?php echo htmlspecialchars($routeUrl('admin/configuracoes')) ?>" class="<?php echo str_starts_with($currentRoute, 'admin/configuracoes') ? 'is-active' : '' ?>">Configurações</a>
             </nav>
 

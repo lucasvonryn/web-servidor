@@ -287,12 +287,13 @@ if (categoriesPage) {
         }
         var term = categoriesSearch ? categoriesSearch.value.trim().toLowerCase() : '';
         var visibleSlugs = [];
+        var searchableItems = categoryCards.length ? categoryCards : categoryRows;
 
-        categoryCards.forEach(function (card) {
-            var haystack = [card.dataset.name, card.dataset.slug, card.dataset.description].join(' ');
+        searchableItems.forEach(function (item) {
+            var haystack = [item.dataset.name, item.dataset.slug, item.dataset.description].join(' ');
             var isVisible = term === '' || haystack.indexOf(term) !== -1;
             if (isVisible) {
-                visibleSlugs.push(card.dataset.slug);
+                visibleSlugs.push(item.dataset.slug);
             }
         });
 
