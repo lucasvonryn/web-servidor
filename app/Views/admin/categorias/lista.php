@@ -2,10 +2,10 @@
 $portalData = $portalData ?? require __DIR__ . '/../../../Data/portal_content.php';
 $categories = $portalData['categories'];
 $accentLabels = [
-    'tecnologia' => 'Indigo',
+    'tech' => 'Indigo',
     'politica' => 'Vermelho',
     'ciencia' => 'Esmeralda',
-    'verde' => 'Verde',
+    'meio-ambiente' => 'Verde',
     'cultura' => 'Roxo',
 ];
 include __DIR__ . '/../../partials/header.php';

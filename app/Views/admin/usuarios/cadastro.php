@@ -54,7 +54,7 @@ include __DIR__ . '/../../partials/header.php';
                 <input type="password" name="senha" id="senha" placeholder="<?= $editingUser ? 'Preencha apenas se quiser redefinir no protótipo' : 'Mínimo de 6 caracteres' ?>" <?= $editingUser ? '' : 'required' ?>>
             </div>
 
-            <div class="admin-inline-alert">Uma senha provisória será enviada apenas no fluxo futuro com banco. No protótipo, ela é usada só para validação de cadastro.</div>
+            <div class="admin-inline-alert">Senha provisória usada só para validação de cadastro.</div>
 
             <div class="admin-form-actions">
                 <a href="<?= htmlspecialchars($routeUrl('admin/usuarios')) ?>" class="admin-secondary-button">Cancelar</a>

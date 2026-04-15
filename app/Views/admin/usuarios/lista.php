@@ -2,14 +2,14 @@
 $portalData = $portalData ?? require __DIR__ . '/../../../Data/portal_content.php';
 $users = $portalData['users'];
 
-$activeUsers = 0;
+$usuariosAtivos = 0;
 $adminUsers = 0;
 $editorUsers = 0;
-foreach ($users as $teamUser) {
-    if (($teamUser['status'] ?? '') === 'Ativo') {
-        $activeUsers++;
+foreach ($users as $usuarioEquipe) {
+    if (($usuarioEquipe['status'] ?? '') === 'Ativo') {
+        $usuariosAtivos++;
     }
-    if (($teamUser['papel'] ?? '') === 'Administrador') {
+    if (($usuarioEquipe['papel'] ?? '') === 'Administrador') {
         $adminUsers++;
     } else {
         $editorUsers++;
@@ -41,7 +41,7 @@ include __DIR__ . '/../../partials/header.php';
             <span>Total</span>
         </article>
         <article class="admin-stat-card admin-stat-card-success">
-            <strong><?= $activeUsers ?></strong>
+            <strong><?= $usuariosAtivos ?></strong>
             <span>Ativos</span>
         </article>
         <article class="admin-stat-card admin-stat-card-accent">
@@ -68,29 +68,29 @@ include __DIR__ . '/../../partials/header.php';
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($users as $teamUser): ?>
+                <?php foreach ($users as $usuarioEquipe): ?>
                     <?php
-                    $parts = preg_split('/\s+/', trim($teamUser['nome'])) ?: [];
-                    $initials = strtoupper(substr($parts[0] ?? 'U', 0, 1) . substr($parts[1] ?? '', 0, 1));
-                    $roleClass = ($teamUser['papel'] ?? '') === 'Administrador' ? 'admin-badge-accent' : 'admin-badge-info';
-                    $statusClass = ($teamUser['status'] ?? '') === 'Ativo' ? 'admin-badge-success' : 'admin-badge-muted';
+                    $partes = preg_split('/\s+/', trim($usuarioEquipe['nome'])) ?: [];
+                    $iniciais = strtoupper(substr($partes[0] ?? 'U', 0, 1) . substr($partes[1] ?? '', 0, 1));
+                    $funcao = ($usuarioEquipe['papel'] ?? '') === 'Administrador' ? 'admin-badge-accent' : 'admin-badge-info';
+                    $status = ($usuarioEquipe['status'] ?? '') === 'Ativo' ? 'admin-badge-success' : 'admin-badge-muted';
                     ?>
-                    <tr data-admin-user-row data-name="<?= htmlspecialchars(strtolower($teamUser['nome'])) ?>" data-email="<?= htmlspecialchars(strtolower($teamUser['email'])) ?>" data-role="<?= htmlspecialchars(strtolower($teamUser['papel'])) ?>" data-status="<?= htmlspecialchars(strtolower($teamUser['status'])) ?>">
+                    <tr data-admin-user-row data-name="<?= htmlspecialchars(strtolower($usuarioEquipe['nome'])) ?>" data-email="<?= htmlspecialchars(strtolower($usuarioEquipe['email'])) ?>" data-role="<?= htmlspecialchars(strtolower($usuarioEquipe['papel'])) ?>" data-status="<?= htmlspecialchars(strtolower($usuarioEquipe['status'])) ?>">
                         <td>
                             <div class="admin-table-user">
-                                <span class="admin-user-avatar"><?= htmlspecialchars($initials) ?></span>
+                                <span class="admin-user-avatar"><?= htmlspecialchars($iniciais) ?></span>
                                 <div>
-                                    <strong><?= htmlspecialchars($teamUser['nome']) ?></strong>
-                                    <span><?= htmlspecialchars($teamUser['email']) ?></span>
+                                    <strong><?= htmlspecialchars($usuarioEquipe['nome']) ?></strong>
+                                    <span><?= htmlspecialchars($usuarioEquipe['email']) ?></span>
                                 </div>
                             </div>
                         </td>
-                        <td><span class="admin-badge <?= $roleClass ?>"><?= htmlspecialchars($teamUser['papel']) ?></span></td>
-                        <td><span class="admin-badge <?= $statusClass ?>"><?= htmlspecialchars($teamUser['status']) ?></span></td>
-                        <td><?= htmlspecialchars($teamUser['created_at'] ?? '—') ?></td>
+                        <td><span class="admin-badge <?= $funcao ?>"><?= htmlspecialchars($usuarioEquipe['papel']) ?></span></td>
+                        <td><span class="admin-badge <?= $status ?>"><?= htmlspecialchars($usuarioEquipe['status']) ?></span></td>
+                        <td><?= htmlspecialchars($usuarioEquipe['created_at'] ?? '—') ?></td>
                         <td class="admin-table-actions">
-                            <a href="<?= htmlspecialchars($routeUrl('admin/usuarios/editar', ['id' => $teamUser['id']])) ?>" class="admin-icon-action" aria-label="Editar">✎</a>
-                            <a href="<?= htmlspecialchars($routeUrl('admin/usuarios/excluir', ['id' => $teamUser['id']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir este usuário?')">🗑</a>
+                            <a href="<?= htmlspecialchars($routeUrl('admin/usuarios/editar', ['id' => $usuarioEquipe['id']])) ?>" class="admin-icon-action" aria-label="Editar">✎</a>
+                            <a href="<?= htmlspecialchars($routeUrl('admin/usuarios/excluir', ['id' => $usuarioEquipe['id']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir este usuário?')">🗑</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
