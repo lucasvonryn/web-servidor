@@ -147,7 +147,7 @@ include __DIR__ . '/../partials/header.php';
                 <span class="publication-avatar publication-avatar-large"><?= htmlspecialchars(strtoupper(substr($post['author_short'] ?? $post['author'], 0, 1))) ?></span>
                 <div>
                     <h2><?= htmlspecialchars($post['author']) ?></h2>
-                    <p>Jornalista do O Editorial. Conteúdo baseado no vetor dinâmico do portal e preparado para futura integração com banco de dados.</p>
+                    <p>Jornalista do O Editorial.</p>
                 </div>
             </section>
         </article>
