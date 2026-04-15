@@ -11,8 +11,7 @@ $portalSettings = [
     'show_newsletter' => true,
     'exibir_comentarios' => true,
     'contact_email' => 'contato@oeditorial.com.br',
-    'footer_links' => 'Política de Privacidade | Termos de Uso | Fale Conosco',
-    'texto_rodape' => '© 2026 O Editorial. Todos os direitos reservados.',
+    'footer_links' => 'Fale Conosco',
 ];
 
 $portalCategories = [
