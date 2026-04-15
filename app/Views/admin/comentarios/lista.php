@@ -3,19 +3,19 @@ $portalData = $portalData ?? require __DIR__ . '/../../../Data/portal_content.ph
 $comments = $portalData['comments'];
 $posts = $portalData['posts'];
 $postsById = [];
-$approvedCount = 0;
-$pendingCount = 0;
-$rejectedCount = 0;
+$aprovadosCont = 0;
+$pendentesCont = 0;
+$rejeitadosCont = 0;
 foreach ($posts as $commentPost) {
     $postsById[$commentPost['id']] = $commentPost;
 }
-foreach ($comments as $commentItem) {
-    if (($commentItem['status'] ?? '') === 'Aprovado') {
-        $approvedCount++;
-    } elseif (($commentItem['status'] ?? '') === 'Pendente') {
-        $pendingCount++;
-    } elseif (($commentItem['status'] ?? '') === 'Rejeitado') {
-        $rejectedCount++;
+foreach ($comments as $comentarioInfo) {
+    if (($comentarioInfo['status'] ?? '') === 'Aprovado') {
+        $aprovadosCont++;
+    } elseif (($comentarioInfo['status'] ?? '') === 'Pendente') {
+        $pendentesCont++;
+    } elseif (($comentarioInfo['status'] ?? '') === 'Rejeitado') {
+        $rejeitadosCont++;
     }
 }
 include __DIR__ . '/../../partials/header.php';
@@ -35,26 +35,26 @@ include __DIR__ . '/../../partials/header.php';
             <span>Total</span>
         </article>
         <article class="admin-stat-card admin-stat-card-success">
-            <strong><?= $approvedCount ?></strong>
+            <strong><?= $aprovadosCont ?></strong>
             <span>Aprovados</span>
         </article>
         <article class="admin-stat-card admin-stat-card-warning">
-            <strong><?= $pendingCount ?></strong>
+            <strong><?= $pendentesCont ?></strong>
             <span>Pendentes</span>
         </article>
         <article class="admin-stat-card admin-stat-card-danger">
-            <strong><?= $rejectedCount ?></strong>
+            <strong><?= $rejeitadosCont ?></strong>
             <span>Rejeitados</span>
         </article>
     </div>
 
-    <?php if ($pendingCount > 0): ?>
+    <?php if ($pendentesCont > 0): ?>
         <div class="admin-warning-banner">
             <div>
-                <strong><?= $pendingCount ?> comentário(s) aguardando moderação</strong>
+                <strong><?= $pendentesCont ?> comentário(s) aguardando moderação</strong>
                 <span>Revise e aprove ou rejeite cada comentário abaixo.</span>
             </div>
-            <a href="<?= htmlspecialchars($routeUrl('admin/comentarios')) ?>" class="admin-warning-button">Ver pendentes</a>
+            <a href="<?= htmlspecialchars($routeUrl('admin/comments')) ?>" class="admin-warning-button">Ver pendentes</a>
         </div>
     <?php endif; ?>
 
@@ -74,40 +74,40 @@ include __DIR__ . '/../../partials/header.php';
     <p class="admin-results-copy" data-admin-comments-count><?= count($comments) ?> comentários encontrados</p>
 
     <div class="admin-comment-stack">
-        <?php foreach ($comments as $commentItem): ?>
+        <?php foreach ($comments as $comentarioInfo): ?>
             <?php
-            $commentPost = $postsById[$commentItem['post_id']] ?? null;
-            $commentStatus = $commentItem['status'] ?? 'Pendente';
+            $commentPost = $postsById[$comentarioInfo['post_id']] ?? null;
+            $comentarioStatus = $comentarioInfo['status'] ?? 'Pendente';
             $commentStatusClass = 'admin-badge-warning';
-            if ($commentStatus === 'Aprovado') {
+            if ($comentarioStatus === 'Aprovado') {
                 $commentStatusClass = 'admin-badge-success';
-            } elseif ($commentStatus === 'Rejeitado') {
+            } elseif ($comentarioStatus === 'Rejeitado') {
                 $commentStatusClass = 'admin-badge-danger';
             }
-            $commentInitials = strtoupper(substr($commentItem['autor'] ?? 'U', 0, 1) . substr((string) preg_replace('/^\S+\s+/', '', $commentItem['autor'] ?? ''), 0, 1));
+            $commentInitials = strtoupper(substr($comentarioInfo['autor'] ?? 'U', 0, 1) . substr((string) preg_replace('/^\S+\s+/', '', $comentarioInfo['autor'] ?? ''), 0, 1));
             ?>
-            <article class="admin-comment-card <?= $commentStatus === 'Pendente' ? 'is-pending' : '' ?>" data-admin-comment-card data-author="<?= htmlspecialchars(strtolower($commentItem['autor'])) ?>" data-email="<?= htmlspecialchars(strtolower($commentItem['email'])) ?>" data-content="<?= htmlspecialchars(strtolower($commentItem['texto'] ?? $commentItem['trecho'])) ?>" data-status="<?= htmlspecialchars(strtolower($commentStatus)) ?>" data-post="<?= htmlspecialchars(strtolower($commentPost['title'] ?? '')) ?>">
+            <article class="admin-comment-card <?= $comentarioStatus === 'Pendente' ? 'is-pending' : '' ?>" data-admin-comment-card data-author="<?= htmlspecialchars(strtolower($comentarioInfo['autor'])) ?>" data-email="<?= htmlspecialchars(strtolower($comentarioInfo['email'])) ?>" data-content="<?= htmlspecialchars(strtolower($comentarioInfo['texto'] ?? $comentarioInfo['trecho'])) ?>" data-status="<?= htmlspecialchars(strtolower($comentarioStatus)) ?>" data-post="<?= htmlspecialchars(strtolower($commentPost['title'] ?? '')) ?>">
                 <span class="admin-user-avatar"><?= htmlspecialchars($commentInitials) ?></span>
                 <div class="admin-comment-body">
                     <div class="admin-comment-meta">
-                        <strong><?= htmlspecialchars($commentItem['autor']) ?></strong>
-                        <span><?= htmlspecialchars($commentItem['email']) ?></span>
-                        <span class="admin-badge <?= $commentStatusClass ?>"><?= htmlspecialchars($commentStatus) ?></span>
+                        <strong><?= htmlspecialchars($comentarioInfo['autor']) ?></strong>
+                        <span><?= htmlspecialchars($comentarioInfo['email']) ?></span>
+                        <span class="admin-badge <?= $commentStatusClass ?>"><?= htmlspecialchars($comentarioStatus) ?></span>
                     </div>
-                    <p><?= htmlspecialchars($commentItem['texto'] ?? $commentItem['trecho']) ?></p>
+                    <p><?= htmlspecialchars($comentarioInfo['texto'] ?? $comentarioInfo['trecho']) ?></p>
                     <div class="admin-comment-submeta">
-                        <span><?= htmlspecialchars($commentItem['data']) ?></span>
+                        <span><?= htmlspecialchars($comentarioInfo['data']) ?></span>
                         <span>Em: <?= htmlspecialchars($commentPost['title'] ?? 'Publicação removida') ?></span>
                     </div>
                 </div>
                 <div class="admin-card-actions admin-card-actions-vertical">
-                    <?php if ($commentStatus !== 'Aprovado'): ?>
-                        <a href="<?= htmlspecialchars($routeUrl('admin/comentarios/status', ['id' => $commentItem['id'], 'status' => 'Aprovado'])) ?>" class="admin-icon-action admin-icon-action-success">✓</a>
+                    <?php if ($comentarioStatus !== 'Aprovado'): ?>
+                        <a href="<?= htmlspecialchars($routeUrl('admin/comments/status', ['id' => $comentarioInfo['id'], 'status' => 'Aprovado'])) ?>" class="admin-icon-action admin-icon-action-success">✓</a>
                     <?php endif; ?>
-                    <?php if ($commentStatus !== 'Rejeitado'): ?>
-                        <a href="<?= htmlspecialchars($routeUrl('admin/comentarios/status', ['id' => $commentItem['id'], 'status' => 'Rejeitado'])) ?>" class="admin-icon-action admin-icon-action-danger">✕</a>
+                    <?php if ($comentarioStatus !== 'Rejeitado'): ?>
+                        <a href="<?= htmlspecialchars($routeUrl('admin/comments/status', ['id' => $comentarioInfo['id'], 'status' => 'Rejeitado'])) ?>" class="admin-icon-action admin-icon-action-danger">✕</a>
                     <?php endif; ?>
-                    <a href="<?= htmlspecialchars($routeUrl('admin/comentarios/excluir', ['id' => $commentItem['id']])) ?>" class="admin-icon-action admin-icon-action-danger" onclick="return confirm('Deseja excluir este comentário?')">🗑</a>
+                    <a href="<?= htmlspecialchars($routeUrl('admin/comments/excluir', ['id' => $comentarioInfo['id']])) ?>" class="admin-icon-action admin-icon-action-danger" onclick="return confirm('Deseja excluir este comentário?')">🗑</a>
                 </div>
             </article>
         <?php endforeach; ?>

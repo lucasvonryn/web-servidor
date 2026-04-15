@@ -1,243 +1,280 @@
-# Web Servidor — Site Editorial com Painel Gerencial
+# Web Servidor — Portal Editorial em PHP
 
 ## Integrantes
-- **Lucas Gabriel**
-- **Maria Beatriz**
-- **Fernanda Pacheco**
+- Lucas Gabriel
+- Maria Beatriz
+- Fernanda Pacheco
+
+## Atribuições aos integrantes
+- Lucas Gabriel: Protótipo no figma e lógica de estrutura do projeto
+- Maria Beatriz: Desenvolvimento do painel administrativo, CRUD de categorias e publicações
+- Fernanda Pacheco: Desenvolvimento da área pública, autenticação, formulários e validações
 
 ## Sobre o projeto
-Este projeto está sendo desenvolvido para a disciplina de **Desenvolvimento Web Servidor**.
+Este projeto foi desenvolvido para a disciplina de Desenvolvimento Web Servidor.
 
-A proposta é construir um **site editorial tipo blog**, com área pública para leitura de publicações e uma **área administrativa** para gerenciamento do conteúdo, categorias, usuários da equipe e configurações gerais do sistema.
+A aplicação consiste em um portal editorial em PHP 8+, com área pública para navegação e leitura de publicações e uma área administrativa protegida por autenticação para gerenciamento de usuários, categorias, publicações, comentários e configurações gerais do site.
 
-O protótipo visual foi desenvolvido no Figma e está disponível nesse link:
+O protótipo visual das telas foi elaborado no Figma:
 
-**Protótipo:**  
 <https://www.figma.com/design/LlLAwxa2hDMQH0cUZGuxUr/Web-Servidor?node-id=1-5&t=dptCdPAwdHbfjG0m-1>
 
 ## Objetivos do sistema
-O sistema deverá permitir:
+O sistema foi pensado para demonstrar os conceitos trabalhados em aula:
+- arrays
+- inclusão de arquivos
+- estrutura inspirada em MVC
+- formulários e requisições HTTP
+- cookies e sessões
 
-- exibição de publicações no site público;
-- organização por categorias;
-- autenticação de usuários comentaristas;
-- comentários em publicações;
-- autenticação da equipe administrativa;
-- gerenciamento de categorias, publicações, usuários da equipe e configurações do site.
+Além disso, o projeto contempla:
+- autenticação para área protegida
+- formulários com validação no servidor
+- mensagens de feedback ao usuário
+- listagens administrativas com filtros e paginação
+- persistência temporária dos dados em sessão, a partir de vetores estáticos
 
-## Escopo funcional
-Com base no escopo do projeto fileciteturn0file0, o sistema está dividido em dois grandes módulos.
+## Arquitetura adotada
+O projeto adota uma organização inspirada no padrão MVC, adequada ao estágio atual do trabalho e requisitada em seu enunciado.
 
-### Área pública
-- **Home** com destaques configuráveis, últimas publicações e navegação por categorias;
-- **Listagem por categoria**;
-- **Página de detalhe da publicação** com conteúdo completo;
-- **Área de comentários** para usuários autenticados;
-- **Cadastro e login** de usuário comentarista.
+### Model
+Os dados base do sistema ficam centralizados em vetores PHP no arquivo:
+- `app/Data/portal_content.php`
 
-### Painel gerencial
-- **Login da equipe**;
-- **CRUD de usuários da equipe**;
-- **CRUD de categorias**;
-- **CRUD de publicações**;
-- **Gestão de comentários**;
-- **Configurações gerais do site**.
+Esse arquivo funciona como a camada de dados do protótipo por meio de um vetor dinâmico. A partir dele, os registros são carregados e copiados para a sessão, permitindo operações de cadastro, edição e exclusão sem necessidade de banco de dados nesta etapa.
 
-## Tecnologias previstas
-De acordo com o escopo definido, o projeto deverá seguir os seguintes requisitos técnicos fileciteturn0file0:
+### Controller
+O ponto de entrada da aplicação está em:
+- `public/index.php`
 
-- **PHP 8+**
-- **Arquitetura MVC**
-- **MySQL ou MariaDB**
-- **HTML/CSS/JavaScript** no frontend
+Esse arquivo atua como controlador frontal da aplicação. Ele é responsável por:
+- receber a rota via `$_GET['url']`
+- processar formulários enviados por `POST`
+- validar dados no servidor
+- controlar autenticação com sessão
+- atualizar os vetores dinâmicos em `$_SESSION`
+- encaminhar para as views correspondentes
 
+### View
+As telas ficam organizadas em:
+- `app/Views/public`
+Conjunto de telas públicas, acessíveis aos visitantes e leitores cadastrados.
+- `app/Views/admin`
+Parte do painel administrativo, protegido por autenticação.
+- `app/Views/partials`
+Reutilizáveis no frontend, como header e footer.
 
-## Estrutura esperada do projeto
-A estrutura abaixo é uma sugestão para organização do repositório:
+As views são responsáveis apenas pela apresentação do conteúdo, estrutura HTML e integração com os estilos do frontend.
 
+## Estrutura atual do projeto
 ```bash
-/
+web-servidor/
 ├── app/
-│   ├── controllers/
-│   ├── models/
-│   └── views/
-├── config/
-│   ├── database.php
-│   └── app.php
+│   ├── Data/
+│   │   └── portal_content.php
+│   └── Views/
+│       ├── admin/
+│       │   ├── categorias/
+│       │   ├── comentarios/
+│       │   ├── posts/
+│       │   ├── usuarios/
+│       │   ├── configuracoes.php
+│       │   ├── login.php
+│       │   └── painel.php
+│       ├── partials/
+│       │   ├── footer.php
+│       │   └── header.php
+│       └── public/
+│           ├── assets/
+│           ├── categoria.php
+│           ├── conta.php
+│           ├── home.php
+│           ├── login.php
+│           ├── publicacao.php
+│           └── publicacoes.php
+├── docs/
+│   └── escopo.md
 ├── public/
 │   ├── assets/
+│   │   └── home/
+│   ├── css/
+│   │   └── style.css
 │   └── index.php
-├── database/
-│   └── schema.sql
-├── .env.example
 └── README.md
 ```
 
-## Instalação e configuração
+## Requisitos para execução
+Para executar o projeto localmente, é necessário ter:
+- PHP 8.0 ou superior
+- navegador web
 
-### Requisitos
-Antes de executar o projeto, é necessário ter instalado:
+Nesta versão do trabalho:
+- não é necessário Composer
+- não é necessário banco de dados
+- não é necessário configurar `.env`
 
-- **PHP 8.0 ou superior**
-- **MySQL ou MariaDB** apenas quando a parte de banco for implementada
-
-Atualmente, a versão presente neste repositório funciona como um protótipo PHP com rotas simples e dados simulados, então **não depende de Composer nem de banco de dados para abrir as telas já existentes**.
-
-### Passos para instalação
+## Instalação e execução
 1. Clone o repositório:
-   ```bash
-   git clone <url-do-repositorio>
-   ```
-
-2. Acesse a pasta do projeto:
-   ```bash
-   cd web-servidor
-   ```
-
-3. Inicie o servidor embutido do PHP apontando para a pasta `public`:
-   ```bash
-   php -S localhost:8000 -t public
-   ```
-
-4. Abra no navegador:
-   ```text
-   http://localhost:8000
-   ```
-
-Importante: não abra `public/index.php` diretamente com `file://` ou só clicando no arquivo no explorador. Para validar o frontend, rode o projeto em um servidor PHP local, porque o CSS e as rotas dependem disso.
-
-### Acesso local atual
-- Página inicial: `http://localhost:8000/index.php?url=home`
-- Login: `http://localhost:8000/index.php?url=login`
-- Painel de posts: `http://localhost:8000/index.php?url=admin/posts`
-- Configurações: `http://localhost:8000/index.php?url=admin/configuracoes`
-
-### Credenciais de teste atuais
-Como o login ainda é simulado no arquivo `projeto/public/index.php`, use:
-
-- **E-mail:** `admin@admin.com`
-- **Senha:** `123456`
-
-### Quando o projeto evoluir
-Quando forem adicionados banco de dados, `.env`, `schema.sql` e dependências externas, o fluxo de instalação poderá incluir:
 
 ```bash
-composer install
-mysql -u root -p nome_do_banco < database/schema.sql
+git clone <https://github.com/lucasvonryn/web-servidor.git>
 ```
 
-### Arquivos de configuração que devem ser atualizados
-Os nomes exatos podem variar conforme a implementação final, mas o README do projeto deve manter atualizados principalmente os seguintes arquivos:
+2. Acesse a pasta do projeto:
 
-- `config/database.php`
-- `config/app.php`
-- `.env`
-
-### Exemplo de configurações esperadas
-```env
-APP_NAME=Web Servidor
-APP_URL=http://localhost/web-servidor
-
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=web_servidor
-DB_USERNAME=root
-DB_PASSWORD=
+```bash
+cd web-servidor
 ```
 
-## Regras de negócio
-As principais regras levantadas no escopo são:
+3. Inicie o servidor embutido do PHP apontando para a pasta `public`:
 
-- apenas usuários autenticados podem comentar;
-- publicações só devem aparecer no site público quando estiverem com **status publicado** e com data válida;
-- o **slug** da publicação deve ser único;
-- o **nome da categoria** deve ser único;
-- os comentários podem seguir fluxo de publicação imediata ou moderação, conforme a decisão final do grupo.
-
-## Funcionalidades previstas
-- cadastro e login de usuário comentarista;
-- visualização de posts por categoria;
-- leitura completa de publicações;
-- sistema de comentários;
-- cadastro e edição de categorias;
-- cadastro e edição de publicações;
-- gerenciamento de usuários da equipe;
-- gerenciamento de configurações do blog.
-
-## Documentação das telas
-Com base no escopo e nos protótipos enviados, o projeto contempla telas da área pública e do painel administrativo, incluindo:
-
-- home;
-- listagem de publicações;
-- detalhe de publicação;
-- login/cadastro;
-- dashboard administrativo;
-- gerenciamento de posts;
-- gerenciamento de categorias;
-- gerenciamento de usuários;
-- configurações.
-
-## Relatório breve do desenvolvimento
-Este projeto está sendo desenvolvido em grupo e poderá sofrer ajustes ao longo da implementação. Até o momento, o trabalho foi organizado da seguinte forma:
-
-### Particularidades do trabalho
-> Esta seção pode e deve ser atualizada ao longo do projeto.
-
-- O sistema ainda está em desenvolvimento.
-- Algumas funcionalidades podem estar em fase de prototipação e ainda não completamente implementadas.
-- Bugs encontrados, limitações temporárias, funcionalidades pendentes e observações de instalação devem ser registrados aqui.
-
-#### Modelo editável para atualização contínua
-```md
-### Particularidades do trabalho
-
-- [ ] Bug conhecido:
-- [ ] Funcionalidade ainda não implementada:
-- [ ] Ajuste necessário na instalação:
-- [ ] Observação importante:
+```bash
+php -S localhost:8000 -t public
 ```
 
-## Atividades dos integrantes
-A tabela abaixo foi organizada para ficar **editável**, permitindo acrescentar novas responsabilidades conforme o projeto evoluir.
+4. Abra no navegador:
 
-| Integrante | Responsabilidades atuais | Novas responsabilidades / observações |
-|---|---|---|
-| Lucas Gabriel | Escopo, protótipo no Figma e lógica do frontend | |
-| Maria Beatriz | Interface no frontend e sistema de login | |
-| Fernanda Pacheco | Documentação e desenvolvimento de telas | |
-
-### Modelo editável
-Copie e atualize a tabela abaixo sempre que necessário:
-
-```md
-| Integrante | Responsabilidades atuais | Novas responsabilidades / observações |
-|---|---|---|
-| Lucas Gabriel | Escopo, protótipo no Figma e lógica do frontend | |
-| Maria Beatriz | Interface no frontend e sistema de login | |
-| Fernanda Pacheco | Documentação e desenvolvimento de telas | |
-```
-
-## Critérios de aceite
-Alguns critérios mínimos de aceite definidos pelo escopo são:
-
-- a publicação não deve aparecer publicamente antes de ser publicada;
-- o comentário deve exigir autenticação do usuário;
-- categorias e posts devem possuir cadastro e edição funcionais;
-- as configurações do site devem refletir no frontend;
-- o painel deve ser acessível apenas por usuários autorizados da equipe.
-
-## Pendências para atualizar no README futuramente
-Durante o andamento do projeto, é importante revisar este README para incluir:
-
-- nome final do repositório;
-- instruções reais de execução;
-- credenciais iniciais de teste, se houver;
-- link de deploy, se houver;
-- bibliotecas realmente utilizadas;
-- bugs conhecidos e soluções temporárias;
-- prints finais ou gifs demonstrando o sistema em funcionamento.
-
-## Licença
 ```text
-Uso acadêmico — projeto desenvolvido para a disciplina de Desenvolvimento Web Servidor.
+http://localhost:8000
 ```
+
+Importante:
+- não abra os arquivos `.php` diretamente no navegador com `file://`
+- a aplicação depende do servidor PHP local para processar rotas, formulários, sessões e carregamento correto de assets
+
+## Rotas principais
+
+### Área pública
+- `http://localhost:8000/index.php?url=home`
+- `http://localhost:8000/index.php?url=publicacoes`
+- `http://localhost:8000/index.php?url=login`
+
+### Área administrativa
+- `http://localhost:8000/index.php?url=admin/login`
+- `http://localhost:8000/index.php?url=admin/painel`
+- `http://localhost:8000/index.php?url=admin/usuarios`
+- `http://localhost:8000/index.php?url=admin/categorias`
+- `http://localhost:8000/index.php?url=admin/posts`
+- `http://localhost:8000/index.php?url=admin/comentarios`
+- `http://localhost:8000/index.php?url=admin/configuracoes`
+
+## Credenciais de teste
+
+### Administrador
+- E-mail: `admin@admin.com`
+- Senha: `123456`
+
+### Usuário público
+- E-mail: `leitor@oeditorial.com.br`
+- Senha: `123456`
+
+Também é possível criar uma conta pública pela tela de login/cadastro do portal.
+
+## Funcionamento dos dados
+O sistema utiliza uma abordagem híbrida para esta etapa do trabalho:
+
+1. O arquivo `app/Data/portal_content.php` contém os vetores base do sistema, como categorias pré criadas, publicações, usuários e comentários.
+2. Ao carregar a aplicação, esses dados são lidos e normalizados.
+3. Os dados são copiados para `$_SESSION['portal_data']`.
+4. As operações do painel administrativo atualizam essa versão em sessão.
+
+Com isso, o projeto consegue simular comportamento dinâmico sem banco de dados, mantendo consistência entre:
+- área pública
+- painel administrativo
+- autenticação
+- comentários
+- configurações
+
+## Funcionalidades implementadas
+
+### Área pública
+- home com destaques, últimas publicações e categorias
+- listagem de publicações
+- listagem por categoria
+- detalhe completo da publicação e visualização de comentários
+- login e cadastro de usuário público
+- área de conta do leitor
+- logout de usuário público
+
+### Painel administrativo
+- login administrativo
+- painel inicial com métricas
+- CRUD de usuários da equipe
+- CRUD de categorias
+- CRUD de publicações
+- moderação e exclusão de comentários
+- configurações gerais do site
+- filtros e paginação nas listagens
+
+## Formulários presentes no sistema
+O sistema possui vários formulários processados no servidor além de login administrativo e público (os quais não são contatos na avaliação), entre eles:
+- cadastro público
+- cadastro/edição de usuários
+- cadastro/edição de categorias
+- cadastro/edição de publicações
+- formulário de comentários
+- formulário de configurações
+
+As validações principais são feitas no lado do servidor, no arquivo controlador `public/index.php`.
+
+## Validações e feedback ao usuário
+O projeto utiliza:
+- validações em PHP antes de salvar ou autenticar
+- redirecionamento após processamento
+- mensagens de sucesso e erro em sessão
+- feedback visual nas telas
+
+Exemplos de regras implementadas:
+- obrigatoriedade de campos essenciais
+- validação de e-mail
+- verificação de senha mínima no cadastro público
+- categoria válida ao salvar publicação
+- proteção de rotas administrativas por sessão
+- bloqueio de comentário para usuário não autenticado
+- bloqueio de exclusão de categoria com publicações vinculadas
+
+## Sessões e autenticação
+O projeto utiliza `$_SESSION` para:
+- autenticação do administrador
+- autenticação do usuário público
+- armazenamento temporário dos dados do portal
+- exibição de mensagens de feedback
+
+Isso atende ao requisito de autenticação com área protegida utilizando sessão.
+
+## Arquivos importantes
+- `public/index.php`
+  Controlador frontal, roteamento, validações, autenticação e persistência em sessão.
+
+- `app/Data/portal_content.php`
+  Vetores base da aplicação.
+
+- `app/Views/public/*`
+  Telas públicas do portal.
+
+- `app/Views/admin/*`
+  Telas do painel administrativo.
+
+- `app/Views/partials/header.php`
+  Cabeçalho compartilhado entre as telas.
+
+- `app/Views/partials/footer.php`
+  Rodapé compartilhado e scripts auxiliares.
+
+- `public/css/style.css`
+  Estilos gerais do frontend e do painel administrativo.
+
+## Limitações atuais
+Esta versão do projeto ainda possui limitações próprias de um protótipo acadêmico:
+- os dados não são persistidos em banco de dados
+- os dados são reiniciados quando a sessão é perdida
+- a estrutura está organizada de forma compatível com MVC, mas ainda pode evoluir para separar controllers e models em arquivos próprios
+- o login utiliza credenciais fixas para fins de demonstração
+
+## Próximos passos
+Evoluções previstas para versões futuras:
+- migração dos vetores em sessão para banco de dados
+- separação explícita de controllers e models em diretórios próprios
+- criação de camada de configuração
+- melhoria do controle de permissões
+- persistência real de usuários públicos e administrativos

@@ -224,7 +224,7 @@ $viewsPath = __DIR__ . '/../app/Views/';
 if (strncmp($url, 'admin/', 6) === 0 && $url !== 'admin/login') {
     $ensureAdminLogged();
 }
-
+//ACESSO A CADA PÁGINA
 switch ($url) {
     case 'home':
         include $viewsPath . 'public/home.php';
