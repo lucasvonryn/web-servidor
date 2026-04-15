@@ -87,7 +87,6 @@ include __DIR__ . '/../partials/header.php';
             <div class="account-section-header">
                 <div>
                     <h2>Seus comentários recentes</h2>
-                    <p>Essas interações são recuperadas do mesmo vetor dinâmico usado no portal.</p>
                 </div>
                 <a class="btn-neutral" href="<?= htmlspecialchars($routeUrl('publicacoes')) ?>">Explorar publicações</a>
             </div>
