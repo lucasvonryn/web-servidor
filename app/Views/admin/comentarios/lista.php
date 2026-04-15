@@ -1,6 +1,6 @@
 <?php
 $portalData = $portalData ?? require __DIR__ . '/../../../Data/portal_content.php';
-$comentarios = $portalData['comentarios'];
+$comments = $portalData['comments'];
 $posts = $portalData['posts'];
 $postsById = [];
 $aprovadosCont = 0;
@@ -9,7 +9,7 @@ $rejeitadosCont = 0;
 foreach ($posts as $commentPost) {
     $postsById[$commentPost['id']] = $commentPost;
 }
-foreach ($comentarios as $comentarioInfo) {
+foreach ($comments as $comentarioInfo) {
     if (($comentarioInfo['status'] ?? '') === 'Aprovado') {
         $aprovadosCont++;
     } elseif (($comentarioInfo['status'] ?? '') === 'Pendente') {
@@ -21,7 +21,7 @@ foreach ($comentarios as $comentarioInfo) {
 include __DIR__ . '/../../partials/header.php';
 ?>
 
-<section class="admin-page-shell" data-admin-comentarios-page data-admin-comentarios-page-size="4">
+<section class="admin-page-shell" data-admin-comments-page data-admin-comments-page-size="4">
     <header class="admin-page-header">
         <div>
             <h1>Comentários</h1>
@@ -31,7 +31,7 @@ include __DIR__ . '/../../partials/header.php';
 
     <div class="admin-stats-grid admin-stats-grid-4">
         <article class="admin-stat-card">
-            <strong><?= count($comentarios) ?></strong>
+            <strong><?= count($comments) ?></strong>
             <span>Total</span>
         </article>
         <article class="admin-stat-card admin-stat-card-success">
@@ -54,27 +54,27 @@ include __DIR__ . '/../../partials/header.php';
                 <strong><?= $pendentesCont ?> comentário(s) aguardando moderação</strong>
                 <span>Revise e aprove ou rejeite cada comentário abaixo.</span>
             </div>
-            <a href="<?= htmlspecialchars($routeUrl('admin/comentarios')) ?>" class="admin-warning-button">Ver pendentes</a>
+            <a href="<?= htmlspecialchars($routeUrl('admin/comments')) ?>" class="admin-warning-button">Ver pendentes</a>
         </div>
     <?php endif; ?>
 
     <div class="admin-toolbar admin-toolbar-wide">
         <label class="admin-search">
             <span>&#8981;</span>
-            <input type="search" placeholder="Buscar por autor, conteúdo ou e-mail..." data-admin-comentarios-search>
+            <input type="search" placeholder="Buscar por autor, conteúdo ou e-mail..." data-admin-comments-search>
         </label>
         <div class="admin-filter-chips">
-            <button type="button" class="admin-filter-chip is-active" data-admin-comentarios-filter="todos">Todos</button>
-            <button type="button" class="admin-filter-chip" data-admin-comentarios-filter="aprovado">Aprovado</button>
-            <button type="button" class="admin-filter-chip" data-admin-comentarios-filter="pendente">Pendente</button>
-            <button type="button" class="admin-filter-chip" data-admin-comentarios-filter="rejeitado">Rejeitado</button>
+            <button type="button" class="admin-filter-chip is-active" data-admin-comments-filter="todos">Todos</button>
+            <button type="button" class="admin-filter-chip" data-admin-comments-filter="aprovado">Aprovado</button>
+            <button type="button" class="admin-filter-chip" data-admin-comments-filter="pendente">Pendente</button>
+            <button type="button" class="admin-filter-chip" data-admin-comments-filter="rejeitado">Rejeitado</button>
         </div>
     </div>
 
-    <p class="admin-results-copy" data-admin-comentarios-count><?= count($comentarios) ?> comentários encontrados</p>
+    <p class="admin-results-copy" data-admin-comments-count><?= count($comments) ?> comentários encontrados</p>
 
     <div class="admin-comment-stack">
-        <?php foreach ($comentarios as $comentarioInfo): ?>
+        <?php foreach ($comments as $comentarioInfo): ?>
             <?php
             $commentPost = $postsById[$comentarioInfo['post_id']] ?? null;
             $comentarioStatus = $comentarioInfo['status'] ?? 'Pendente';
@@ -102,18 +102,18 @@ include __DIR__ . '/../../partials/header.php';
                 </div>
                 <div class="admin-card-actions admin-card-actions-vertical">
                     <?php if ($comentarioStatus !== 'Aprovado'): ?>
-                        <a href="<?= htmlspecialchars($routeUrl('admin/comentarios/status', ['id' => $comentarioInfo['id'], 'status' => 'Aprovado'])) ?>" class="admin-icon-action admin-icon-action-success">✓</a>
+                        <a href="<?= htmlspecialchars($routeUrl('admin/comments/status', ['id' => $comentarioInfo['id'], 'status' => 'Aprovado'])) ?>" class="admin-icon-action admin-icon-action-success">✓</a>
                     <?php endif; ?>
                     <?php if ($comentarioStatus !== 'Rejeitado'): ?>
-                        <a href="<?= htmlspecialchars($routeUrl('admin/comentarios/status', ['id' => $comentarioInfo['id'], 'status' => 'Rejeitado'])) ?>" class="admin-icon-action admin-icon-action-danger">✕</a>
+                        <a href="<?= htmlspecialchars($routeUrl('admin/comments/status', ['id' => $comentarioInfo['id'], 'status' => 'Rejeitado'])) ?>" class="admin-icon-action admin-icon-action-danger">✕</a>
                     <?php endif; ?>
-                    <a href="<?= htmlspecialchars($routeUrl('admin/comentarios/excluir', ['id' => $comentarioInfo['id']])) ?>" class="admin-icon-action admin-icon-action-danger" onclick="return confirm('Deseja excluir este comentário?')">🗑</a>
+                    <a href="<?= htmlspecialchars($routeUrl('admin/comments/excluir', ['id' => $comentarioInfo['id']])) ?>" class="admin-icon-action admin-icon-action-danger" onclick="return confirm('Deseja excluir este comentário?')">🗑</a>
                 </div>
             </article>
         <?php endforeach; ?>
     </div>
 
-    <div class="admin-pagination" data-admin-comentarios-pagination></div>
+    <div class="admin-pagination" data-admin-comments-pagination></div>
 </section>
 
 <?php include __DIR__ . '/../../partials/footer.php'; ?>
