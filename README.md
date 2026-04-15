@@ -157,6 +157,7 @@ Importante:
 - `http://localhost:8000/index.php?url=admin/posts`
 - `http://localhost:8000/index.php?url=admin/comentarios`
 - `http://localhost:8000/index.php?url=admin/configuracoes`
+- `http://localhost:8000/index.php?url=admin/logout`
 
 ## Credenciais de teste
 
@@ -244,7 +245,25 @@ Isso atende ao requisito de autenticação com área protegida utilizando sessã
 
 ## Arquivos importantes
 - `public/index.php`
-  Controlador frontal, roteamento, validações, autenticação e persistência em sessão.
+  Front Controller (entrada única). Carrega o bootstrap e despacha a rota.
+
+- `app/bootstrap.php`
+  Bootstrap do aplicativo. Configura sessão, helpers, repository, router e registra as rotas.
+
+- `app/Core/*`
+  Núcleo do MVC: `Router`, `View` e `App`.
+
+- `app/Controllers/*`
+  Controllers em classes (camada de controle).
+
+- `app/Models/PortalRepository.php`
+  Camada de dados: carrega base + sessão (`portal_data`), normaliza e persiste.
+
+- `app/Models/*Model.php`
+  Models por módulo (posts, categorias, usuários, comentários e configurações).
+
+- `app/Support/portal_helpers.php`
+  Funções pequenas de apoio (slug, data, redirect, guards e alertas).
 
 - `app/Data/portal_content.php`
   Vetores base da aplicação.
@@ -263,18 +282,3 @@ Isso atende ao requisito de autenticação com área protegida utilizando sessã
 
 - `public/css/style.css`
   Estilos gerais do frontend e do painel administrativo.
-
-## Limitações atuais
-Esta versão do projeto ainda possui limitações próprias de um protótipo acadêmico:
-- os dados não são persistidos em banco de dados
-- os dados são reiniciados quando a sessão é perdida
-- a estrutura está organizada de forma compatível com MVC, mas ainda pode evoluir para separar controllers e models em arquivos próprios
-- o login utiliza credenciais fixas para fins de demonstração
-
-## Próximos passos
-Evoluções previstas para versões futuras:
-- migração dos vetores em sessão para banco de dados
-- separação explícita de controllers e models em diretórios próprios
-- criação de camada de configuração
-- melhoria do controle de permissões
-- persistência real de usuários públicos e administrativos

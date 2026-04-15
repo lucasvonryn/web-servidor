@@ -13,9 +13,6 @@ $isAdminLogin = $currentRoute === 'admin/login';
     </div>
     <?php elseif (str_starts_with($currentRoute, 'admin/')): ?>
         <footer class="main-footer">
-            <div class="container" style="padding: 20px 0 32px; text-align: center; color: #5f6f8d;">
-                <?= htmlspecialchars($portalSettings['texto_rodape'] ?? '© 2026 O Editorial. Todos os direitos reservados.') ?> Ambiente administrativo de protótipo.
-            </div>
         </footer>
     <?php else: ?>
         <footer class="public-footer">
@@ -30,37 +27,11 @@ $isAdminLogin = $currentRoute === 'admin/login';
                 </div>
 
                 <div class="footer-column">
-                    <h4>Categorias</h4>
-                    <div class="footer-links">
-                        <?php foreach ($portalCategories as $slug => $footerCategory): ?>
-                            <a href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => $slug])) ?>"><?= htmlspecialchars($footerCategory['name']) ?></a>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-
-                <div class="footer-column">
-                    <h4>Contato</h4>
-                    <p><?= htmlspecialchars($portalSettings['contact_email'] ?? 'contato@oeditorial.com.br') ?></p>
                     <h4>Newsletter</h4>
                     <form class="footer-newsletter" action="<?= htmlspecialchars($routeUrl('login', ['modo' => 'criar'])) ?>" method="get">
                         <input type="email" name="newsletter" placeholder="Seu e-mail" aria-label="Seu e-mail">
                         <button type="submit" class="btn-primary">OK</button>
                     </form>
-                </div>
-            </div>
-
-            <div class="container public-footer-bottom">
-                <span><?= htmlspecialchars($portalSettings['texto_rodape'] ?? '© 2026 O Editorial. Todos os direitos reservados.') ?></span>
-                <div class="footer-legal">
-                    <?php
-                    $footerLinks = array_filter(array_map('trim', explode('|', (string) ($portalSettings['footer_links'] ?? ''))));
-                    if (empty($footerLinks)) {
-                        $footerLinks = ['Política de Privacidade', 'Termos de Uso', 'Fale Conosco'];
-                    }
-                    ?>
-                    <?php foreach ($footerLinks as $footerLink): ?>
-                        <a href="<?= htmlspecialchars($footerLink === 'Fale Conosco' ? 'mailto:' . ($portalSettings['contact_email'] ?? 'contato@oeditorial.com.br') : $routeUrl('login', ['modo' => 'criar'])) ?>"><?= htmlspecialchars($footerLink) ?></a>
-                    <?php endforeach; ?>
                 </div>
             </div>
         </footer>
