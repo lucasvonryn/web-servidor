@@ -13,9 +13,6 @@ include __DIR__ . '/../../partials/header.php';
 
 <section class="admin-page-shell" data-admin-categories-page data-admin-categories-page-size="4">
     <header class="admin-page-header">
-        <div>
-            <h1>Categorias</h1>
-        </div>
         <a href="<?= htmlspecialchars($routeUrl('admin/categorias/novo')) ?>" class="admin-primary-button">+ Nova categoria</a>
     </header>
 

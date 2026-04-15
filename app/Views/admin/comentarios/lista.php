@@ -22,12 +22,6 @@ include __DIR__ . '/../../partials/header.php';
 ?>
 
 <section class="admin-page-shell" data-admin-comments-page data-admin-comments-page-size="4">
-    <header class="admin-page-header">
-        <div>
-            <h1>Comentários</h1>
-        </div>
-    </header>
-
     <div class="admin-stats-grid admin-stats-grid-4">
         <article class="admin-stat-card">
             <strong><?= count($comments) ?></strong>

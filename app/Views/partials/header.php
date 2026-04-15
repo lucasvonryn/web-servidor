@@ -20,6 +20,33 @@
         $pendingAdminComments++;
     }
     }
+
+    $adminHeaderTitle = 'Painel Admin';
+    if ($isAdminArea) {
+        if (str_starts_with($currentRoute, 'admin/posts/novo')) {
+            $adminHeaderTitle = 'Nova publicação';
+        } elseif (str_starts_with($currentRoute, 'admin/posts/editar')) {
+            $adminHeaderTitle = 'Editar publicação';
+        } elseif (str_starts_with($currentRoute, 'admin/posts')) {
+            $adminHeaderTitle = 'Publicações';
+        } elseif (str_starts_with($currentRoute, 'admin/usuarios/novo')) {
+            $adminHeaderTitle = 'Novo usuário';
+        } elseif (str_starts_with($currentRoute, 'admin/usuarios/editar')) {
+            $adminHeaderTitle = 'Editar usuário';
+        } elseif (str_starts_with($currentRoute, 'admin/usuarios')) {
+            $adminHeaderTitle = 'Usuários';
+        } elseif (str_starts_with($currentRoute, 'admin/categorias/novo')) {
+            $adminHeaderTitle = 'Nova categoria';
+        } elseif (str_starts_with($currentRoute, 'admin/categorias/editar')) {
+            $adminHeaderTitle = 'Editar categoria';
+        } elseif (str_starts_with($currentRoute, 'admin/categorias')) {
+            $adminHeaderTitle = 'Categorias';
+        } elseif (str_starts_with($currentRoute, 'admin/comentarios')) {
+            $adminHeaderTitle = 'Comentários';
+        } elseif (str_starts_with($currentRoute, 'admin/configuracoes')) {
+            $adminHeaderTitle = 'Configurações';
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -76,7 +103,7 @@
         <div class="admin-workspace">
             <header class="admin-topbar">
                 <div class="admin-topbar-breadcrumb">
-                    <span>Painel</span>
+                    <span><?php echo htmlspecialchars($adminHeaderTitle) ?></span>
                 </div>
                 <div class="admin-topbar-actions">
                 </div>

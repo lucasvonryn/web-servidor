@@ -5,12 +5,6 @@ include __DIR__ . '/../partials/header.php';
 ?>
 
 <section class="admin-page-shell">
-    <header class="admin-page-header">
-        <div>
-            <h1>Configurações do Site</h1>
-        </div>
-    </header>
-
     <form action="<?= htmlspecialchars($routeUrl('admin/configuracoes/salvar')) ?>" method="POST" class="admin-settings-form">
         <div class="admin-settings-tabs">
             <button type="button" class="admin-tab-button" data-admin-tab="gerais">Informações gerais</button>

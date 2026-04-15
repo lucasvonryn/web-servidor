@@ -21,9 +21,6 @@ include __DIR__ . '/../../partials/header.php';
 
 <section class="admin-page-shell" data-admin-users-page>
     <header class="admin-page-header">
-        <div>
-            <h1>Usuários da Equipe</h1>
-        </div>
         <a href="<?= htmlspecialchars($routeUrl('admin/usuarios/novo')) ?>" class="admin-primary-button">+ Novo usuário</a>
     </header>
 
