@@ -25,7 +25,6 @@ include __DIR__ . '/../../partials/header.php';
     <header class="admin-page-header">
         <div>
             <h1>Comentários</h1>
-            <div class="admin-breadcrumb">Painel <span>&rsaquo;</span> Comentários</div>
         </div>
     </header>
 
@@ -60,7 +59,7 @@ include __DIR__ . '/../../partials/header.php';
 
     <div class="admin-toolbar admin-toolbar-wide">
         <label class="admin-search">
-            <span>&#8981;</span>
+            <span><i class="bi bi-search"></i></span>
             <input type="search" placeholder="Buscar por autor, conteúdo ou e-mail..." data-admin-comments-search>
         </label>
         <div class="admin-filter-chips">
@@ -102,12 +101,18 @@ include __DIR__ . '/../../partials/header.php';
                 </div>
                 <div class="admin-card-actions admin-card-actions-vertical">
                     <?php if ($comentarioStatus !== 'Aprovado'): ?>
-                        <a href="<?= htmlspecialchars($routeUrl('admin/comments/status', ['id' => $comentarioInfo['id'], 'status' => 'Aprovado'])) ?>" class="admin-icon-action admin-icon-action-success">✓</a>
+                        <a href="<?= htmlspecialchars($routeUrl('admin/comments/status', ['id' => $comentarioInfo['id'], 'status' => 'Aprovado'])) ?>" class="admin-icon-action admin-icon-action-success" aria-label="Aprovar">
+                            <i class="bi bi-check-lg"></i>
+                        </a>
                     <?php endif; ?>
                     <?php if ($comentarioStatus !== 'Rejeitado'): ?>
-                        <a href="<?= htmlspecialchars($routeUrl('admin/comments/status', ['id' => $comentarioInfo['id'], 'status' => 'Rejeitado'])) ?>" class="admin-icon-action admin-icon-action-danger">✕</a>
+                        <a href="<?= htmlspecialchars($routeUrl('admin/comments/status', ['id' => $comentarioInfo['id'], 'status' => 'Rejeitado'])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Rejeitar">
+                            <i class="bi bi-x-lg"></i>
+                        </a>
                     <?php endif; ?>
-                    <a href="<?= htmlspecialchars($routeUrl('admin/comments/excluir', ['id' => $comentarioInfo['id']])) ?>" class="admin-icon-action admin-icon-action-danger" onclick="return confirm('Deseja excluir este comentário?')">🗑</a>
+                    <a href="<?= htmlspecialchars($routeUrl('admin/comments/excluir', ['id' => $comentarioInfo['id']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir este comentário?')">
+                        <i class="bi bi-trash"></i>
+                    </a>
                 </div>
             </article>
         <?php endforeach; ?>

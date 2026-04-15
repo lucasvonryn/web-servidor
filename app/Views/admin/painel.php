@@ -30,7 +30,6 @@ include __DIR__ . '/../partials/header.php';
     <header class="admin-page-header">
         <div>
             <h1>Painel</h1>
-            <div class="admin-breadcrumb">Painel <span>&rsaquo;</span> Visão geral</div>
         </div>
     </header>
 

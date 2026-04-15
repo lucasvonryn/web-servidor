@@ -23,14 +23,13 @@ include __DIR__ . '/../../partials/header.php';
     <header class="admin-page-header">
         <div>
             <h1>Usuários da Equipe</h1>
-            <div class="admin-breadcrumb">Painel <span>&rsaquo;</span> Usuários</div>
         </div>
         <a href="<?= htmlspecialchars($routeUrl('admin/usuarios/novo')) ?>" class="admin-primary-button">+ Novo usuário</a>
     </header>
 
     <div class="admin-toolbar">
         <label class="admin-search">
-            <span>&#8981;</span>
+            <span><i class="bi bi-search"></i></span>
             <input type="search" placeholder="Buscar usuário..." data-admin-users-search>
         </label>
     </div>
@@ -89,8 +88,12 @@ include __DIR__ . '/../../partials/header.php';
                         <td><span class="admin-badge <?= $status ?>"><?= htmlspecialchars($usuarioEquipe['status']) ?></span></td>
                         <td><?= htmlspecialchars($usuarioEquipe['created_at'] ?? '—') ?></td>
                         <td class="admin-table-actions">
-                            <a href="<?= htmlspecialchars($routeUrl('admin/usuarios/editar', ['id' => $usuarioEquipe['id']])) ?>" class="admin-icon-action" aria-label="Editar">✎</a>
-                            <a href="<?= htmlspecialchars($routeUrl('admin/usuarios/excluir', ['id' => $usuarioEquipe['id']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir este usuário?')">🗑</a>
+                            <a href="<?= htmlspecialchars($routeUrl('admin/usuarios/editar', ['id' => $usuarioEquipe['id']])) ?>" class="admin-icon-action" aria-label="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="<?= htmlspecialchars($routeUrl('admin/usuarios/excluir', ['id' => $usuarioEquipe['id']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir este usuário?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

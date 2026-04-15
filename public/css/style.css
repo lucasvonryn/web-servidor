@@ -861,27 +861,6 @@ a {
     gap: 14px;
 }
 
-.admin-icon-button {
-    position: relative;
-    width: 36px;
-    height: 36px;
-    border-radius: 999px;
-    border: 1px solid #e0e7f3;
-    background: #fff;
-    color: #7182a0;
-    cursor: pointer;
-}
-
-.admin-notification-dot {
-    position: absolute;
-    top: 6px;
-    right: 7px;
-    width: 7px;
-    height: 7px;
-    border-radius: 999px;
-    background: #ff3b30;
-}
-
 .admin-avatar {
     width: 34px;
     height: 34px;
@@ -927,17 +906,6 @@ a {
     line-height: 1;
     letter-spacing: -0.04em;
     color: #182742;
-}
-
-.admin-breadcrumb {
-    margin-top: 8px;
-    color: #8fa0b8;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-.admin-breadcrumb span {
-    margin: 0 8px;
 }
 
 .admin-primary-button,
@@ -1217,8 +1185,8 @@ a {
     width: 34px;
     height: 34px;
     border-radius: 10px;
-    border: 1px solid #e3eaf5;
-    background: #fff;
+    border: none;
+    background: transparent;
     color: #8ba0bd;
     display: inline-flex;
     align-items: center;
@@ -1226,6 +1194,16 @@ a {
     text-decoration: none;
     cursor: pointer;
     margin-left: 6px;
+}
+
+.admin-icon-action:hover {
+    background: rgba(16, 29, 57, 0.06);
+    color: #5b6b85;
+}
+
+.admin-icon-action i {
+    font-size: 1.05rem;
+    line-height: 1;
 }
 
 .admin-icon-action-danger { color: #ef4444; }

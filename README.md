@@ -151,7 +151,6 @@ Importante:
 
 ### Área administrativa
 - `http://localhost:8000/index.php?url=admin/login`
-- `http://localhost:8000/index.php?url=admin/painel`
 - `http://localhost:8000/index.php?url=admin/usuarios`
 - `http://localhost:8000/index.php?url=admin/categorias`
 - `http://localhost:8000/index.php?url=admin/posts`

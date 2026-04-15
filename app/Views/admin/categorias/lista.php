@@ -15,14 +15,13 @@ include __DIR__ . '/../../partials/header.php';
     <header class="admin-page-header">
         <div>
             <h1>Categorias</h1>
-            <div class="admin-breadcrumb">Painel <span>&rsaquo;</span> Categorias</div>
         </div>
         <a href="<?= htmlspecialchars($routeUrl('admin/categorias/novo')) ?>" class="admin-primary-button">+ Nova categoria</a>
     </header>
 
     <div class="admin-toolbar">
         <label class="admin-search">
-            <span>&#8981;</span>
+            <span><i class="bi bi-search"></i></span>
             <input type="search" placeholder="Buscar categoria..." data-admin-categories-search>
         </label>
     </div>
@@ -36,8 +35,12 @@ include __DIR__ . '/../../partials/header.php';
                         <span class="post-tag post-tag-<?= htmlspecialchars($adminCategory['tag_class']) ?>"><?= htmlspecialchars($adminCategory['name']) ?></span>
                     </div>
                     <div class="admin-card-actions">
-                        <a href="<?= htmlspecialchars($routeUrl('admin/categorias/editar', ['slug' => $adminCategory['slug']])) ?>" class="admin-icon-action" aria-label="Editar">✎</a>
-                        <a href="<?= htmlspecialchars($routeUrl('admin/categorias/excluir', ['slug' => $adminCategory['slug']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir esta categoria?')">🗑</a>
+                        <a href="<?= htmlspecialchars($routeUrl('admin/categorias/editar', ['slug' => $adminCategory['slug']])) ?>" class="admin-icon-action" aria-label="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="<?= htmlspecialchars($routeUrl('admin/categorias/excluir', ['slug' => $adminCategory['slug']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir esta categoria?')">
+                            <i class="bi bi-trash"></i>
+                        </a>
                     </div>
                 </div>
                 <p><?= htmlspecialchars($adminCategory['description']) ?></p>
@@ -72,8 +75,12 @@ include __DIR__ . '/../../partials/header.php';
                         <td><?= htmlspecialchars($adminCategory['description']) ?></td>
                         <td><?= htmlspecialchars((string) ($adminCategory['count'] ?? 0)) ?></td>
                         <td class="admin-table-actions">
-                            <a href="<?= htmlspecialchars($routeUrl('admin/categorias/editar', ['slug' => $adminCategory['slug']])) ?>" class="admin-icon-action" aria-label="Editar">✎</a>
-                            <a href="<?= htmlspecialchars($routeUrl('admin/categorias/excluir', ['slug' => $adminCategory['slug']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir esta categoria?')">🗑</a>
+                            <a href="<?= htmlspecialchars($routeUrl('admin/categorias/editar', ['slug' => $adminCategory['slug']])) ?>" class="admin-icon-action" aria-label="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="<?= htmlspecialchars($routeUrl('admin/categorias/excluir', ['slug' => $adminCategory['slug']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir esta categoria?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

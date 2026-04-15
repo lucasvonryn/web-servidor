@@ -64,13 +64,6 @@ class AdminController
         $this->view->render('admin/login.php', $this->baseViewData($portalData));
     }
 
-    public function painel(): void
-    {
-        $this->requireAdmin();
-        $portalData = $this->repo->getPortalData();
-        $this->view->render('admin/painel.php', $this->baseViewData($portalData));
-    }
-
     public function postsLista(): void
     {
         $this->requireAdmin();

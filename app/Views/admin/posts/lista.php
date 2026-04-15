@@ -20,14 +20,13 @@ include __DIR__ . '/../../partials/header.php';
     <header class="admin-page-header">
         <div>
             <h1>Publicações</h1>
-            <div class="admin-breadcrumb">Painel <span>&rsaquo;</span> Publicações</div>
         </div>
         <a href="<?= htmlspecialchars($routeUrl('admin/posts/novo')) ?>" class="admin-primary-button">+ Nova publicação</a>
     </header>
 
     <div class="admin-toolbar admin-toolbar-wide">
         <label class="admin-search">
-            <span>&#8981;</span>
+            <span><i class="bi bi-search"></i></span>
             <input type="search" placeholder="Buscar publicação ou autor..." data-admin-posts-search>
         </label>
         <div class="admin-filter-chips">
@@ -91,9 +90,15 @@ include __DIR__ . '/../../partials/header.php';
                         <td><?= htmlspecialchars($postItem['date']) ?></td>
                         <td><span class="admin-badge <?= $statusClass ?>"><?= htmlspecialchars($postItem['status']) ?></span></td>
                         <td class="admin-table-actions">
-                            <a href="<?= htmlspecialchars($routeUrl('publicacao', ['slug' => $postItem['slug']])) ?>" class="admin-icon-action" aria-label="Visualizar">◌</a>
-                            <a href="<?= htmlspecialchars($routeUrl('admin/posts/editar', ['id' => $postItem['id']])) ?>" class="admin-icon-action" aria-label="Editar">✎</a>
-                            <a href="<?= htmlspecialchars($routeUrl('admin/posts/excluir', ['id' => $postItem['id']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir esta publicação?')">🗑</a>
+                            <a href="<?= htmlspecialchars($routeUrl('publicacao', ['slug' => $postItem['slug']])) ?>" class="admin-icon-action" aria-label="Visualizar">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="<?= htmlspecialchars($routeUrl('admin/posts/editar', ['id' => $postItem['id']])) ?>" class="admin-icon-action" aria-label="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="<?= htmlspecialchars($routeUrl('admin/posts/excluir', ['id' => $postItem['id']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir esta publicação?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

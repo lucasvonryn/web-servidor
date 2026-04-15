@@ -12,7 +12,7 @@
     $publicMode           = $_GET['modo'] ?? 'entrar';
     $publicMode           = $publicMode === 'criar' ? 'criar' : 'entrar';
     $isAdminLogged        = ! empty($_SESSION['usuario_logado']);
-    $adminPortalUrl       = $isAdminLogged ? $routeUrl('admin/painel') : $routeUrl('admin/login');
+    $adminPortalUrl       = $isAdminLogged ? $routeUrl('admin/posts') : $routeUrl('admin/login');
     $adminInitials        = strtoupper(substr(trim((string) ($_SESSION['usuario_nome'] ?? 'AS')), 0, 1) . substr(trim((string) preg_replace('/^\S+\s+/', '', $_SESSION['usuario_nome'] ?? '')), 0, 1));
     $pendingAdminComments = 0;
     foreach ($portalComments as $adminCommentItem) {
@@ -28,6 +28,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal <?php echo htmlspecialchars($portalSettings['nome_site'] ?? 'O Editorial') ?></title>
     <link rel="stylesheet" href="<?php echo htmlspecialchars($assetUrl('css/style.css')) ?>">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 <div class="page-shell">
@@ -35,8 +36,7 @@
     <div class="admin-shell">
         <aside class="admin-sidebar">
             <div class="admin-sidebar-brand">
-                <a class="admin-brand-link" href="<?php echo htmlspecialchars($routeUrl('admin/painel')) ?>">
-                    <span class="admin-brand-badge">OE</span>
+                <a class="admin-brand-link" href="<?php echo htmlspecialchars($routeUrl('admin/posts')) ?>">
                     <span>
                         <strong><?php echo htmlspecialchars($portalSettings['nome_site'] ?? 'O Editorial') ?></strong>
                         <small>Painel Admin</small>
@@ -47,7 +47,6 @@
             <div class="admin-sidebar-label">Menu</div>
 
             <nav class="admin-sidebar-nav">
-                <a href="<?php echo htmlspecialchars($routeUrl('admin/painel')) ?>" class="<?php echo $currentRoute === 'admin/painel' ? 'is-active' : '' ?>">Painel</a>
                 <a href="<?php echo htmlspecialchars($routeUrl('admin/usuarios')) ?>" class="<?php echo str_starts_with($currentRoute, 'admin/usuarios') ? 'is-active' : '' ?>">Usuários</a>
                 <a href="<?php echo htmlspecialchars($routeUrl('admin/categorias')) ?>" class="<?php echo str_starts_with($currentRoute, 'admin/categorias') ? 'is-active' : '' ?>">Categorias</a>
                 <a href="<?php echo htmlspecialchars($routeUrl('admin/posts')) ?>" class="<?php echo str_starts_with($currentRoute, 'admin/posts') ? 'is-active' : '' ?>">Publicações</a>
@@ -80,11 +79,6 @@
                     <span>Painel</span>
                 </div>
                 <div class="admin-topbar-actions">
-                    <button type="button" class="admin-icon-button" aria-label="Notificações">
-                        <span class="admin-notification-dot"></span>
-                        &#128276;
-                    </button>
-                    <span class="admin-avatar admin-avatar-top"><?php echo htmlspecialchars($adminInitials ?: 'AS') ?></span>
                 </div>
             </header>
 <?php else: ?>

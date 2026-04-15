@@ -64,7 +64,6 @@ $router->get('admin/logout', fn () => $authController->logoutAdmin());
 
 // Admin (área protegida)
 $router->get('admin/login', fn () => $adminController->login());
-$router->get('admin/painel', fn () => $adminController->painel());
 
 $router->get('admin/posts', fn () => $adminController->postsLista());
 $router->get('admin/posts/novo', fn () => $adminController->postsCadastro());

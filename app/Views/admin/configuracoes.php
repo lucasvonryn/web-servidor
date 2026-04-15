@@ -8,7 +8,6 @@ include __DIR__ . '/../partials/header.php';
     <header class="admin-page-header">
         <div>
             <h1>Configurações do Site</h1>
-            <div class="admin-breadcrumb">Painel <span>&rsaquo;</span> Configurações</div>
         </div>
     </header>
 

@@ -24,7 +24,7 @@ class AuthController
             $_SESSION['usuario_nome'] = 'Administrador';
             $_SESSION['usuario_email'] = $emailDigitado;
             portal_set_alert('success', 'Bem-vindo ao Painel!');
-            portal_redirect(($this->routeUrl)('admin/painel'));
+            portal_redirect(($this->routeUrl)('admin/posts'));
         }
 
         $_SESSION['erros']['email'] = 'E-mail ou senha incorretos!';
