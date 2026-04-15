@@ -19,8 +19,6 @@ class SettingsModel
         $aboutText = trim((string) ($input['about_text'] ?? ''));
         $itensHome = (int) ($input['itens_home'] ?? 6);
         $contactEmail = trim((string) ($input['contact_email'] ?? ''));
-        $footerLinks = trim((string) ($input['footer_links'] ?? ''));
-        $textoRodape = trim((string) ($input['texto_rodape'] ?? ''));
 
         if ($nomeSite === '') {
             portal_set_alert('danger', 'Erro: o nome do portal não pode estar vazio!');
@@ -38,8 +36,6 @@ class SettingsModel
             'show_newsletter' => !empty($input['show_newsletter']),
             'exibir_comentarios' => !empty($input['exibir_comentarios']),
             'contact_email' => $contactEmail !== '' ? $contactEmail : ($portalData['settings']['contact_email'] ?? 'contato@oeditorial.com.br'),
-            'footer_links' => $footerLinks,
-            'texto_rodape' => $textoRodape !== '' ? $textoRodape : ($portalData['settings']['texto_rodape'] ?? ''),
         ]);
 
         return $this->repo->persistPortalData($portalData);

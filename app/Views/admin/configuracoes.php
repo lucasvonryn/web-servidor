@@ -16,7 +16,7 @@ include __DIR__ . '/../partials/header.php';
         <div class="admin-settings-tabs">
             <button type="button" class="admin-tab-button" data-admin-tab="gerais">Informações gerais</button>
             <button type="button" class="admin-tab-button" data-admin-tab="exibicao">Exibição</button>
-            <button type="button" class="admin-tab-button" data-admin-tab="contato">Contato e rodapé</button>
+            <button type="button" class="admin-tab-button" data-admin-tab="contato">Contato</button>
         </div>
 
         <section class="admin-settings-pane is-active" data-admin-pane="gerais">
@@ -63,28 +63,12 @@ include __DIR__ . '/../partials/header.php';
 
         <section class="admin-settings-pane" data-admin-pane="contato">
             <div class="admin-settings-block">
-                <h2>Contato e rodapé</h2>
-                <p>Informações públicas exibidas no topo e no rodapé do site.</p>
+                <h2>Contato</h2>
+                <p>Informações públicas exibidas no topo do site.</p>
 
                 <div class="admin-field admin-field-full">
                     <label for="contact_email">E-mail de contato público *</label>
                     <input type="email" name="contact_email" id="contact_email" value="<?= htmlspecialchars($settings['contact_email'] ?? 'contato@oeditorial.com.br') ?>">
-                </div>
-
-                <div class="admin-field admin-field-full">
-                    <label for="texto_rodape">Texto do rodapé (copyright)</label>
-                    <input type="text" name="texto_rodape" id="texto_rodape" value="<?= htmlspecialchars($settings['texto_rodape'] ?? '') ?>">
-                </div>
-
-                <div class="admin-field admin-field-full">
-                    <label for="footer_links">Links do rodapé</label>
-                    <input type="text" name="footer_links" id="footer_links" value="<?= htmlspecialchars($settings['footer_links'] ?? '') ?>">
-                    <small>Separe os links com o caractere `|`.</small>
-                </div>
-
-                <div class="admin-footer-preview">
-                    <span><?= htmlspecialchars($settings['texto_rodape'] ?? '') ?></span>
-                    <small><?= htmlspecialchars($settings['footer_links'] ?? '') ?></small>
                 </div>
             </div>
         </section>
