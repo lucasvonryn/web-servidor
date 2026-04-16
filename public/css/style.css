@@ -855,6 +855,12 @@ a {
     font-weight: 600;
 }
 
+.admin-topbar-breadcrumb span {
+    color: #000;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
 .admin-topbar-actions {
     display: flex;
     align-items: center;
