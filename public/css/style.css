@@ -1829,10 +1829,11 @@ a {
 
 .hero-home {
     padding: 0;
+    background: #111f44;
 }
 
 .hero-home-panel {
-    background: #111f44;
+    background: transparent;
     padding: 36px 0 24px;
 }
 

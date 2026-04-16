@@ -1,4 +1,4 @@
-# Web Servidor — Portal Editorial em PHP
+# Web Servidor - Portal Editorial em PHP
 
 ## Integrantes
 - Lucas Gabriel
@@ -6,7 +6,7 @@
 - Fernanda Pacheco
 
 ## Atribuições aos integrantes
-- Lucas Gabriel: Protótipo no figma e lógica de estrutura do projeto
+- Lucas Gabriel: Protótipo no Figma, escopo e lógica de estrutura do projeto
 - Maria Beatriz: Desenvolvimento do painel administrativo, CRUD de categorias e publicações
 - Fernanda Pacheco: Desenvolvimento da área pública, autenticação, formulários e validações
 
@@ -20,22 +20,14 @@ O protótipo visual das telas foi elaborado no Figma:
 <https://www.figma.com/design/LlLAwxa2hDMQH0cUZGuxUr/Web-Servidor?node-id=1-5&t=dptCdPAwdHbfjG0m-1>
 
 ## Objetivos do sistema
-O sistema foi pensado para demonstrar os conceitos trabalhados em aula:
-- arrays
-- inclusão de arquivos
-- estrutura inspirada em MVC
-- formulários e requisições HTTP
-- cookies e sessões
-
-Além disso, o projeto contempla:
+O projeto contempla:
 - autenticação para área protegida
 - formulários com validação no servidor
 - mensagens de feedback ao usuário
 - listagens administrativas com filtros e paginação
-- persistência temporária dos dados em sessão, a partir de vetores estáticos
 
 ## Arquitetura adotada
-O projeto adota uma organização inspirada no padrão MVC, adequada ao estágio atual do trabalho e requisitada em seu enunciado.
+O projeto adota uma organização inspirada no padrão MVC.
 
 ### Model
 Os dados base do sistema ficam centralizados em vetores PHP no arquivo:
