@@ -1,115 +1,162 @@
-# Web Servidor - Portal Editorial em PHP
+# Web Servidor — Portal Editorial em PHP
 
 ## Integrantes
 - Lucas Gabriel
 - Maria Beatriz
 - Fernanda Pacheco
 
-## Atribuições aos integrantes
-- Lucas Gabriel: Protótipo no Figma, escopo e lógica de estrutura do projeto
-- Maria Beatriz: Desenvolvimento do painel administrativo, CRUD de categorias e publicações
-- Fernanda Pacheco: Desenvolvimento da área pública, autenticação, formulários e validações
+## Atribuições do grupo
+- Lucas Gabriel: protótipo no Figma, escopo e estrutura geral do projeto
+- Maria Beatriz: desenvolvimento do painel administrativo, CRUDs e organização visual do admin
+- Fernanda Pacheco: desenvolvimento e design da área pública, design do painel admin e documentação
 
 ## Sobre o projeto
 Este projeto foi desenvolvido para a disciplina de Desenvolvimento Web Servidor.
 
-A aplicação consiste em um portal editorial em PHP 8+, com área pública para navegação e leitura de publicações e uma área administrativa protegida por autenticação para gerenciamento de usuários, categorias, publicações, comentários e configurações gerais do site.
+A aplicação consiste em um portal editorial em PHP 8+, com:
+- área pública para navegação, leitura de publicações e autenticação de leitores
+- área administrativa protegida por login
+- formulários com tratamento no servidor
+- organização baseada em MVC
+- dados estáticos em vetores PHP, persistidos dinamicamente em sessão durante a execução
 
 O protótipo visual das telas foi elaborado no Figma:
 
 <https://www.figma.com/design/LlLAwxa2hDMQH0cUZGuxUr/Web-Servidor?node-id=1-5&t=dptCdPAwdHbfjG0m-1>
 
-## Objetivos do sistema
-O projeto contempla:
-- autenticação para área protegida
-- formulários com validação no servidor
-- mensagens de feedback ao usuário
-- listagens administrativas com filtros e paginação
+## Objetivos da aplicação
+O sistema foi construído para demonstrar, na prática, os conteúdos trabalhados em aula:
+- arrays
+- inclusão de arquivos
+- estruturação MVC
+- formulários e requisições HTTP
+- cookies e sessões
 
-## Arquitetura adotada
-O projeto adota uma organização inspirada no padrão MVC.
+Além disso, o projeto contempla:
+- autenticação com sessão
+- área protegida para administração
+- validações e feedback no lado do servidor
+- CRUDs administrativos
+- comentários em publicações
+- filtros e paginação nas listagens do painel
+
+## Arquitetura atual
+O projeto adota uma estrutura MVC simples, sem framework PHP, adequada ao estágio atual do trabalho.
 
 ### Model
-Os dados base do sistema ficam centralizados em vetores PHP no arquivo:
+Responsável por regras de negócio e manipulação dos dados.
+
+Arquivos principais:
+- `app/Models/PortalRepository.php`
+- `app/Models/PostsModel.php`
+- `app/Models/CategoriesModel.php`
+- `app/Models/UsersModel.php`
+- `app/Models/CommentsModel.php`
+- `app/Models/SettingsModel.php`
+
+Os dados base do sistema ficam em:
 - `app/Data/portal_content.php`
 
-Esse arquivo funciona como a camada de dados do protótipo por meio de um vetor dinâmico. A partir dele, os registros são carregados e copiados para a sessão, permitindo operações de cadastro, edição e exclusão sem necessidade de banco de dados nesta etapa.
-
-### Controller
-O ponto de entrada da aplicação está em:
-- `public/index.php`
-
-Esse arquivo atua como controlador frontal da aplicação. Ele é responsável por:
-- receber a rota via `$_GET['url']`
-- processar formulários enviados por `POST`
-- validar dados no servidor
-- controlar autenticação com sessão
-- atualizar os vetores dinâmicos em `$_SESSION`
-- encaminhar para as views correspondentes
+O repositório lê esse arquivo, normaliza os dados e mantém o estado corrente em `$_SESSION['portal_data']`, simulando persistência sem banco de dados nesta etapa.
 
 ### View
-As telas ficam organizadas em:
-- `app/Views/public`
-Conjunto de telas públicas, acessíveis aos visitantes e leitores cadastrados.
-- `app/Views/admin`
-Parte do painel administrativo, protegido por autenticação.
-- `app/Views/partials`
-Reutilizáveis no frontend, como header e footer.
+Responsável pela apresentação.
 
-As views são responsáveis apenas pela apresentação do conteúdo, estrutura HTML e integração com os estilos do frontend.
+As views estão organizadas em:
+- `app/Views/public`
+- `app/Views/admin`
+- `app/Views/partials`
+
+Também fazem parte da camada de apresentação:
+- `public/css/style.css`
+- `public/assets/*`
+
+### Controller
+Responsável pelo fluxo das rotas, regras de acesso e coordenação entre models e views.
+
+Arquivos principais:
+- `app/Controllers/PublicController.php`
+- `app/Controllers/AdminController.php`
+- `app/Controllers/AuthController.php`
+
+### Core
+Arquivos responsáveis pelo funcionamento da aplicação:
+- `app/Core/App.php`
+- `app/Core/Router.php`
+- `app/Core/View.php`
+- `app/bootstrap.php`
+- `public/index.php`
 
 ## Estrutura atual do projeto
 ```bash
 web-servidor/
 ├── app/
+│   ├── bootstrap.php
+│   ├── Controllers/
+│   │   ├── AdminController.php
+│   │   ├── AuthController.php
+│   │   └── PublicController.php
+│   ├── Core/
+│   │   ├── App.php
+│   │   ├── Router.php
+│   │   └── View.php
 │   ├── Data/
 │   │   └── portal_content.php
+│   ├── Models/
+│   │   ├── CategoriesModel.php
+│   │   ├── CommentsModel.php
+│   │   ├── PortalRepository.php
+│   │   ├── PostsModel.php
+│   │   ├── SettingsModel.php
+│   │   └── UsersModel.php
+│   ├── Support/
+│   │   └── portal_helpers.php
 │   └── Views/
 │       ├── admin/
-│       │   ├── categorias/
-│       │   ├── comentarios/
-│       │   ├── posts/
-│       │   ├── usuarios/
-│       │   ├── configuracoes.php
-│       │   ├── login.php
-│       │   └── painel.php
 │       ├── partials/
-│       │   ├── footer.php
-│       │   └── header.php
 │       └── public/
-│           ├── assets/
-│           ├── categoria.php
-│           ├── conta.php
-│           ├── home.php
-│           ├── login.php
-│           ├── publicacao.php
-│           └── publicacoes.php
 ├── docs/
-│   └── escopo.md
+│   ├── escopo.md
+│   └── fluxo-do-projeto.md
 ├── public/
 │   ├── assets/
-│   │   └── home/
 │   ├── css/
 │   │   └── style.css
+│   ├── favicon.svg
 │   └── index.php
 └── README.md
 ```
+
+## Fluxo de execução
+Resumo do fluxo atual da aplicação:
+
+1. Toda requisição entra por `public/index.php`
+2. O arquivo carrega `app/bootstrap.php`
+3. O bootstrap inicia a sessão, registra helpers, instancia models/controllers e cadastra as rotas
+4. O `Router` associa rota + método HTTP ao controller correspondente
+5. O controller processa a requisição
+6. Os models validam e manipulam os dados
+7. O `PortalRepository` persiste o estado na sessão
+8. A view correspondente é renderizada
+
+Existe uma explicação mais detalhada desse fluxo em:
+- `docs/fluxo-do-projeto.md`
 
 ## Requisitos para execução
 Para executar o projeto localmente, é necessário ter:
 - PHP 8.0 ou superior
 - navegador web
 
-Nesta versão do trabalho:
+Nesta versão:
 - não é necessário Composer
 - não é necessário banco de dados
-- não é necessário configurar `.env`
+- não é necessário `.env`
 
 ## Instalação e execução
 1. Clone o repositório:
 
 ```bash
-git clone <https://github.com/lucasvonryn/web-servidor.git>
+git clone https://github.com/lucasvonryn/web-servidor.git
 ```
 
 2. Acesse a pasta do projeto:
@@ -118,7 +165,7 @@ git clone <https://github.com/lucasvonryn/web-servidor.git>
 cd web-servidor
 ```
 
-3. Inicie o servidor embutido do PHP apontando para a pasta `public`:
+3. Inicie o servidor embutido do PHP apontando para `public`:
 
 ```bash
 php -S localhost:8000 -t public
@@ -131,8 +178,8 @@ http://localhost:8000
 ```
 
 Importante:
-- não abra os arquivos `.php` diretamente no navegador com `file://`
-- a aplicação depende do servidor PHP local para processar rotas, formulários, sessões e carregamento correto de assets
+- não abra os arquivos `.php` diretamente com `file://`
+- o projeto depende do servidor PHP para processar rotas, formulários, sessões e assets corretamente
 
 ## Rotas principais
 
@@ -140,12 +187,13 @@ Importante:
 - `http://localhost:8000/index.php?url=home`
 - `http://localhost:8000/index.php?url=publicacoes`
 - `http://localhost:8000/index.php?url=login`
+- `http://localhost:8000/index.php?url=conta`
 
 ### Área administrativa
 - `http://localhost:8000/index.php?url=admin/login`
+- `http://localhost:8000/index.php?url=admin/posts`
 - `http://localhost:8000/index.php?url=admin/usuarios`
 - `http://localhost:8000/index.php?url=admin/categorias`
-- `http://localhost:8000/index.php?url=admin/posts`
 - `http://localhost:8000/index.php?url=admin/comentarios`
 - `http://localhost:8000/index.php?url=admin/configuracoes`
 - `http://localhost:8000/index.php?url=admin/logout`
@@ -160,116 +208,138 @@ Importante:
 - E-mail: `leitor@oeditorial.com.br`
 - Senha: `123456`
 
-Também é possível criar uma conta pública pela tela de login/cadastro do portal.
+Também é possível criar uma conta pública pela tela de login/cadastro.
 
-## Funcionamento dos dados
-O sistema utiliza uma abordagem híbrida para esta etapa do trabalho:
+## Funcionamento dos dados estáticos
+O sistema utiliza vetores estáticos como base de dados nesta etapa.
 
-1. O arquivo `app/Data/portal_content.php` contém os vetores base do sistema, como categorias pré criadas, publicações, usuários e comentários.
-2. Ao carregar a aplicação, esses dados são lidos e normalizados.
-3. Os dados são copiados para `$_SESSION['portal_data']`.
-4. As operações do painel administrativo atualizam essa versão em sessão.
+### Origem dos dados
+Os dados iniciais do sistema ficam em:
+- `app/Data/portal_content.php`
 
-Com isso, o projeto consegue simular comportamento dinâmico sem banco de dados, mantendo consistência entre:
-- área pública
-- painel administrativo
-- autenticação
-- comentários
+Esse arquivo contém registros base de:
 - configurações
+- categorias
+- publicações
+- usuários
+- comentários
+
+### Persistência temporária
+Durante a execução:
+1. o `PortalRepository` carrega os dados base
+2. os dados são copiados para `$_SESSION['portal_data']`
+3. os CRUDs alteram os dados da sessão
+4. a interface pública e administrativa passa a refletir essas alterações
+
+Assim, o projeto se comporta como um sistema dinâmico sem depender de banco de dados.
 
 ## Funcionalidades implementadas
 
 ### Área pública
 - home com destaques, últimas publicações e categorias
-- listagem de publicações
+- listagem geral de publicações
 - listagem por categoria
-- detalhe completo da publicação e visualização de comentários
-- login e cadastro de usuário público
+- detalhe da publicação
+- comentários para usuários autenticados
+- login e cadastro de leitor
 - área de conta do leitor
-- logout de usuário público
+- logout do usuário público
 
 ### Painel administrativo
 - login administrativo
-- painel inicial com métricas
-- CRUD de usuários da equipe
+- logout administrativo
+- dashboard inicial
+- CRUD de usuários
 - CRUD de categorias
 - CRUD de publicações
 - moderação e exclusão de comentários
-- configurações gerais do site
+- configurações gerais do portal
 - filtros e paginação nas listagens
 
-## Formulários presentes no sistema
-O sistema possui vários formulários processados no servidor além de login administrativo e público (os quais não são contatos na avaliação), entre eles:
+## Formulários existentes
+Além dos logins, o sistema possui diversos formulários com processamento no servidor:
 - cadastro público
+- comentário em publicação
 - cadastro/edição de usuários
 - cadastro/edição de categorias
 - cadastro/edição de publicações
-- formulário de comentários
-- formulário de configurações
+- configurações gerais do site
 
-As validações principais são feitas no lado do servidor, no arquivo controlador `public/index.php`.
+## Validações e feedback
+O projeto utiliza validações no lado do servidor e feedback via sessão.
 
-## Validações e feedback ao usuário
-O projeto utiliza:
-- validações em PHP antes de salvar ou autenticar
-- redirecionamento após processamento
-- mensagens de sucesso e erro em sessão
-- feedback visual nas telas
-
-Exemplos de regras implementadas:
+Exemplos implementados:
 - obrigatoriedade de campos essenciais
 - validação de e-mail
-- verificação de senha mínima no cadastro público
+- senha mínima no cadastro público
 - categoria válida ao salvar publicação
-- proteção de rotas administrativas por sessão
-- bloqueio de comentário para usuário não autenticado
+- autenticação obrigatória para comentar
+- proteção das rotas administrativas
 - bloqueio de exclusão de categoria com publicações vinculadas
 
+O feedback ao usuário é feito com:
+- `$_SESSION['alerta']`
+- `$_SESSION['erros']`
+- `$_SESSION['old']`
+- `$_SESSION['erros_publico']`
+- `$_SESSION['old_publico']`
+
 ## Sessões e autenticação
-O projeto utiliza `$_SESSION` para:
+O sistema utiliza `$_SESSION` para:
 - autenticação do administrador
 - autenticação do usuário público
-- armazenamento temporário dos dados do portal
-- exibição de mensagens de feedback
+- persistência dinâmica dos dados
+- mensagens de feedback
+- repopulação de formulários após erro de validação
 
-Isso atende ao requisito de autenticação com área protegida utilizando sessão.
+## Padronização e organização do código
+Na versão atual, o projeto foi reorganizado para melhorar a apresentação e aderência aos requisitos da disciplina:
+- separação de controllers, models, core, support e views
+- centralização do bootstrap da aplicação
+- uso de um front controller em `public/index.php`
+- padronização de nomes de arquivos e diretórios
+- uso de comentários no código para facilitar leitura e entendimento
 
-## Arquivos importantes
+## Arquivos mais importantes
 - `public/index.php`
-  Front Controller (entrada única). Carrega o bootstrap e despacha a rota.
+  Entrada única da aplicação.
 
 - `app/bootstrap.php`
-  Bootstrap do aplicativo. Configura sessão, helpers, repository, router e registra as rotas.
+  Monta a aplicação, instancia dependências e registra as rotas.
 
-- `app/Core/*`
-  Núcleo do MVC: `Router`, `View` e `App`.
+- `app/Core/Router.php`
+  Mapeia as rotas para handlers.
+
+- `app/Core/App.php`
+  Executa o dispatcher principal.
 
 - `app/Controllers/*`
-  Controllers em classes (camada de controle).
+  Controlam fluxo, autenticação e integração entre model e view.
 
 - `app/Models/PortalRepository.php`
-  Camada de dados: carrega base + sessão (`portal_data`), normaliza e persiste.
+  Gerencia dados estáticos + sessão.
 
 - `app/Models/*Model.php`
-  Models por módulo (posts, categorias, usuários, comentários e configurações).
+  Regras de negócio por módulo.
 
 - `app/Support/portal_helpers.php`
-  Funções pequenas de apoio (slug, data, redirect, guards e alertas).
+  Helpers reutilizáveis para redirect, alertas, guards e utilidades.
 
-- `app/Data/portal_content.php`
-  Vetores base da aplicação.
+- `docs/fluxo-do-projeto.md`
+  Documento de apoio para explicar a arquitetura.
 
-- `app/Views/public/*`
-  Telas públicas do portal.
+## Limitações atuais
+Por ser um protótipo acadêmico desta etapa:
+- os dados ainda não são persistidos em banco de dados
+- o estado é perdido quando a sessão é encerrada
+- as credenciais de login são fixas para demonstração
+- o sistema ainda pode evoluir em camadas futuras com persistência real
 
-- `app/Views/admin/*`
-  Telas do painel administrativo.
+## Próximos passos possíveis
+- migração dos vetores para banco de dados
+- persistência real de usuários e comentários
+- refinamento das regras de autenticação e permissões
+- separação ainda maior de responsabilidades por controller/model
 
-- `app/Views/partials/header.php`
-  Cabeçalho compartilhado entre as telas.
-
-- `app/Views/partials/footer.php`
-  Rodapé compartilhado e scripts auxiliares.
-
-- `public/css/style.css`
-  Estilos gerais do frontend e do painel administrativo.
+## Licença
+Uso acadêmico. Projeto desenvolvido para a disciplina de Desenvolvimento Web Servidor.
