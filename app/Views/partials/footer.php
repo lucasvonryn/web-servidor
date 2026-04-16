@@ -25,6 +25,30 @@ $isAdminLogin = $currentRoute === 'admin/login';
                     <p><?= htmlspecialchars($portalSettings['slogan'] ?? 'Jornalismo com profundidade e compromisso.') ?></p>
                     <p><?= htmlspecialchars($portalSettings['about_text'] ?? 'O Editorial é um veículo jornalístico independente comprometido com a qualidade informativa e o pluralismo de ideias.') ?></p>
                 </div>
+
+                <div class="footer-column">
+                    <h4>Navegação</h4>
+                    <nav class="footer-links" aria-label="Navegação do rodapé">
+                        <a href="<?= htmlspecialchars($routeUrl('home')) ?>">Home</a>
+                        <a href="<?= htmlspecialchars($routeUrl('publicacoes')) ?>">Publicações</a>
+                        <?php $publicAccountUrl = isset($_SESSION['usuario_publico_nome']) ? $routeUrl('conta') : $routeUrl('login', ['modo' => 'entrar']); ?>
+                        <a href="<?= htmlspecialchars($publicAccountUrl) ?>"><?= isset($_SESSION['usuario_publico_nome']) ? 'Minha conta' : 'Entrar' ?></a>
+                        <?php $adminPortalUrl = !empty($_SESSION['usuario_logado']) ? $routeUrl('admin/posts') : $routeUrl('admin/login'); ?>
+                        <a href="<?= htmlspecialchars($adminPortalUrl) ?>">Painel Admin</a>
+                    </nav>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Contato</h4>
+                    <div class="footer-links">
+                        <?php $contactEmail = trim((string) ($portalSettings['contact_email'] ?? '')); ?>
+                        <?php if ($contactEmail !== ''): ?>
+                            <a href="mailto:<?= htmlspecialchars($contactEmail) ?>"><?= htmlspecialchars($contactEmail) ?></a>
+                        <?php else: ?>
+                            <span>E-mail indisponível</span>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
         </footer>
     <?php endif; ?>
@@ -92,52 +116,6 @@ if (carousel) {
 
     renderCarousel(0);
     restartAutoPlay();
-}
-
-var publicationsPage = document.querySelector('[data-publications-page]');
-if (publicationsPage) {
-    var searchInput = publicationsPage.querySelector('[data-publications-search]');
-    var countLabel = publicationsPage.querySelector('[data-publications-count]');
-    var filterButtons = Array.from(publicationsPage.querySelectorAll('[data-publications-filter]'));
-    var items = Array.from(publicationsPage.querySelectorAll('[data-publication-item]'));
-    var activeFilter = 'todos';
-
-    var updatePublications = function () {
-        var term = searchInput ? searchInput.value.trim().toLowerCase() : '';
-        var visibleCount = 0;
-
-        items.forEach(function (item) {
-            var matchesFilter = activeFilter === 'todos' || item.dataset.category === activeFilter;
-            var haystack = ((item.dataset.title || '') + ' ' + (item.dataset.excerpt || '')).toLowerCase();
-            var matchesSearch = term === '' || haystack.indexOf(term) !== -1;
-            var isVisible = matchesFilter && matchesSearch;
-
-            item.classList.toggle('is-hidden', !isVisible);
-            if (isVisible) {
-                visibleCount += 1;
-            }
-        });
-
-        if (countLabel) {
-            countLabel.textContent = visibleCount + (visibleCount === 1 ? ' publicação encontrada' : ' publicações encontradas');
-        }
-    };
-
-    filterButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-            activeFilter = button.dataset.publicationsFilter || 'todos';
-            filterButtons.forEach(function (item) {
-                item.classList.toggle('is-active', item === button);
-            });
-            updatePublications();
-        });
-    });
-
-    if (searchInput) {
-        searchInput.addEventListener('input', updatePublications);
-    }
-
-    updatePublications();
 }
 
 var adminTabs = document.querySelectorAll('.admin-tab-button[data-admin-tab]');

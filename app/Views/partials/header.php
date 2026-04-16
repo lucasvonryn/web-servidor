@@ -20,6 +20,8 @@
     }
     }
 
+    $pageTitle = $isAdminArea ? 'Painel | O Editorial' : 'O Editorial';
+
     $adminHeaderTitle = 'Painel Admin';
     if ($isAdminArea) {
         if (str_starts_with($currentRoute, 'admin/posts/novo')) {
@@ -52,7 +54,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal <?php echo htmlspecialchars($portalSettings['nome_site'] ?? 'O Editorial') ?></title>
+    <title><?php echo htmlspecialchars($pageTitle) ?></title>
+    <link rel="icon" href="<?php echo htmlspecialchars($assetUrl('favicon.svg')) ?>" type="image/svg+xml">
     <link rel="stylesheet" href="<?php echo htmlspecialchars($assetUrl('css/style.css')) ?>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>

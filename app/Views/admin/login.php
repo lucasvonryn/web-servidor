@@ -7,7 +7,8 @@ $adminErrors = $_SESSION['erros'] ?? [];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Admin - O Editorial</title>
+    <title>Painel | O Editorial</title>
+    <link rel="icon" href="<?= htmlspecialchars($assetUrl('favicon.svg')) ?>" type="image/svg+xml">
     <link rel="stylesheet" href="<?= htmlspecialchars($assetUrl('css/style.css')) ?>">
 </head>
 <body>

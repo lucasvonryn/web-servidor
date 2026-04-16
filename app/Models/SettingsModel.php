@@ -32,7 +32,6 @@ class SettingsModel
             'itens_home' => in_array($itensHome, [5, 10, 20], true) ? $itensHome : 6,
             'show_featured' => !empty($input['show_featured']),
             'show_latest' => !empty($input['show_latest']),
-            'show_categories' => !empty($input['show_categories']),
             'exibir_comentarios' => !empty($input['exibir_comentarios']),
             'contact_email' => $contactEmail !== '' ? $contactEmail : ($portalData['settings']['contact_email'] ?? 'contato@oeditorial.com.br'),
         ]);

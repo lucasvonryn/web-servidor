@@ -34,14 +34,6 @@ include __DIR__ . '/../partials/header.php';
 <section class="category-page">
     <div class="category-hero accent-<?= htmlspecialchars($category['accent']) ?>">
         <div class="container">
-            <nav class="category-breadcrumb" aria-label="Breadcrumb">
-                <a href="<?= htmlspecialchars($routeUrl('home')) ?>">Home</a>
-                <span>&rsaquo;</span>
-                <span>Categorias</span>
-                <span>&rsaquo;</span>
-                <strong><?= htmlspecialchars($category['name']) ?></strong>
-            </nav>
-
             <div class="category-hero-copy">
                 <h1><?= htmlspecialchars($category['name']) ?></h1>
                 <p><?= htmlspecialchars($category['description']) ?></p>
@@ -51,15 +43,6 @@ include __DIR__ . '/../partials/header.php';
     </div>
 
     <div class="container category-content">
-        <div class="category-toolbar">
-            <p>Mostrando <?= htmlspecialchars($categoryPostsCount . ' ' . ($categoryPostsCount === 1 ? 'publicação' : 'publicações')) ?> em <strong><?= htmlspecialchars($category['name']) ?></strong></p>
-            <div class="category-toolbar-actions">
-                <button type="button" class="category-sort-chip">Mais recentes</button>
-                <button type="button" class="category-view-toggle is-active" aria-label="Visualização em grade">▦</button>
-                <button type="button" class="category-view-toggle" aria-label="Visualização em lista">☰</button>
-            </div>
-        </div>
-
         <div class="category-post-grid">
             <?php foreach ($categoryPosts as $post): ?>
                 <?php $postCategory = $categories[$post['category']] ?? $category; ?>

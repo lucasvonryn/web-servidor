@@ -11,12 +11,6 @@ $featuredSlides = array_values(array_filter($portalData['featured_slides'], stat
     return ($post['status'] ?? 'Publicado') === 'Publicado';
 }));
 
-$postsCountByCategory = [];
-foreach ($publishedPosts as $post) {
-    $slug = $post['category'];
-    $postsCountByCategory[$slug] = ($postsCountByCategory[$slug] ?? 0) + 1;
-}
-
 include __DIR__ . '/../partials/header.php';
 ?>
 
@@ -53,7 +47,7 @@ include __DIR__ . '/../partials/header.php';
 
                     <div class="hero-carousel-controls">
                         <button type="button" class="hero-carousel-arrow" data-carousel-prev aria-label="Slide anterior">
-                            &larr;
+                            <i class="bi bi-chevron-left" aria-hidden="true"></i>
                         </button>
                         <div class="hero-carousel-dots">
                             <?php foreach ($featuredSlides as $index => $slide): ?>
@@ -61,7 +55,7 @@ include __DIR__ . '/../partials/header.php';
                             <?php endforeach; ?>
                         </div>
                         <button type="button" class="hero-carousel-arrow" data-carousel-next aria-label="Próximo slide">
-                            &rarr;
+                            <i class="bi bi-chevron-right" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
@@ -107,30 +101,6 @@ include __DIR__ . '/../partials/header.php';
                                 </div>
                             </div>
                         </article>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </section>
-    <?php endif; ?>
-
-    <?php if (!empty($settings['show_categories'])): ?>
-        <section class="categories-section">
-            <div class="container">
-                <div class="section-heading">
-                    <h3>Explore por Categoria</h3>
-                </div>
-
-                <div class="category-grid">
-                    <?php foreach ($categories as $slug => $category): ?>
-                        <?php $categoryPostsCount = $postsCountByCategory[$slug] ?? 0; ?>
-                        <a class="category-card accent-<?= htmlspecialchars($category['accent']) ?>" href="<?= htmlspecialchars($routeUrl('categoria', ['slug' => $slug])) ?>">
-                            <span class="category-name"><?= htmlspecialchars($category['name']) ?></span>
-                            <p><?= htmlspecialchars($category['description']) ?></p>
-                            <div class="category-meta">
-                                <span><?= htmlspecialchars($categoryPostsCount . ' ' . ($categoryPostsCount === 1 ? 'publicação' : 'publicações')) ?></span>
-                                <span>&rarr;</span>
-                            </div>
-                        </a>
                     <?php endforeach; ?>
                 </div>
             </div>
