@@ -47,7 +47,7 @@
                 <strong><?php echo $pendentesCont ?> comentário(s) aguardando moderação</strong>
                 <span>Revise e aprove ou rejeite cada comentário abaixo.</span>
             </div>
-            <a href="<?php echo htmlspecialchars($routeUrl('admin/comments')) ?>" class="admin-warning-button">Ver pendentes</a>
+            <a href="<?php echo htmlspecialchars($routeUrl('admin/comentarios', ['filtro' => 'pendente'])) ?>" class="admin-warning-button">Ver pendentes</a>
         </div>
     <?php endif; ?>
 
@@ -93,16 +93,16 @@
                 </div>
                 <div class="admin-card-actions admin-card-actions-vertical">
                     <?php if ($comentarioStatus !== 'Aprovado'): ?>
-                        <a href="<?php echo htmlspecialchars($routeUrl('admin/comments/status', ['id' => $comentarioInfo['id'], 'status' => 'Aprovado'])) ?>" class="admin-icon-action admin-icon-action-success" aria-label="Aprovar">
+                        <a href="<?php echo htmlspecialchars($routeUrl('admin/comentarios/status', ['id' => $comentarioInfo['id'], 'status' => 'Aprovado'])) ?>" class="admin-icon-action admin-icon-action-success" aria-label="Aprovar">
                             <i class="bi bi-check-lg"></i>
                         </a>
                     <?php endif; ?>
                     <?php if ($comentarioStatus !== 'Rejeitado'): ?>
-                        <a href="<?php echo htmlspecialchars($routeUrl('admin/comments/status', ['id' => $comentarioInfo['id'], 'status' => 'Rejeitado'])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Rejeitar">
+                        <a href="<?php echo htmlspecialchars($routeUrl('admin/comentarios/status', ['id' => $comentarioInfo['id'], 'status' => 'Rejeitado'])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Rejeitar">
                             <i class="bi bi-x-lg"></i>
                         </a>
                     <?php endif; ?>
-                    <a href="<?php echo htmlspecialchars($routeUrl('admin/comments/excluir', ['id' => $comentarioInfo['id']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir este comentário?')">
+                    <a href="<?php echo htmlspecialchars($routeUrl('admin/comentarios/excluir', ['id' => $comentarioInfo['id']])) ?>" class="admin-icon-action admin-icon-action-danger" aria-label="Excluir" onclick="return confirm('Deseja excluir este comentário?')">
                         <i class="bi bi-trash"></i>
                     </a>
                 </div>

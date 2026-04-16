@@ -435,6 +435,19 @@ if (commentsPage) {
         });
     });
 
+    try {
+        var urlParams = new URLSearchParams(window.location.search);
+        var initialFilter = (urlParams.get('filtro') || '').trim().toLowerCase();
+        if (initialFilter && ['todos', 'aprovado', 'pendente', 'rejeitado'].indexOf(initialFilter) !== -1) {
+            activeCommentsFilter = initialFilter;
+            commentFilters.forEach(function (filterItem) {
+                filterItem.classList.toggle('is-active', (filterItem.dataset.adminCommentsFilter || 'todos') === activeCommentsFilter);
+            });
+        }
+    } catch (e) {
+        // ignore
+    }
+
     if (commentsSearch) {
         commentsSearch.addEventListener('input', function () {
             updateComments(true);
