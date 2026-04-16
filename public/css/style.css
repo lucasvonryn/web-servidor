@@ -1745,20 +1745,6 @@ a {
     margin-top: 20px;
 }
 
-.admin-login-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    color: #5d708f;
-}
-
-.admin-login-row a {
-    text-decoration: none;
-    color: #4e46ff;
-    font-weight: 700;
-}
-
 .admin-login-back {
     color: #8da0bd;
     text-decoration: none;
@@ -3069,32 +3055,6 @@ a {
     color: rgba(255, 255, 255, 0.64);
 }
 
-.footer-newsletter {
-    display: flex;
-    gap: 8px;
-}
-
-.footer-newsletter input {
-    flex: 1;
-    min-width: 0;
-    height: 38px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
-    padding: 0 12px;
-}
-
-.footer-newsletter input::placeholder {
-    color: rgba(255, 255, 255, 0.58);
-}
-
-.footer-newsletter button {
-    border-radius: 8px;
-    min-width: 46px;
-    padding: 0 16px;
-}
-
 .public-footer-bottom {
     border-top: 1px solid rgba(255, 255, 255, 0.12);
     padding: 18px 0 20px;
@@ -3361,11 +3321,4 @@ select.form-control {
         font-size: 1.9rem;
     }
 
-    .footer-newsletter {
-        flex-direction: column;
-    }
-
-    .footer-newsletter button {
-        width: 100%;
-    }
 }

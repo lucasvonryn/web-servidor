@@ -8,7 +8,6 @@ $portalSettings = [
     'show_featured' => true,
     'show_latest' => true,
     'show_categories' => true,
-    'show_newsletter' => true,
     'exibir_comentarios' => true,
     'contact_email' => 'contato@oeditorial.com.br',
     'footer_links' => 'Fale Conosco',

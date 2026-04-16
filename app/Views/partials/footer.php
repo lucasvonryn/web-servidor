@@ -25,14 +25,6 @@ $isAdminLogin = $currentRoute === 'admin/login';
                     <p><?= htmlspecialchars($portalSettings['slogan'] ?? 'Jornalismo com profundidade e compromisso.') ?></p>
                     <p><?= htmlspecialchars($portalSettings['about_text'] ?? 'O Editorial é um veículo jornalístico independente comprometido com a qualidade informativa e o pluralismo de ideias.') ?></p>
                 </div>
-
-                <div class="footer-column">
-                    <h4>Newsletter</h4>
-                    <form class="footer-newsletter" action="<?= htmlspecialchars($routeUrl('login', ['modo' => 'criar'])) ?>" method="get">
-                        <input type="email" name="newsletter" placeholder="Seu e-mail" aria-label="Seu e-mail">
-                        <button type="submit" class="btn-primary">OK</button>
-                    </form>
-                </div>
             </div>
         </footer>
     <?php endif; ?>

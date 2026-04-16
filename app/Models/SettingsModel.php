@@ -33,7 +33,6 @@ class SettingsModel
             'show_featured' => !empty($input['show_featured']),
             'show_latest' => !empty($input['show_latest']),
             'show_categories' => !empty($input['show_categories']),
-            'show_newsletter' => !empty($input['show_newsletter']),
             'exibir_comentarios' => !empty($input['exibir_comentarios']),
             'contact_email' => $contactEmail !== '' ? $contactEmail : ($portalData['settings']['contact_email'] ?? 'contato@oeditorial.com.br'),
         ]);

@@ -48,7 +48,6 @@ include __DIR__ . '/../partials/header.php';
                     <label class="admin-toggle-card"><input type="checkbox" name="show_featured" value="1" <?= !empty($settings['show_featured']) ? 'checked' : '' ?>> <span>Bloco de destaques (carrossel)</span></label>
                     <label class="admin-toggle-card"><input type="checkbox" name="show_latest" value="1" <?= !empty($settings['show_latest']) ? 'checked' : '' ?>> <span>Últimas publicações</span></label>
                     <label class="admin-toggle-card"><input type="checkbox" name="show_categories" value="1" <?= !empty($settings['show_categories']) ? 'checked' : '' ?>> <span>Seção de categorias</span></label>
-                    <label class="admin-toggle-card"><input type="checkbox" name="show_newsletter" value="1" <?= !empty($settings['show_newsletter']) ? 'checked' : '' ?>> <span>Bloco de newsletter</span></label>
                     <label class="admin-toggle-card"><input type="checkbox" name="exibir_comentarios" value="1" <?= !empty($settings['exibir_comentarios']) ? 'checked' : '' ?>> <span>Permitir comentários nas publicações</span></label>
                 </div>
             </div>
