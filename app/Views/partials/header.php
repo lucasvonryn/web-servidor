@@ -1,18 +1,19 @@
 <?php
-    $portalData           = $portalData ?? require __DIR__ . '/../../Data/portal_content.php';
-    $portalSettings       = $portalData['settings'] ?? [];
-    $portalCategories     = $portalData['categories'] ?? [];
-    $portalComments       = $portalData['comments'] ?? [];
-    $currentRoute         = $_GET['url'] ?? 'home';
-    $currentCategorySlug  = $_GET['slug'] ?? '';
-    $isAdminArea          = str_starts_with($currentRoute, 'admin/');
-    $isAdminLogin         = $currentRoute === 'admin/login';
-    $isPublicLogin        = $currentRoute === 'login';
-    $searchQuery          = trim($_GET['q'] ?? '');
-    $publicMode           = $_GET['modo'] ?? 'entrar';
-    $publicMode           = $publicMode === 'criar' ? 'criar' : 'entrar';
-    $isAdminLogged        = ! empty($_SESSION['usuario_logado']);
-    $adminPortalUrl       = $isAdminLogged ? $routeUrl('admin/posts') : $routeUrl('admin/login');
+    $portalData          = $portalData ?? require __DIR__ . '/../../Data/portal_content.php';
+    $portalSettings      = $portalData['settings'] ?? [];
+    $portalCategories    = $portalData['categories'] ?? [];
+    $portalComments      = $portalData['comments'] ?? [];
+    $currentRoute        = $_GET['url'] ?? 'home';
+    $currentCategorySlug = $_GET['slug'] ?? '';
+    $isAdminArea         = str_starts_with($currentRoute, 'admin/');
+    $isAdminLogin        = $currentRoute === 'admin/login';
+    $isPublicLogin       = $currentRoute === 'login';
+    $searchQuery         = trim($_GET['q'] ?? '');
+    $publicMode          = $_GET['modo'] ?? 'entrar';
+    $publicMode          = $publicMode === 'criar' ? 'criar' : 'entrar';
+    $isAdminLogged       = ! empty($_SESSION['usuario_logado']);
+    $adminPortalUrl      = $isAdminLogged ? $routeUrl('admin/posts') : $routeUrl('admin/login');
+
     $pendingAdminComments = 0;
     foreach ($portalComments as $adminCommentItem) {
     if (($adminCommentItem['status'] ?? '') === 'Pendente') {
@@ -22,31 +23,32 @@
 
     $pageTitle = $isAdminArea ? 'Painel | O Editorial' : 'O Editorial';
 
+    // Título exibido no header do admin (topbar), baseado na rota atual.
     $adminHeaderTitle = 'Painel Admin';
     if ($isAdminArea) {
-        if (str_starts_with($currentRoute, 'admin/posts/novo')) {
-            $adminHeaderTitle = 'Nova publicação';
-        } elseif (str_starts_with($currentRoute, 'admin/posts/editar')) {
-            $adminHeaderTitle = 'Editar publicação';
-        } elseif (str_starts_with($currentRoute, 'admin/posts')) {
-            $adminHeaderTitle = 'Publicações';
-        } elseif (str_starts_with($currentRoute, 'admin/usuarios/novo')) {
-            $adminHeaderTitle = 'Novo usuário';
-        } elseif (str_starts_with($currentRoute, 'admin/usuarios/editar')) {
-            $adminHeaderTitle = 'Editar usuário';
-        } elseif (str_starts_with($currentRoute, 'admin/usuarios')) {
-            $adminHeaderTitle = 'Usuários';
-        } elseif (str_starts_with($currentRoute, 'admin/categorias/novo')) {
-            $adminHeaderTitle = 'Nova categoria';
-        } elseif (str_starts_with($currentRoute, 'admin/categorias/editar')) {
-            $adminHeaderTitle = 'Editar categoria';
-        } elseif (str_starts_with($currentRoute, 'admin/categorias')) {
-            $adminHeaderTitle = 'Categorias';
-        } elseif (str_starts_with($currentRoute, 'admin/comentarios')) {
-            $adminHeaderTitle = 'Comentários';
-        } elseif (str_starts_with($currentRoute, 'admin/configuracoes')) {
-            $adminHeaderTitle = 'Configurações';
-        }
+    if (str_starts_with($currentRoute, 'admin/posts/novo')) {
+        $adminHeaderTitle = 'Nova publicação';
+    } elseif (str_starts_with($currentRoute, 'admin/posts/editar')) {
+        $adminHeaderTitle = 'Editar publicação';
+    } elseif (str_starts_with($currentRoute, 'admin/posts')) {
+        $adminHeaderTitle = 'Publicações';
+    } elseif (str_starts_with($currentRoute, 'admin/usuarios/novo')) {
+        $adminHeaderTitle = 'Novo usuário';
+    } elseif (str_starts_with($currentRoute, 'admin/usuarios/editar')) {
+        $adminHeaderTitle = 'Editar usuário';
+    } elseif (str_starts_with($currentRoute, 'admin/usuarios')) {
+        $adminHeaderTitle = 'Usuários';
+    } elseif (str_starts_with($currentRoute, 'admin/categorias/novo')) {
+        $adminHeaderTitle = 'Nova categoria';
+    } elseif (str_starts_with($currentRoute, 'admin/categorias/editar')) {
+        $adminHeaderTitle = 'Editar categoria';
+    } elseif (str_starts_with($currentRoute, 'admin/categorias')) {
+        $adminHeaderTitle = 'Categorias';
+    } elseif (str_starts_with($currentRoute, 'admin/comentarios')) {
+        $adminHeaderTitle = 'Comentários';
+    } elseif (str_starts_with($currentRoute, 'admin/configuracoes')) {
+        $adminHeaderTitle = 'Configurações';
+    }
     }
 ?>
 <!DOCTYPE html>

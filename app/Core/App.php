@@ -13,9 +13,9 @@ class App
 
     public function __construct(Router $router, View $view, PortalRepository $repo, callable $routeUrl, callable $assetUrl)
     {
-        $this->router = $router;
-        $this->view = $view;
-        $this->repo = $repo;
+        $this->router   = $router;
+        $this->view     = $view;
+        $this->repo     = $repo;
         $this->routeUrl = $routeUrl;
         $this->assetUrl = $assetUrl;
     }
@@ -47,8 +47,8 @@ class App
 
     public function run(): void
     {
+        // Rota vem do query string. Ex.: index.php?url=admin/posts
         $url = $_GET['url'] ?? 'home';
         $this->router->dispatch($url);
     }
 }
-

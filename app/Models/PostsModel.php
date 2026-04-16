@@ -24,7 +24,7 @@ class PostsModel
         }
 
         $categoria = trim((string) ($input['categoria'] ?? ''));
-        if ($categoria === '' || !isset($portalData['categories'][$categoria])) {
+        if ($categoria === '' || ! isset($portalData['categories'][$categoria])) {
             $erros['categoria'] = 'Selecione uma categoria válida.';
         }
 
@@ -37,19 +37,19 @@ class PostsModel
 
     public function save(array $portalData, array $input): array
     {
-        $postId = (int) ($input['id'] ?? 0);
-        $titulo = trim((string) ($input['titulo'] ?? ''));
-        $slugInput = trim((string) ($input['slug'] ?? ''));
-        $resumo = trim((string) ($input['resumo'] ?? ''));
-        $categoria = trim((string) ($input['categoria'] ?? ''));
-        $status = trim((string) ($input['status'] ?? 'Rascunho'));
-        $autor = trim((string) ($input['autor'] ?? ''));
+        $postId         = (int) ($input['id'] ?? 0);
+        $titulo         = trim((string) ($input['titulo'] ?? ''));
+        $slugInput      = trim((string) ($input['slug'] ?? ''));
+        $resumo         = trim((string) ($input['resumo'] ?? ''));
+        $categoria      = trim((string) ($input['categoria'] ?? ''));
+        $status         = trim((string) ($input['status'] ?? 'Rascunho'));
+        $autor          = trim((string) ($input['autor'] ?? ''));
         $dataPublicacao = trim((string) ($input['data_publicacao'] ?? ''));
-        $coverUrl = trim((string) ($input['cover'] ?? ''));
-        $featured = !empty($input['featured']);
-        $conteudo = trim((string) ($input['conteudo'] ?? ''));
+        $coverUrl       = trim((string) ($input['cover'] ?? ''));
+        $featured       = ! empty($input['featured']);
+        $conteudo       = trim((string) ($input['conteudo'] ?? ''));
 
-        if (!in_array($status, ['Publicado', 'Rascunho'], true)) {
+        if (! in_array($status, ['Publicado', 'Rascunho'], true)) {
             $status = 'Rascunho';
         }
 
@@ -61,9 +61,9 @@ class PostsModel
             $resumo = portal_excerpt($conteudo);
         }
 
-        $posts = $portalData['posts'];
-        $baseSlug = portal_slugify($slugInput !== '' ? $slugInput : $titulo);
-        $slug = $baseSlug;
+        $posts         = $portalData['posts'];
+        $baseSlug      = portal_slugify($slugInput !== '' ? $slugInput : $titulo);
+        $slug          = $baseSlug;
         $existingSlugs = [];
         foreach ($posts as $existingPost) {
             if ($postId > 0 && (int) ($existingPost['id'] ?? 0) === $postId) {
@@ -77,23 +77,23 @@ class PostsModel
             $slugSuffix++;
         }
 
-        $authorParts = preg_split('/\s+/', $autor) ?: [];
-        $authorShort = $authorParts[0] ?? $autor;
+        $authorParts      = preg_split('/\s+/', $autor) ?: [];
+        $authorShort      = $authorParts[0] ?? $autor;
         $selectedCategory = $portalData['categories'][$categoria] ?? null;
-        $postDate = $dataPublicacao !== '' ? $dataPublicacao : portal_format_date();
+        $postDate         = $dataPublicacao !== '' ? $dataPublicacao : portal_format_date();
 
         $payload = [
-            'slug' => $slug,
-            'title' => $titulo,
-            'excerpt' => $resumo,
-            'content' => $conteudo,
-            'category' => $categoria,
-            'author' => $autor,
+            'slug'         => $slug,
+            'title'        => $titulo,
+            'excerpt'      => $resumo,
+            'content'      => $conteudo,
+            'category'     => $categoria,
+            'author'       => $autor,
             'author_short' => $authorShort,
-            'date' => $postDate,
-            'status' => $status,
-            'featured' => $featured,
-            'cover' => $coverUrl !== '' ? $coverUrl : ($selectedCategory['cover'] ?? ''),
+            'date'         => $postDate,
+            'status'       => $status,
+            'featured'     => $featured,
+            'cover'        => $coverUrl !== '' ? $coverUrl : ($selectedCategory['cover'] ?? ''),
         ];
 
         if ($postId > 0) {
@@ -118,7 +118,7 @@ class PostsModel
 
     public function delete(array $portalData, int $postId): array
     {
-        $posts = $portalData['posts'];
+        $posts       = $portalData['posts'];
         $removedPost = false;
 
         foreach ($posts as $index => $postItem) {
@@ -130,7 +130,7 @@ class PostsModel
         }
 
         if ($removedPost) {
-            $portalData['posts'] = array_values($posts);
+            $portalData['posts']    = array_values($posts);
             $portalData['comments'] = array_values(array_filter($portalData['comments'], static function (array $commentItem) use ($postId): bool {
                 return (int) ($commentItem['post_id'] ?? 0) !== $postId;
             }));
@@ -139,4 +139,3 @@ class PostsModel
         return $this->repo->persistPortalData($portalData);
     }
 }
-

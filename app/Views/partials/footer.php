@@ -1,14 +1,14 @@
 <?php
-$portalData = $portalData ?? require __DIR__ . '/../../Data/portal_content.php';
-$portalSettings = $portalData['settings'] ?? [];
-$portalCategories = $portalData['categories'] ?? [];
-$currentRoute = $_GET['url'] ?? 'home';
-$isAdminLogin = $currentRoute === 'admin/login';
+    $portalData       = $portalData ?? require __DIR__ . '/../../Data/portal_content.php';
+    $portalSettings   = $portalData['settings'] ?? [];
+    $portalCategories = $portalData['categories'] ?? [];
+    $currentRoute     = $_GET['url'] ?? 'home';
+    $isAdminLogin     = $currentRoute === 'admin/login';
 ?>
         </main>
     </div>
 
-    <?php if (str_starts_with($currentRoute, 'admin/') && !$isAdminLogin): ?>
+    <?php if (str_starts_with($currentRoute, 'admin/') && ! $isAdminLogin): ?>
         </div>
     </div>
     <?php elseif (str_starts_with($currentRoute, 'admin/')): ?>
@@ -18,23 +18,23 @@ $isAdminLogin = $currentRoute === 'admin/login';
         <footer class="public-footer">
             <div class="container public-footer-main">
                 <div class="footer-column">
-                    <a class="footer-brand" href="<?= htmlspecialchars($routeUrl('home')) ?>">
+                    <a class="footer-brand" href="<?php echo htmlspecialchars($routeUrl('home')) ?>">
                         <span class="brand-badge">OE</span>
-                        <span><?= htmlspecialchars($portalSettings['nome_site'] ?? 'O Editorial') ?></span>
+                        <span><?php echo htmlspecialchars($portalSettings['nome_site'] ?? 'O Editorial') ?></span>
                     </a>
-                    <p><?= htmlspecialchars($portalSettings['slogan'] ?? 'Jornalismo com profundidade e compromisso.') ?></p>
-                    <p><?= htmlspecialchars($portalSettings['about_text'] ?? 'O Editorial é um veículo jornalístico independente comprometido com a qualidade informativa e o pluralismo de ideias.') ?></p>
+                    <p><?php echo htmlspecialchars($portalSettings['slogan'] ?? 'Jornalismo com profundidade e compromisso.') ?></p>
+                    <p><?php echo htmlspecialchars($portalSettings['about_text'] ?? 'O Editorial é um veículo jornalístico independente comprometido com a qualidade informativa e o pluralismo de ideias.') ?></p>
                 </div>
 
                 <div class="footer-column">
                     <h4>Navegação</h4>
                     <nav class="footer-links" aria-label="Navegação do rodapé">
-                        <a href="<?= htmlspecialchars($routeUrl('home')) ?>">Home</a>
-                        <a href="<?= htmlspecialchars($routeUrl('publicacoes')) ?>">Publicações</a>
+                        <a href="<?php echo htmlspecialchars($routeUrl('home')) ?>">Home</a>
+                        <a href="<?php echo htmlspecialchars($routeUrl('publicacoes')) ?>">Publicações</a>
                         <?php $publicAccountUrl = isset($_SESSION['usuario_publico_nome']) ? $routeUrl('conta') : $routeUrl('login', ['modo' => 'entrar']); ?>
-                        <a href="<?= htmlspecialchars($publicAccountUrl) ?>"><?= isset($_SESSION['usuario_publico_nome']) ? 'Minha conta' : 'Entrar' ?></a>
-                        <?php $adminPortalUrl = !empty($_SESSION['usuario_logado']) ? $routeUrl('admin/posts') : $routeUrl('admin/login'); ?>
-                        <a href="<?= htmlspecialchars($adminPortalUrl) ?>">Painel Admin</a>
+                        <a href="<?php echo htmlspecialchars($publicAccountUrl) ?>"><?php echo isset($_SESSION['usuario_publico_nome']) ? 'Minha conta' : 'Entrar' ?></a>
+                        <?php $adminPortalUrl = ! empty($_SESSION['usuario_logado']) ? $routeUrl('admin/posts') : $routeUrl('admin/login'); ?>
+                        <a href="<?php echo htmlspecialchars($adminPortalUrl) ?>">Painel Admin</a>
                     </nav>
                 </div>
 
@@ -43,7 +43,7 @@ $isAdminLogin = $currentRoute === 'admin/login';
                     <div class="footer-links">
                         <?php $contactEmail = trim((string) ($portalSettings['contact_email'] ?? '')); ?>
                         <?php if ($contactEmail !== ''): ?>
-                            <a href="mailto:<?= htmlspecialchars($contactEmail) ?>"><?= htmlspecialchars($contactEmail) ?></a>
+                            <a href="mailto:<?php echo htmlspecialchars($contactEmail) ?>"><?php echo htmlspecialchars($contactEmail) ?></a>
                         <?php else: ?>
                             <span>E-mail indisponível</span>
                         <?php endif; ?>

@@ -17,7 +17,7 @@ class Router
 
     public function dispatch(string $name): void
     {
-        if (!isset($this->routes[$name])) {
+        if (! isset($this->routes[$name])) {
             http_response_code(404);
             echo '<h1>404 - Página não encontrada</h1>';
             echo 'URL atual: ' . htmlspecialchars($name);
@@ -27,4 +27,3 @@ class Router
         ($this->routes[$name])();
     }
 }
-

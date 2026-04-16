@@ -15,7 +15,7 @@ class CommentsModel
     public function setStatus(array $portalData, int $commentId, string $status): array
     {
         $allowedStatuses = ['Aprovado', 'Pendente', 'Rejeitado'];
-        if ($commentId <= 0 || !in_array($status, $allowedStatuses, true)) {
+        if ($commentId <= 0 || ! in_array($status, $allowedStatuses, true)) {
             return $portalData;
         }
 
@@ -46,7 +46,7 @@ class CommentsModel
     public function addPublicComment(array $portalData, string $postSlug, string $text): ?array
     {
         $postSlug = trim($postSlug);
-        $text = trim($text);
+        $text     = trim($text);
         if ($postSlug === '' || $text === '') {
             return null;
         }
@@ -58,33 +58,32 @@ class CommentsModel
                 break;
             }
         }
-        if (!$targetPost) {
+        if (! $targetPost) {
             return null;
         }
 
         $comments = $portalData['comments'];
-        $nextId = 1;
+        $nextId   = 1;
         foreach ($comments as $comment) {
             $nextId = max($nextId, (int) ($comment['id'] ?? 0) + 1);
         }
 
-        $commentAuthor = trim((string) ($_SESSION['usuario_publico_nome'] ?? ''));
-        $commentEmail = trim((string) ($_SESSION['usuario_publico_email'] ?? 'leitor@oeditorial.com.br'));
+        $commentAuthor  = trim((string) ($_SESSION['usuario_publico_nome'] ?? ''));
+        $commentEmail   = trim((string) ($_SESSION['usuario_publico_email'] ?? 'leitor@oeditorial.com.br'));
         $commentExcerpt = portal_excerpt($text, 220);
 
         $comments[] = [
-            'id' => $nextId,
+            'id'      => $nextId,
             'post_id' => (int) ($targetPost['id'] ?? 0),
-            'autor' => $commentAuthor !== '' ? $commentAuthor : 'Leitor',
-            'email' => $commentEmail,
-            'trecho' => $commentExcerpt,
-            'texto' => $text,
-            'status' => 'Aprovado',
-            'data' => portal_format_date(),
+            'autor'   => $commentAuthor !== '' ? $commentAuthor : 'Leitor',
+            'email'   => $commentEmail,
+            'trecho'  => $commentExcerpt,
+            'texto'   => $text,
+            'status'  => 'Aprovado',
+            'data'    => portal_format_date(),
         ];
 
         $portalData['comments'] = $comments;
         return $this->repo->persistPortalData($portalData);
     }
 }
-

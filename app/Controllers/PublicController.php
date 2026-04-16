@@ -15,19 +15,19 @@ class PublicController
 
     public function __construct(View $view, PortalRepository $repo, callable $routeUrl, callable $assetUrl)
     {
-        $this->view = $view;
-        $this->repo = $repo;
+        $this->view          = $view;
+        $this->repo          = $repo;
         $this->commentsModel = new CommentsModel($repo);
-        $this->routeUrl = $routeUrl;
-        $this->assetUrl = $assetUrl;
+        $this->routeUrl      = $routeUrl;
+        $this->assetUrl      = $assetUrl;
     }
 
     private function baseViewData(array $portalData): array
     {
         return [
             'portalData' => $portalData,
-            'routeUrl' => $this->routeUrl,
-            'assetUrl' => $this->assetUrl,
+            'routeUrl'   => $this->routeUrl,
+            'assetUrl'   => $this->assetUrl,
         ];
     }
 
@@ -72,8 +72,8 @@ class PublicController
     {
         portal_require_public_user($this->routeUrl, 'Você precisa entrar com uma conta pública para comentar.');
 
-        $portalData = $this->repo->getPortalData();
-        $postSlug = trim($_POST['slug'] ?? '');
+        $portalData  = $this->repo->getPortalData();
+        $postSlug    = trim($_POST['slug'] ?? '');
         $redirectUrl = ($this->routeUrl)('publicacao', ['slug' => $postSlug]);
 
         if (empty($portalData['settings']['exibir_comentarios'])) {
@@ -88,7 +88,7 @@ class PublicController
         }
 
         $saved = $this->commentsModel->addPublicComment($portalData, $postSlug, $commentText);
-        if (!$saved) {
+        if (! $saved) {
             http_response_code(404);
             echo '<h1>404 - Publicação não encontrada</h1>';
             exit;
@@ -98,4 +98,3 @@ class PublicController
         portal_redirect($redirectUrl . '#comentarios');
     }
 }
-

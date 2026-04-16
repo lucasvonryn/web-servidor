@@ -2,7 +2,7 @@
 
 function portal_slugify(string $value): string
 {
-    $value = trim($value);
+    $value    = trim($value);
     $asciiMap = [
         'á' => 'a', 'à' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a',
         'Á' => 'a', 'À' => 'a', 'Â' => 'a', 'Ã' => 'a', 'Ä' => 'a',
@@ -32,7 +32,7 @@ function portal_excerpt(string $content, int $limit = 180): string
         return $content;
     }
 
-    $excerpt = substr($content, 0, $limit);
+    $excerpt   = substr($content, 0, $limit);
     $lastSpace = strrpos($excerpt, ' ');
     if ($lastSpace !== false) {
         $excerpt = substr($excerpt, 0, $lastSpace);
@@ -44,24 +44,24 @@ function portal_excerpt(string $content, int $limit = 180): string
 function portal_format_date(?int $timestamp = null): string
 {
     $timestamp = $timestamp ?? time();
-    $months = [
-        1 => 'jan.',
-        2 => 'fev.',
-        3 => 'mar.',
-        4 => 'abr.',
-        5 => 'maio',
-        6 => 'jun.',
-        7 => 'jul.',
-        8 => 'ago.',
-        9 => 'set.',
+    $months    = [
+        1  => 'jan.',
+        2  => 'fev.',
+        3  => 'mar.',
+        4  => 'abr.',
+        5  => 'maio',
+        6  => 'jun.',
+        7  => 'jul.',
+        8  => 'ago.',
+        9  => 'set.',
         10 => 'out.',
         11 => 'nov.',
         12 => 'dez.',
     ];
 
-    $day = (int) date('j', $timestamp);
+    $day   = (int) date('j', $timestamp);
     $month = $months[(int) date('n', $timestamp)] ?? date('m', $timestamp);
-    $year = date('Y', $timestamp);
+    $year  = date('Y', $timestamp);
 
     return $day . ' de ' . $month . ' de ' . $year;
 }
@@ -69,7 +69,7 @@ function portal_format_date(?int $timestamp = null): string
 function portal_set_alert(string $tipo, string $mensagem): void
 {
     $_SESSION['alerta'] = [
-        'tipo' => $tipo,
+        'tipo'     => $tipo,
         'mensagem' => $mensagem,
     ];
 }
@@ -82,7 +82,7 @@ function portal_redirect(string $url): void
 
 function portal_require_admin(callable $routeUrl): void
 {
-    if (!empty($_SESSION['usuario_logado'])) {
+    if (! empty($_SESSION['usuario_logado'])) {
         return;
     }
 
@@ -92,11 +92,10 @@ function portal_require_admin(callable $routeUrl): void
 
 function portal_require_public_user(callable $routeUrl, string $message = 'Entre com sua conta pública para continuar.'): void
 {
-    if (!empty($_SESSION['usuario_publico_logado']) && !empty($_SESSION['usuario_publico_nome'])) {
+    if (! empty($_SESSION['usuario_publico_logado']) && ! empty($_SESSION['usuario_publico_nome'])) {
         return;
     }
 
     portal_set_alert('danger', $message);
     portal_redirect($routeUrl('login', ['modo' => 'entrar']));
 }
-

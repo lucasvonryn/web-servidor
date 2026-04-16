@@ -10,17 +10,17 @@ class CategoriesModel
 
     public function __construct(PortalRepository $repo, callable $assetUrl)
     {
-        $this->repo = $repo;
+        $this->repo     = $repo;
         $this->assetUrl = $assetUrl;
     }
 
     public function save(array $portalData, array $input): array
     {
         $originalSlug = trim((string) ($input['original_slug'] ?? ''));
-        $nome = trim((string) ($input['nome'] ?? ''));
-        $slugInput = trim((string) ($input['slug'] ?? ''));
-        $descricao = trim((string) ($input['description'] ?? ''));
-        $accentInput = trim((string) ($input['accent'] ?? ''));
+        $nome         = trim((string) ($input['nome'] ?? ''));
+        $slugInput    = trim((string) ($input['slug'] ?? ''));
+        $descricao    = trim((string) ($input['description'] ?? ''));
+        $accentInput  = trim((string) ($input['accent'] ?? ''));
 
         if ($nome === '') {
             portal_set_alert('danger', 'Informe o nome da categoria.');
@@ -28,13 +28,13 @@ class CategoriesModel
         }
 
         $categories = $portalData['categories'];
-        $nextId = 1;
+        $nextId     = 1;
         foreach ($categories as $category) {
             $nextId = max($nextId, (int) ($category['id'] ?? 0) + 1);
         }
 
-        $baseSlug = portal_slugify($slugInput !== '' ? $slugInput : $nome);
-        $slug = $baseSlug;
+        $baseSlug   = portal_slugify($slugInput !== '' ? $slugInput : $nome);
+        $slug       = $baseSlug;
         $slugSuffix = 2;
         while (isset($categories[$slug]) && $slug !== $originalSlug) {
             $slug = $baseSlug . '-' . $slugSuffix;
@@ -42,10 +42,10 @@ class CategoriesModel
         }
 
         $accentOptions = ['tech', 'politics', 'science', 'green', 'culture'];
-        $accent = in_array($accentInput, $accentOptions, true) ? $accentInput : $accentOptions[($nextId - 1) % count($accentOptions)];
+        $accent        = in_array($accentInput, $accentOptions, true) ? $accentInput : $accentOptions[($nextId - 1) % count($accentOptions)];
         $fallbackCover = ($this->assetUrl)('assets/home/tecnologia-capa.png');
         foreach ($categories as $category) {
-            if (!empty($category['cover'])) {
+            if (! empty($category['cover'])) {
                 $fallbackCover = $category['cover'];
                 break;
             }
@@ -55,12 +55,12 @@ class CategoriesModel
             $currentCategory = $categories[$originalSlug];
             unset($categories[$originalSlug]);
             $categories[$slug] = [
-                'id' => $currentCategory['id'] ?? 0,
-                'slug' => $slug,
-                'name' => $nome,
-                'tag_class' => $slug,
-                'accent' => $accent,
-                'cover' => $currentCategory['cover'] ?? $fallbackCover,
+                'id'          => $currentCategory['id'] ?? 0,
+                'slug'        => $slug,
+                'name'        => $nome,
+                'tag_class'   => $slug,
+                'accent'      => $accent,
+                'cover'       => $currentCategory['cover'] ?? $fallbackCover,
                 'description' => $descricao !== '' ? $descricao : ('Conteúdos e análises sobre ' . strtolower($nome) . '.'),
             ];
 
@@ -75,14 +75,14 @@ class CategoriesModel
             foreach ($categories as $category) {
                 $nextId = max($nextId, (int) ($category['id'] ?? 0) + 1);
             }
-            $accent = in_array($accentInput, $accentOptions, true) ? $accentInput : $accentOptions[($nextId - 1) % count($accentOptions)];
+            $accent            = in_array($accentInput, $accentOptions, true) ? $accentInput : $accentOptions[($nextId - 1) % count($accentOptions)];
             $categories[$slug] = [
-                'id' => $nextId,
-                'slug' => $slug,
-                'name' => $nome,
-                'tag_class' => $slug,
-                'accent' => $accent,
-                'cover' => $fallbackCover,
+                'id'          => $nextId,
+                'slug'        => $slug,
+                'name'        => $nome,
+                'tag_class'   => $slug,
+                'accent'      => $accent,
+                'cover'       => $fallbackCover,
                 'description' => $descricao !== '' ? $descricao : ('Conteúdos e análises sobre ' . strtolower($nome) . '.'),
             ];
         }
@@ -112,4 +112,3 @@ class CategoriesModel
         return $this->repo->persistPortalData($portalData);
     }
 }
-

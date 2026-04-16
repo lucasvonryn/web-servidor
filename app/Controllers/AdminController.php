@@ -31,25 +31,24 @@ class AdminController
         UsersModel $usersModel,
         CommentsModel $commentsModel,
         SettingsModel $settingsModel
-    )
-    {
-        $this->view = $view;
-        $this->repo = $repo;
-        $this->routeUrl = $routeUrl;
-        $this->assetUrl = $assetUrl;
-        $this->postsModel = $postsModel;
+    ) {
+        $this->view            = $view;
+        $this->repo            = $repo;
+        $this->routeUrl        = $routeUrl;
+        $this->assetUrl        = $assetUrl;
+        $this->postsModel      = $postsModel;
         $this->categoriesModel = $categoriesModel;
-        $this->usersModel = $usersModel;
-        $this->commentsModel = $commentsModel;
-        $this->settingsModel = $settingsModel;
+        $this->usersModel      = $usersModel;
+        $this->commentsModel   = $commentsModel;
+        $this->settingsModel   = $settingsModel;
     }
 
     private function baseViewData(array $portalData): array
     {
         return [
             'portalData' => $portalData,
-            'routeUrl' => $this->routeUrl,
-            'assetUrl' => $this->assetUrl,
+            'routeUrl'   => $this->routeUrl,
+            'assetUrl'   => $this->assetUrl,
         ];
     }
 
@@ -82,29 +81,29 @@ class AdminController
     {
         $this->requireAdmin();
         $portalData = $this->repo->getPortalData();
-        $erros = $this->postsModel->validate($portalData, $_POST);
+        $erros      = $this->postsModel->validate($portalData, $_POST);
         if ($erros) {
             $_SESSION['erros'] = $erros;
-            $_SESSION['old'] = [
-                'titulo' => trim((string) ($_POST['titulo'] ?? '')),
-                'slug' => trim((string) ($_POST['slug'] ?? '')),
-                'resumo' => trim((string) ($_POST['resumo'] ?? '')),
-                'categoria' => trim((string) ($_POST['categoria'] ?? '')),
-                'status' => trim((string) ($_POST['status'] ?? 'Rascunho')),
-                'autor' => trim((string) ($_POST['autor'] ?? '')),
+            $_SESSION['old']   = [
+                'titulo'          => trim((string) ($_POST['titulo'] ?? '')),
+                'slug'            => trim((string) ($_POST['slug'] ?? '')),
+                'resumo'          => trim((string) ($_POST['resumo'] ?? '')),
+                'categoria'       => trim((string) ($_POST['categoria'] ?? '')),
+                'status'          => trim((string) ($_POST['status'] ?? 'Rascunho')),
+                'autor'           => trim((string) ($_POST['autor'] ?? '')),
                 'data_publicacao' => trim((string) ($_POST['data_publicacao'] ?? '')),
-                'cover' => trim((string) ($_POST['cover'] ?? '')),
-                'featured' => !empty($_POST['featured']),
-                'conteudo' => trim((string) ($_POST['conteudo'] ?? '')),
+                'cover'           => trim((string) ($_POST['cover'] ?? '')),
+                'featured'        => ! empty($_POST['featured']),
+                'conteudo'        => trim((string) ($_POST['conteudo'] ?? '')),
             ];
             $postId = (int) ($_POST['id'] ?? 0);
             portal_redirect(($this->routeUrl)($postId > 0 ? 'admin/posts/editar' : 'admin/posts/novo', $postId > 0 ? ['id' => $postId] : []));
         }
 
-        $postId = (int) ($_POST['id'] ?? 0);
-        $status = trim((string) ($_POST['status'] ?? 'Rascunho'));
+        $postId     = (int) ($_POST['id'] ?? 0);
+        $status     = trim((string) ($_POST['status'] ?? 'Rascunho'));
         $portalData = $this->postsModel->save($portalData, $_POST);
-        $message = $postId > 0
+        $message    = $postId > 0
             ? 'Publicação atualizada com sucesso.'
             : ($status === 'Publicado'
                 ? 'Postagem publicada com sucesso e já disponível no portal.'
@@ -117,7 +116,7 @@ class AdminController
     {
         $this->requireAdmin();
         $portalData = $this->repo->getPortalData();
-        $postId = (int) ($_GET['id'] ?? 0);
+        $postId     = (int) ($_GET['id'] ?? 0);
         $this->postsModel->delete($portalData, $postId);
         portal_set_alert('success', 'Publicação removida com sucesso.');
         portal_redirect(($this->routeUrl)('admin/posts'));
@@ -141,8 +140,8 @@ class AdminController
     {
         $this->requireAdmin();
         $portalData = $this->repo->getPortalData();
-        $userId = (int) ($_POST['id'] ?? 0);
-        $saved = $this->usersModel->save($portalData, $_POST);
+        $userId     = (int) ($_POST['id'] ?? 0);
+        $saved      = $this->usersModel->save($portalData, $_POST);
         if ($saved !== $portalData) {
             portal_set_alert('success', $userId > 0 ? 'Usuário atualizado com sucesso!' : 'Membro da equipe salvo com sucesso!');
             portal_redirect(($this->routeUrl)('admin/usuarios'));
@@ -154,8 +153,8 @@ class AdminController
     {
         $this->requireAdmin();
         $portalData = $this->repo->getPortalData();
-        $userId = (int) ($_GET['id'] ?? 0);
-        $saved = $this->usersModel->delete($portalData, $userId);
+        $userId     = (int) ($_GET['id'] ?? 0);
+        $saved      = $this->usersModel->delete($portalData, $userId);
         if ($saved !== $portalData) {
             portal_set_alert('success', 'Usuário removido com sucesso.');
         }
@@ -179,9 +178,9 @@ class AdminController
     public function categoriasSalvar(): void
     {
         $this->requireAdmin();
-        $portalData = $this->repo->getPortalData();
+        $portalData   = $this->repo->getPortalData();
         $originalSlug = trim((string) ($_POST['original_slug'] ?? ''));
-        $saved = $this->categoriesModel->save($portalData, $_POST);
+        $saved        = $this->categoriesModel->save($portalData, $_POST);
         if ($saved !== $portalData) {
             portal_set_alert('success', $originalSlug !== '' ? 'Categoria atualizada com sucesso!' : 'Categoria salva com sucesso!');
         }
@@ -192,8 +191,8 @@ class AdminController
     {
         $this->requireAdmin();
         $portalData = $this->repo->getPortalData();
-        $slug = trim((string) ($_GET['slug'] ?? ''));
-        $saved = $this->categoriesModel->delete($portalData, $slug);
+        $slug       = trim((string) ($_GET['slug'] ?? ''));
+        $saved      = $this->categoriesModel->delete($portalData, $slug);
         if ($saved !== $portalData) {
             portal_set_alert('success', 'Categoria removida com sucesso.');
         }
@@ -211,9 +210,9 @@ class AdminController
     {
         $this->requireAdmin();
         $portalData = $this->repo->getPortalData();
-        $commentId = (int) ($_GET['id'] ?? 0);
-        $newStatus = trim((string) ($_GET['status'] ?? ''));
-        $saved = $this->commentsModel->setStatus($portalData, $commentId, $newStatus);
+        $commentId  = (int) ($_GET['id'] ?? 0);
+        $newStatus  = trim((string) ($_GET['status'] ?? ''));
+        $saved      = $this->commentsModel->setStatus($portalData, $commentId, $newStatus);
         if ($saved !== $portalData) {
             portal_set_alert('success', 'Status do comentário atualizado.');
         }
@@ -224,8 +223,8 @@ class AdminController
     {
         $this->requireAdmin();
         $portalData = $this->repo->getPortalData();
-        $commentId = (int) ($_GET['id'] ?? 0);
-        $saved = $this->commentsModel->delete($portalData, $commentId);
+        $commentId  = (int) ($_GET['id'] ?? 0);
+        $saved      = $this->commentsModel->delete($portalData, $commentId);
         if ($saved !== $portalData) {
             portal_set_alert('success', 'Comentário removido com sucesso.');
         }
@@ -243,7 +242,7 @@ class AdminController
     {
         $this->requireAdmin();
         $portalData = $this->repo->getPortalData();
-        $saved = $this->settingsModel->save($portalData, $_POST);
+        $saved      = $this->settingsModel->save($portalData, $_POST);
         if ($saved !== $portalData) {
             portal_set_alert('success', 'Configurações atualizadas com sucesso!');
             portal_redirect(($this->routeUrl)('admin/configuracoes'));
@@ -251,4 +250,3 @@ class AdminController
         portal_redirect(($this->routeUrl)('admin/configuracoes'));
     }
 }
-

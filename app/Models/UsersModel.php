@@ -15,11 +15,11 @@ class UsersModel
     public function save(array $portalData, array $input): array
     {
         $userId = (int) ($input['id'] ?? 0);
-        $nome = trim((string) ($input['nome'] ?? ''));
-        $email = trim((string) ($input['email'] ?? ''));
-        $papel = trim((string) ($input['papel'] ?? 'editor'));
+        $nome   = trim((string) ($input['nome'] ?? ''));
+        $email  = trim((string) ($input['email'] ?? ''));
+        $papel  = trim((string) ($input['papel'] ?? 'editor'));
         $status = trim((string) ($input['status'] ?? 'Ativo'));
-        $senha = trim((string) ($input['senha'] ?? ''));
+        $senha  = trim((string) ($input['senha'] ?? ''));
 
         if ($nome === '' || $email === '' || ($userId <= 0 && $senha === '')) {
             portal_set_alert('danger', 'Preencha nome, e-mail e senha para cadastrar o integrante.');
@@ -30,9 +30,9 @@ class UsersModel
         if ($userId > 0) {
             foreach ($users as &$user) {
                 if ((int) ($user['id'] ?? 0) === $userId) {
-                    $user['nome'] = $nome;
-                    $user['email'] = $email;
-                    $user['papel'] = $papel === 'admin' ? 'Administrador' : 'Editor';
+                    $user['nome']   = $nome;
+                    $user['email']  = $email;
+                    $user['papel']  = $papel === 'admin' ? 'Administrador' : 'Editor';
                     $user['status'] = $status === 'Inativo' ? 'Inativo' : 'Ativo';
                     break;
                 }
@@ -44,11 +44,11 @@ class UsersModel
                 $nextId = max($nextId, (int) ($user['id'] ?? 0) + 1);
             }
             $users[] = [
-                'id' => $nextId,
-                'nome' => $nome,
-                'email' => $email,
-                'papel' => $papel === 'admin' ? 'Administrador' : 'Editor',
-                'status' => $status === 'Inativo' ? 'Inativo' : 'Ativo',
+                'id'         => $nextId,
+                'nome'       => $nome,
+                'email'      => $email,
+                'papel'      => $papel === 'admin' ? 'Administrador' : 'Editor',
+                'status'     => $status === 'Inativo' ? 'Inativo' : 'Ativo',
                 'created_at' => date('d/m/Y'),
             ];
         }
@@ -59,7 +59,7 @@ class UsersModel
 
     public function delete(array $portalData, int $userId): array
     {
-        $users = $portalData['users'];
+        $users             = $portalData['users'];
         $currentAdminEmail = trim((string) ($_SESSION['usuario_email'] ?? ''));
 
         foreach ($users as $index => $user) {
@@ -80,4 +80,3 @@ class UsersModel
         return $portalData;
     }
 }
-

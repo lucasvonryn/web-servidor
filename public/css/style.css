@@ -1008,11 +1008,25 @@ a {
     font-weight: 600;
 }
 
-.admin-stat-card-success strong { color: #15a34a; }
-.admin-stat-card-warning strong { color: #ff7a00; }
-.admin-stat-card-accent strong { color: #4e46ff; }
-.admin-stat-card-danger strong { color: #ef4444; }
-.admin-stat-card-info strong { color: #0f9488; }
+.admin-stat-card-success strong {
+    color: #15a34a;
+}
+
+.admin-stat-card-warning strong {
+    color: #ff7a00;
+}
+
+.admin-stat-card-accent strong {
+    color: #4e46ff;
+}
+
+.admin-stat-card-danger strong {
+    color: #ef4444;
+}
+
+.admin-stat-card-info strong {
+    color: #0f9488;
+}
 
 .admin-table-card,
 .admin-panel-card,
@@ -1168,8 +1182,13 @@ a {
     line-height: 1;
 }
 
-.admin-icon-action-danger { color: #ef4444; }
-.admin-icon-action-success { color: #16a34a; }
+.admin-icon-action-danger {
+    color: #ef4444;
+}
+
+.admin-icon-action-success {
+    color: #16a34a;
+}
 
 .admin-category-grid,
 .admin-dashboard-grid {
@@ -1213,11 +1232,25 @@ a {
     display: inline-block;
 }
 
-.accent-tech { background: #4e46ff; }
-.accent-politics { background: #ff4d4f; }
-.accent-science { background: #14b8a6; }
-.accent-green { background: #22c55e; }
-.accent-culture { background: #a855f7; }
+.accent-tech {
+    background: #4e46ff;
+}
+
+.accent-politics {
+    background: #ff4d4f;
+}
+
+.accent-science {
+    background: #14b8a6;
+}
+
+.accent-green {
+    background: #22c55e;
+}
+
+.accent-culture {
+    background: #a855f7;
+}
 
 .admin-category-card p {
     margin: 14px 0 12px;
@@ -1601,7 +1634,7 @@ a {
     line-height: 1.1;
 }
 
-.admin-settings-block > p {
+.admin-settings-block>p {
     margin: -8px 0 8px;
     color: #8ba0bd;
 }
@@ -1713,6 +1746,7 @@ a {
 }
 
 @media (max-width: 1180px) {
+
     .admin-category-grid,
     .admin-dashboard-grid,
     .admin-summary-grid,
@@ -2946,6 +2980,7 @@ select.form-control {
 }
 
 @media (max-width: 980px) {
+
     .public-navbar .container,
     .public-topbar .container,
     .public-footer-main,

@@ -16,7 +16,9 @@ class PortalRepository
     public function getPortalData(): array
     {
         $sessionPortalData = $_SESSION['portal_data'] ?? null;
-        $portalData = $this->rebuildPortalData(is_array($sessionPortalData) ? $sessionPortalData : $this->baseData);
+        $portalData        = $this->rebuildPortalData(is_array($sessionPortalData) ? $sessionPortalData : $this->baseData);
+
+        // Se já existe estado em sessão, normaliza e salva de volta para manter consistência
         if (is_array($sessionPortalData)) {
             $_SESSION['portal_data'] = $portalData;
         }
@@ -25,43 +27,43 @@ class PortalRepository
 
     public function persistPortalData(array $data): array
     {
-        $portalData = $this->rebuildPortalData($data);
+        $portalData              = $this->rebuildPortalData($data);
         $_SESSION['portal_data'] = $portalData;
         return $portalData;
     }
 
     private function rebuildPortalData(array $data): array
     {
-        $baseSettings = is_array($this->baseData['settings'] ?? null) ? $this->baseData['settings'] : [];
-        $data['settings'] = array_merge($baseSettings, is_array($data['settings'] ?? null) ? $data['settings'] : []);
+        $baseSettings       = is_array($this->baseData['settings'] ?? null) ? $this->baseData['settings'] : [];
+        $data['settings']   = array_merge($baseSettings, is_array($data['settings'] ?? null) ? $data['settings'] : []);
         $data['categories'] = is_array($data['categories'] ?? null) ? $data['categories'] : [];
-        $data['posts'] = array_values(is_array($data['posts'] ?? null) ? $data['posts'] : []);
-        $data['users'] = array_values(is_array($data['users'] ?? null) ? $data['users'] : []);
-        $data['comments'] = array_values(is_array($data['comments'] ?? null) ? $data['comments'] : []);
+        $data['posts']      = array_values(is_array($data['posts'] ?? null) ? $data['posts'] : []);
+        $data['users']      = array_values(is_array($data['users'] ?? null) ? $data['users'] : []);
+        $data['comments']   = array_values(is_array($data['comments'] ?? null) ? $data['comments'] : []);
 
-        $baseCategories = is_array($this->baseData['categories'] ?? null) ? $this->baseData['categories'] : [];
+        $baseCategories       = is_array($this->baseData['categories'] ?? null) ? $this->baseData['categories'] : [];
         $normalizedCategories = [];
 
         foreach ($baseCategories as $slug => $baseCategory) {
             $sessionCategory = $data['categories'][$slug] ?? null;
             if (is_array($sessionCategory)) {
                 $normalizedCategories[$slug] = array_merge($baseCategory, [
-                    'id' => $sessionCategory['id'] ?? $baseCategory['id'],
-                    'count' => $sessionCategory['count'] ?? null,
+                    'id'          => $sessionCategory['id'] ?? $baseCategory['id'],
+                    'count'       => $sessionCategory['count'] ?? null,
                     'count_label' => $sessionCategory['count_label'] ?? null,
                 ], ['slug' => $slug]);
                 continue;
             }
 
             foreach ($data['categories'] as $rawCategory) {
-                if (!is_array($rawCategory)) {
+                if (! is_array($rawCategory)) {
                     continue;
                 }
 
                 if (($rawCategory['slug'] ?? null) === $slug) {
                     $normalizedCategories[$slug] = array_merge($baseCategory, [
-                        'id' => $rawCategory['id'] ?? $baseCategory['id'],
-                        'count' => $rawCategory['count'] ?? null,
+                        'id'          => $rawCategory['id'] ?? $baseCategory['id'],
+                        'count'       => $rawCategory['count'] ?? null,
                         'count_label' => $rawCategory['count_label'] ?? null,
                     ], ['slug' => $slug]);
                     continue 2;
@@ -72,7 +74,7 @@ class PortalRepository
         }
 
         foreach ($data['categories'] as $key => $rawCategory) {
-            if (!is_array($rawCategory)) {
+            if (! is_array($rawCategory)) {
                 continue;
             }
 
@@ -92,7 +94,7 @@ class PortalRepository
 
         $defaultCategoryCover = '';
         foreach ($data['categories'] as $category) {
-            if (!empty($category['cover'])) {
+            if (! empty($category['cover'])) {
                 $defaultCategoryCover = $category['cover'];
                 break;
             }
@@ -112,22 +114,22 @@ class PortalRepository
         }
 
         foreach ($data['categories'] as $slug => &$category) {
-            $baseCategory = $baseCategories[$slug] ?? [];
-            $count = $postCounts[$slug] ?? 0;
-            $category['id'] = $category['id'] ?? ($baseCategory['id'] ?? ($count + 1));
-            $category['slug'] = $slug;
-            $category['name'] = trim((string) ($category['name'] ?? $baseCategory['name'] ?? $slug));
-            $category['tag_class'] = trim((string) ($category['tag_class'] ?? $baseCategory['tag_class'] ?? $slug));
-            $category['accent'] = trim((string) ($category['accent'] ?? $baseCategory['accent'] ?? 'tech'));
-            $category['cover'] = trim((string) ($category['cover'] ?? $baseCategory['cover'] ?? $defaultCategoryCover));
+            $baseCategory            = $baseCategories[$slug] ?? [];
+            $count                   = $postCounts[$slug] ?? 0;
+            $category['id']          = $category['id'] ?? ($baseCategory['id'] ?? ($count + 1));
+            $category['slug']        = $slug;
+            $category['name']        = trim((string) ($category['name'] ?? $baseCategory['name'] ?? $slug));
+            $category['tag_class']   = trim((string) ($category['tag_class'] ?? $baseCategory['tag_class'] ?? $slug));
+            $category['accent']      = trim((string) ($category['accent'] ?? $baseCategory['accent'] ?? 'tech'));
+            $category['cover']       = trim((string) ($category['cover'] ?? $baseCategory['cover'] ?? $defaultCategoryCover));
             $category['description'] = trim((string) ($category['description'] ?? $baseCategory['description'] ?? ''));
-            $category['count'] = $count;
+            $category['count']       = $count;
             $category['count_label'] = $count . ' ' . ($count === 1 ? 'publicação' : 'publicações');
         }
         unset($category);
 
         $featuredSlides = array_values(array_filter($data['posts'], static function (array $post): bool {
-            return ($post['status'] ?? 'Publicado') === 'Publicado' && !empty($post['featured']);
+            return ($post['status'] ?? 'Publicado') === 'Publicado' && ! empty($post['featured']);
         }));
 
         if (empty($featuredSlides)) {
@@ -142,4 +144,3 @@ class PortalRepository
         return $data;
     }
 }
-

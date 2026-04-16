@@ -1,5 +1,6 @@
 <?php
 
+// Registra rotas e instancia dependências
 session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -9,6 +10,7 @@ $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '/index.php');
 $basePath = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
 $basePath = $basePath === '.' ? '' : $basePath;
 
+// Helpers para gerar URLs
 $routeUrl = static function (string $route = 'home', array $params = []) use ($basePath): string {
     $query = http_build_query(array_merge(['url' => $route], $params));
     return ($basePath ?: '') . '/index.php' . ($query ? '?' . $query : '');
@@ -28,6 +30,8 @@ require_once __DIR__ . '/Models/SettingsModel.php';
 require_once __DIR__ . '/Core/App.php';
 
 $basePortalData = require __DIR__ . '/Data/portal_content.php';
+
+// Dados são persistidos em sessão para simular um banco
 $repo = new PortalRepository($basePortalData, $assetUrl);
 $postsModel = new PostsModel($repo);
 $categoriesModel = new CategoriesModel($repo, $assetUrl);
@@ -37,7 +41,7 @@ $settingsModel = new SettingsModel($repo);
 $view = new View(__DIR__ . '/Views');
 $router = new Router();
 
-// Controllers (MVC clássico)
+// Controllers
 require_once __DIR__ . '/Controllers/PublicController.php';
 require_once __DIR__ . '/Controllers/AdminController.php';
 require_once __DIR__ . '/Controllers/AuthController.php';
@@ -62,7 +66,7 @@ $router->get('logout-publico', fn () => $authController->logoutPublico());
 $router->post('processar-login', fn () => $authController->loginAdmin());
 $router->get('admin/logout', fn () => $authController->logoutAdmin());
 
-// Admin (área protegida)
+// Admin
 $router->get('admin/login', fn () => $adminController->login());
 
 $router->get('admin/posts', fn () => $adminController->postsLista());
