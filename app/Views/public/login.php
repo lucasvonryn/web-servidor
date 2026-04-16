@@ -1,9 +1,9 @@
 <?php
-$modo = $_GET['modo'] ?? 'entrar';
-$modo = $modo === 'criar' ? 'criar' : 'entrar';
-$oldPublic = $_SESSION['old_publico'] ?? [];
-$errosPublic = $_SESSION['erros_publico'] ?? [];
-include __DIR__ . '/../partials/header.php';
+    $modo        = $_GET['modo'] ?? 'entrar';
+    $modo        = $modo === 'criar' ? 'criar' : 'entrar';
+    $oldPublic   = $_SESSION['old_publico'] ?? [];
+    $errosPublic = $_SESSION['erros_publico'] ?? [];
+    include __DIR__ . '/../partials/header.php';
 ?>
 
 <section class="public-auth-page">
@@ -11,20 +11,18 @@ include __DIR__ . '/../partials/header.php';
         <div class="auth-frame">
             <div class="auth-card">
                 <div class="auth-tabs">
-                    <a href="<?= htmlspecialchars($routeUrl('login', ['modo' => 'entrar'])) ?>" class="<?= $modo === 'entrar' ? 'is-active' : '' ?>">Entrar</a>
-                    <a href="<?= htmlspecialchars($routeUrl('login', ['modo' => 'criar'])) ?>" class="<?= $modo === 'criar' ? 'is-active' : '' ?>">Criar Conta</a>
+                    <a href="<?php echo htmlspecialchars($routeUrl('login', ['modo' => 'entrar'])) ?>" class="<?php echo $modo === 'entrar' ? 'is-active' : '' ?>">Entrar</a>
+                    <a href="<?php echo htmlspecialchars($routeUrl('login', ['modo' => 'criar'])) ?>" class="<?php echo $modo === 'criar' ? 'is-active' : '' ?>">Criar Conta</a>
                 </div>
 
                 <div class="auth-body">
-                    <div class="auth-brand">OE</div>
-
                     <?php if ($modo === 'entrar'): ?>
                         <div class="auth-heading">
                             <h1>Bem-vindo de volta</h1>
                             <p>Entre para comentar nas publicações.</p>
                         </div>
 
-                        <form action="<?= htmlspecialchars($routeUrl('processar-login-publico')) ?>" method="POST" class="form-stack">
+                        <form action="<?php echo htmlspecialchars($routeUrl('processar-login-publico')) ?>" method="POST" class="form-stack">
                             <div class="field">
                                 <label for="email">E-mail</label>
                                 <div class="input-shell">
@@ -32,10 +30,10 @@ include __DIR__ . '/../partials/header.php';
                                         <path d="M4 6h16v12H4z"></path>
                                         <path d="M4 8l8 6 8-6"></path>
                                     </svg>
-                                    <input type="email" name="email" id="email" placeholder="seu@email.com" value="<?= htmlspecialchars($oldPublic['email'] ?? '') ?>">
+                                    <input type="email" name="email" id="email" placeholder="seu@email.com" value="<?php echo htmlspecialchars($oldPublic['email'] ?? '') ?>">
                                 </div>
                                 <?php if (isset($errosPublic['email'])): ?>
-                                    <span class="field-error"><?= htmlspecialchars($errosPublic['email']) ?></span>
+                                    <span class="field-error"><?php echo htmlspecialchars($errosPublic['email']) ?></span>
                                 <?php endif; ?>
                             </div>
 
@@ -49,15 +47,10 @@ include __DIR__ . '/../partials/header.php';
                                         <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
                                     </svg>
                                     <input type="password" name="senha" id="senha" placeholder="••••••••" data-password-toggle>
-                                    <button type="button" class="password-toggle" aria-label="Mostrar senha" data-toggle-button>
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                                            <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"></path>
-                                            <circle cx="12" cy="12" r="2.8"></circle>
-                                        </svg>
-                                    </button>
+                                    <button type="button" class="password-toggle" aria-label="Mostrar senha" data-toggle-button></button>
                                 </div>
                                 <?php if (isset($errosPublic['senha'])): ?>
-                                    <span class="field-error"><?= htmlspecialchars($errosPublic['senha']) ?></span>
+                                    <span class="field-error"><?php echo htmlspecialchars($errosPublic['senha']) ?></span>
                                 <?php endif; ?>
                             </div>
 
@@ -65,7 +58,7 @@ include __DIR__ . '/../partials/header.php';
                                 <button type="submit" class="btn-secondary">Entrar</button>
                             </div>
 
-                            <p class="auth-switch">Não tem conta? <a href="<?= htmlspecialchars($routeUrl('login', ['modo' => 'criar'])) ?>">Cadastre-se</a></p>
+                            <p class="auth-switch">Não tem conta? <a href="<?php echo htmlspecialchars($routeUrl('login', ['modo' => 'criar'])) ?>">Cadastre-se</a></p>
                         </form>
                     <?php else: ?>
                         <div class="auth-heading">
@@ -73,7 +66,7 @@ include __DIR__ . '/../partials/header.php';
                             <p>Cadastre-se e participe das discussões.</p>
                         </div>
 
-                        <form action="<?= htmlspecialchars($routeUrl('processar-cadastro-publico')) ?>" method="POST" class="form-stack">
+                        <form action="<?php echo htmlspecialchars($routeUrl('processar-cadastro-publico')) ?>" method="POST" class="form-stack">
                             <div class="field">
                                 <label for="nome">Nome completo</label>
                                 <div class="input-shell">
@@ -81,10 +74,10 @@ include __DIR__ . '/../partials/header.php';
                                         <circle cx="12" cy="8" r="3.5"></circle>
                                         <path d="M5 19a7 7 0 0 1 14 0"></path>
                                     </svg>
-                                    <input type="text" name="nome" id="nome" placeholder="Seu nome" value="<?= htmlspecialchars($oldPublic['nome'] ?? '') ?>">
+                                    <input type="text" name="nome" id="nome" placeholder="Seu nome" value="<?php echo htmlspecialchars($oldPublic['nome'] ?? '') ?>">
                                 </div>
                                 <?php if (isset($errosPublic['nome'])): ?>
-                                    <span class="field-error"><?= htmlspecialchars($errosPublic['nome']) ?></span>
+                                    <span class="field-error"><?php echo htmlspecialchars($errosPublic['nome']) ?></span>
                                 <?php endif; ?>
                             </div>
 
@@ -95,10 +88,10 @@ include __DIR__ . '/../partials/header.php';
                                         <path d="M4 6h16v12H4z"></path>
                                         <path d="M4 8l8 6 8-6"></path>
                                     </svg>
-                                    <input type="email" name="email" id="cadastro-email" placeholder="seu@email.com" value="<?= htmlspecialchars($oldPublic['email'] ?? '') ?>">
+                                    <input type="email" name="email" id="cadastro-email" placeholder="seu@email.com" value="<?php echo htmlspecialchars($oldPublic['email'] ?? '') ?>">
                                 </div>
                                 <?php if (isset($errosPublic['email'])): ?>
-                                    <span class="field-error"><?= htmlspecialchars($errosPublic['email']) ?></span>
+                                    <span class="field-error"><?php echo htmlspecialchars($errosPublic['email']) ?></span>
                                 <?php endif; ?>
                             </div>
 
@@ -110,15 +103,10 @@ include __DIR__ . '/../partials/header.php';
                                         <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
                                     </svg>
                                     <input type="password" name="senha" id="cadastro-senha" placeholder="Mínimo de 6 caracteres" data-password-toggle>
-                                    <button type="button" class="password-toggle" aria-label="Mostrar senha" data-toggle-button>
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                                            <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"></path>
-                                            <circle cx="12" cy="12" r="2.8"></circle>
-                                        </svg>
-                                    </button>
+                                    <button type="button" class="password-toggle" aria-label="Mostrar senha" data-toggle-button></button>
                                 </div>
                                 <?php if (isset($errosPublic['senha'])): ?>
-                                    <span class="field-error"><?= htmlspecialchars($errosPublic['senha']) ?></span>
+                                    <span class="field-error"><?php echo htmlspecialchars($errosPublic['senha']) ?></span>
                                 <?php endif; ?>
                             </div>
 
@@ -132,7 +120,7 @@ include __DIR__ . '/../partials/header.php';
                                     <input type="password" name="confirmar_senha" id="confirmar_senha" placeholder="Repita a senha" data-password-toggle>
                                 </div>
                                 <?php if (isset($errosPublic['confirmar_senha'])): ?>
-                                    <span class="field-error"><?= htmlspecialchars($errosPublic['confirmar_senha']) ?></span>
+                                    <span class="field-error"><?php echo htmlspecialchars($errosPublic['confirmar_senha']) ?></span>
                                 <?php endif; ?>
                             </div>
 
@@ -143,11 +131,6 @@ include __DIR__ . '/../partials/header.php';
                     <?php endif; ?>
                 </div>
             </div>
-
-            <a class="auth-back" href="<?= htmlspecialchars($routeUrl('home')) ?>">
-                <span>&larr;</span>
-                <span>Voltar ao site</span>
-            </a>
         </div>
     </div>
 </section>
@@ -165,6 +148,6 @@ document.querySelectorAll('[data-toggle-button]').forEach(function (button) {
 </script>
 
 <?php
-unset($_SESSION['erros_publico'], $_SESSION['old_publico']);
-include __DIR__ . '/../partials/footer.php';
+    unset($_SESSION['erros_publico'], $_SESSION['old_publico']);
+    include __DIR__ . '/../partials/footer.php';
 ?>

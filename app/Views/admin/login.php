@@ -1,6 +1,6 @@
 <?php
-$oldAdmin = $_SESSION['old'] ?? [];
-$adminErrors = $_SESSION['erros'] ?? [];
+    $oldAdmin    = $_SESSION['old'] ?? [];
+    $adminErrors = $_SESSION['erros'] ?? [];
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -8,8 +8,8 @@ $adminErrors = $_SESSION['erros'] ?? [];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel | O Editorial</title>
-    <link rel="icon" href="<?= htmlspecialchars($assetUrl('favicon.svg')) ?>" type="image/svg+xml">
-    <link rel="stylesheet" href="<?= htmlspecialchars($assetUrl('css/style.css')) ?>">
+    <link rel="icon" href="<?php echo htmlspecialchars($assetUrl('favicon.svg')) ?>" type="image/svg+xml">
+    <link rel="stylesheet" href="<?php echo htmlspecialchars($assetUrl('css/style.css')) ?>">
 </head>
 <body>
 <div class="admin-login-page">
@@ -19,12 +19,12 @@ $adminErrors = $_SESSION['erros'] ?? [];
     </div>
 
     <div class="admin-login-card">
-        <form action="<?= htmlspecialchars($routeUrl('processar-login')) ?>" method="POST" class="admin-login-form">
+        <form action="<?php echo htmlspecialchars($routeUrl('processar-login')) ?>" method="POST" class="admin-login-form">
             <div class="admin-field admin-field-full">
                 <label for="email">E-mail da equipe</label>
-                <input type="email" name="email" id="email" placeholder="admin@oeditorial.com.br" value="<?= htmlspecialchars($oldAdmin['email'] ?? 'admin@admin.com') ?>">
+                <input type="email" name="email" id="email" placeholder="admin@oeditorial.com.br" value="<?php echo htmlspecialchars($oldAdmin['email'] ?? 'admin@admin.com') ?>">
                 <?php if (isset($adminErrors['email'])): ?>
-                    <small class="field-error"><?= htmlspecialchars($adminErrors['email']) ?></small>
+                    <small class="field-error"><?php echo htmlspecialchars($adminErrors['email']) ?></small>
                 <?php endif; ?>
             </div>
 
@@ -38,8 +38,6 @@ $adminErrors = $_SESSION['erros'] ?? [];
             <div class="admin-inline-alert">Demo: use "admin@admin.com" e senha "123456".</div>
         </form>
     </div>
-
-    <a href="<?= htmlspecialchars($routeUrl('home')) ?>" class="admin-login-back">Voltar ao site público</a>
 </div>
 </body>
 </html>
