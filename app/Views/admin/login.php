@@ -13,17 +13,11 @@ $adminErrors = $_SESSION['erros'] ?? [];
 <body>
 <div class="admin-login-page">
     <div class="admin-login-brand">
-        <span class="admin-login-badge">OE</span>
         <h1>O Editorial</h1>
         <p>Painel Administrativo</p>
     </div>
 
     <div class="admin-login-card">
-        <div class="admin-login-card-head">
-            <strong>Acesso Restrito</strong>
-            <span>Somente membros da equipe</span>
-        </div>
-
         <form action="<?= htmlspecialchars($routeUrl('processar-login')) ?>" method="POST" class="admin-login-form">
             <div class="admin-field admin-field-full">
                 <label for="email">E-mail da equipe</label>
@@ -38,18 +32,13 @@ $adminErrors = $_SESSION['erros'] ?? [];
                 <input type="password" name="senha" id="senha" placeholder="123456">
             </div>
 
-            <div class="admin-login-row">
-                <label><input type="checkbox" checked> Lembrar acesso</label>
-                <a href="<?= htmlspecialchars($routeUrl('admin/login')) ?>">Esqueci</a>
-            </div>
-
             <button type="submit" class="admin-dark-button admin-dark-button-full">Entrar no Painel</button>
 
-            <div class="admin-inline-alert">Demo: use `admin@admin.com` e senha `123456`.</div>
+            <div class="admin-inline-alert">Demo: use "admin@admin.com" e senha "123456".</div>
         </form>
     </div>
 
-    <a href="<?= htmlspecialchars($routeUrl('home')) ?>" class="admin-login-back">&larr; Voltar ao site público</a>
+    <a href="<?= htmlspecialchars($routeUrl('home')) ?>" class="admin-login-back">Voltar ao site público</a>
 </div>
 </body>
 </html>

@@ -42,7 +42,6 @@ include __DIR__ . '/../partials/header.php';
                             <div class="field">
                                 <div class="field-row">
                                     <label for="senha">Senha</label>
-                                    <a class="field-link" href="<?= htmlspecialchars($routeUrl('login', ['modo' => 'criar'])) ?>">Esqueci minha senha</a>
                                 </div>
                                 <div class="input-shell">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -136,8 +135,6 @@ include __DIR__ . '/../partials/header.php';
                                     <span class="field-error"><?= htmlspecialchars($errosPublic['confirmar_senha']) ?></span>
                                 <?php endif; ?>
                             </div>
-
-                            <p class="terms-copy">Ao se cadastrar, você concorda com os <a href="<?= htmlspecialchars($routeUrl('login', ['modo' => 'criar'])) ?>">Termos de Uso</a> e a <a href="<?= htmlspecialchars($routeUrl('login', ['modo' => 'criar'])) ?>">Política de Privacidade</a>.</p>
 
                             <div class="auth-actions">
                                 <button type="submit" class="btn-primary">Criar conta</button>
