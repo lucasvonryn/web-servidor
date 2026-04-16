@@ -81,15 +81,7 @@ include __DIR__ . '/../partials/header.php';
             </div>
             <div class="admin-list-stack">
                 <?php foreach ($recentUsers as $recentUser): ?>
-                    <?php
-                    $initials = strtoupper(substr($recentUser['nome'], 0, 1));
-                    $secondPart = preg_split('/\s+/', trim($recentUser['nome'])) ?: [];
-                    if (isset($secondPart[1])) {
-                        $initials .= strtoupper(substr($secondPart[1], 0, 1));
-                    }
-                    ?>
                     <article class="admin-user-line">
-                        <span class="admin-user-avatar"><?= htmlspecialchars($initials) ?></span>
                         <div>
                             <strong><?= htmlspecialchars($recentUser['nome']) ?></strong>
                             <span><?= htmlspecialchars($recentUser['email']) ?></span>

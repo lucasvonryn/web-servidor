@@ -13,7 +13,6 @@
     $publicMode           = $publicMode === 'criar' ? 'criar' : 'entrar';
     $isAdminLogged        = ! empty($_SESSION['usuario_logado']);
     $adminPortalUrl       = $isAdminLogged ? $routeUrl('admin/posts') : $routeUrl('admin/login');
-    $adminInitials        = strtoupper(substr(trim((string) ($_SESSION['usuario_nome'] ?? 'AS')), 0, 1) . substr(trim((string) preg_replace('/^\S+\s+/', '', $_SESSION['usuario_nome'] ?? '')), 0, 1));
     $pendingAdminComments = 0;
     foreach ($portalComments as $adminCommentItem) {
     if (($adminCommentItem['status'] ?? '') === 'Pendente') {
@@ -92,7 +91,6 @@
             <a class="admin-sidebar-linkout" href="<?php echo htmlspecialchars($routeUrl('admin/logout')) ?>">Sair do painel</a>
 
             <div class="admin-sidebar-account">
-                <span class="admin-avatar"><?php echo htmlspecialchars($adminInitials ?: 'AS') ?></span>
                 <div>
                     <strong><?php echo htmlspecialchars($_SESSION['usuario_nome'] ?? 'Admin Sistema') ?></strong>
                     <small><?php echo htmlspecialchars($_SESSION['usuario_email'] ?? 'admin@oeditorial.com.br') ?></small>

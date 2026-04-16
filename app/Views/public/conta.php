@@ -4,7 +4,6 @@ $allComments = array_values($portalData['comments'] ?? []);
 $allPosts = array_values($portalData['posts'] ?? []);
 $readerName = trim((string) ($_SESSION['usuario_publico_nome'] ?? 'Leitor O Editorial'));
 $readerEmail = trim((string) ($_SESSION['usuario_publico_email'] ?? 'leitor@oeditorial.com.br'));
-$readerInitials = strtoupper(substr($readerName, 0, 1) . substr((string) preg_replace('/^\S+\s+/', '', $readerName), 0, 1));
 $readerComments = array_values(array_filter($allComments, static function (array $comment) use ($readerEmail, $readerName): bool {
     return ($comment['email'] ?? '') === $readerEmail || ($comment['autor'] ?? '') === $readerName;
 }));
@@ -44,7 +43,6 @@ include __DIR__ . '/../partials/header.php';
         <div class="account-grid">
             <section class="account-card account-profile-card">
                 <div class="account-profile-top">
-                    <span class="account-avatar"><?= htmlspecialchars($readerInitials ?: 'LE') ?></span>
                     <div>
                         <h2><?= htmlspecialchars($readerName) ?></h2>
                         <p><?= htmlspecialchars($readerEmail) ?></p>

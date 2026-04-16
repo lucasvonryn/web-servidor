@@ -99,10 +99,7 @@ include __DIR__ . '/../partials/header.php';
 
                 <div class="publication-top-meta">
                     <div class="publication-author-inline">
-                        <span class="publication-avatar"><?= htmlspecialchars(strtoupper(substr($post['author_short'] ?? $post['author'], 0, 1))) ?></span>
-                        <div>
-                            <strong><?= htmlspecialchars($post['author']) ?></strong>
-                        </div>
+                        <strong><?= htmlspecialchars($post['author']) ?></strong>
                     </div>
 
                     <div class="publication-stats">
@@ -144,7 +141,6 @@ include __DIR__ . '/../partials/header.php';
             </div>
 
             <section class="publication-author-box">
-                <span class="publication-avatar publication-avatar-large"><?= htmlspecialchars(strtoupper(substr($post['author_short'] ?? $post['author'], 0, 1))) ?></span>
                 <div>
                     <h2><?= htmlspecialchars($post['author']) ?></h2>
                     <p>Jornalista do O Editorial.</p>
@@ -188,9 +184,7 @@ include __DIR__ . '/../partials/header.php';
                     </div>
                 <?php else: ?>
                     <?php foreach ($postComments as $comment): ?>
-                        <?php $commentInitial = strtoupper(substr($comment['autor'] ?? 'L', 0, 1)); ?>
                         <article class="publication-comment-card">
-                            <span class="publication-comment-avatar"><?= htmlspecialchars($commentInitial) ?></span>
                             <div class="publication-comment-body">
                                 <div class="publication-comment-meta">
                                     <strong><?= htmlspecialchars($comment['autor']) ?></strong>

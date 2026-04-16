@@ -77,10 +77,8 @@
                 } elseif ($comentarioStatus === 'Rejeitado') {
                     $commentStatusClass = 'admin-badge-danger';
                 }
-                $commentInitials = strtoupper(substr($comentarioInfo['autor'] ?? 'U', 0, 1) . substr((string) preg_replace('/^\S+\s+/', '', $comentarioInfo['autor'] ?? ''), 0, 1));
             ?>
             <article class="admin-comment-card <?php echo $comentarioStatus === 'Pendente' ? 'is-pending' : '' ?>" data-admin-comment-card data-author="<?php echo htmlspecialchars(strtolower($comentarioInfo['autor'])) ?>" data-email="<?php echo htmlspecialchars(strtolower($comentarioInfo['email'])) ?>" data-content="<?php echo htmlspecialchars(strtolower($comentarioInfo['texto'] ?? $comentarioInfo['trecho'])) ?>" data-status="<?php echo htmlspecialchars(strtolower($comentarioStatus)) ?>" data-post="<?php echo htmlspecialchars(strtolower($commentPost['title'] ?? '')) ?>">
-                <span class="admin-user-avatar"><?php echo htmlspecialchars($commentInitials) ?></span>
                 <div class="admin-comment-body">
                     <div class="admin-comment-meta">
                         <strong><?php echo htmlspecialchars($comentarioInfo['autor']) ?></strong>

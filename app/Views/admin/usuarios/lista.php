@@ -66,15 +66,12 @@ include __DIR__ . '/../../partials/header.php';
             <tbody>
                 <?php foreach ($users as $usuarioEquipe): ?>
                     <?php
-                    $partes = preg_split('/\s+/', trim($usuarioEquipe['nome'])) ?: [];
-                    $iniciais = strtoupper(substr($partes[0] ?? 'U', 0, 1) . substr($partes[1] ?? '', 0, 1));
                     $funcao = ($usuarioEquipe['papel'] ?? '') === 'Administrador' ? 'admin-badge-accent' : 'admin-badge-info';
                     $status = ($usuarioEquipe['status'] ?? '') === 'Ativo' ? 'admin-badge-success' : 'admin-badge-muted';
                     ?>
                     <tr data-admin-user-row data-name="<?= htmlspecialchars(strtolower($usuarioEquipe['nome'])) ?>" data-email="<?= htmlspecialchars(strtolower($usuarioEquipe['email'])) ?>" data-role="<?= htmlspecialchars(strtolower($usuarioEquipe['papel'])) ?>" data-status="<?= htmlspecialchars(strtolower($usuarioEquipe['status'])) ?>">
                         <td>
                             <div class="admin-table-user">
-                                <span class="admin-user-avatar"><?= htmlspecialchars($iniciais) ?></span>
                                 <div>
                                     <strong><?= htmlspecialchars($usuarioEquipe['nome']) ?></strong>
                                     <span><?= htmlspecialchars($usuarioEquipe['email']) ?></span>
