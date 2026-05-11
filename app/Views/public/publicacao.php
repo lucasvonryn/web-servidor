@@ -5,7 +5,9 @@ $categories = $portalData['categories'];
 $allPosts = array_values(array_filter($portalData['posts'], static function (array $post): bool {
     return ($post['status'] ?? 'Publicado') === 'Publicado';
 }));
-$allComments = $portalData['comments'];
+$allComments = array_values(array_filter($portalData['comments'], static function (array $comment): bool {
+    return ($comment['status'] ?? 'Pendente') === 'Aprovado';
+}));
 $postSlug = trim($_GET['slug'] ?? '');
 $post = null;
 

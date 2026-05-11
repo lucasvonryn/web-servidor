@@ -18,7 +18,8 @@ A aplicação consiste em um portal editorial em PHP 8+, com:
 - área administrativa protegida por login
 - formulários com tratamento no servidor
 - organização baseada em MVC
-- dados estáticos em vetores PHP, persistidos dinamicamente em sessão durante a execução
+- persistência em banco MySQL via PDO
+- scripts de modelagem e carga inicial do banco de dados
 
 O protótipo visual das telas foi elaborado no Figma:
 
@@ -57,7 +58,7 @@ Arquivos principais:
 Os dados base do sistema ficam em:
 - `app/Data/portal_content.php`
 
-O repositório lê esse arquivo, normaliza os dados e mantém o estado corrente em `$_SESSION['portal_data']`, simulando persistência sem banco de dados nesta etapa.
+O arquivo de dados base foi mantido como referência histórica da primeira etapa. Na versão atual, o `PortalRepository` lê e grava os dados no banco MySQL usando PDO.
 
 ### View
 Responsável pela apresentação.
@@ -82,6 +83,7 @@ Arquivos principais:
 ### Core
 Arquivos responsáveis pelo funcionamento da aplicação:
 - `app/Core/App.php`
+- `app/Core/Database.php`
 - `app/Core/Router.php`
 - `app/Core/View.php`
 - `app/bootstrap.php`
@@ -98,6 +100,7 @@ web-servidor/
 │   │   └── PublicController.php
 │   ├── Core/
 │   │   ├── App.php
+│   │   ├── Database.php
 │   │   ├── Router.php
 │   │   └── View.php
 │   ├── Data/
@@ -116,8 +119,13 @@ web-servidor/
 │       ├── partials/
 │       └── public/
 ├── docs/
+│   ├── banco-de-dados.md
 │   ├── escopo.md
-│   └── fluxo-do-projeto.md
+│   ├── fluxo-do-projeto.md
+│   └── instalacao.md
+├── database/
+│   ├── schema.sql
+│   └── seed.sql
 ├── public/
 │   ├── assets/
 │   ├── css/
@@ -133,24 +141,31 @@ Resumo do fluxo atual da aplicação:
 1. Toda requisição entra por `public/index.php`
 2. O arquivo carrega `app/bootstrap.php`
 3. O bootstrap inicia a sessão, registra helpers, instancia models/controllers e cadastra as rotas
-4. O `Router` associa rota + método HTTP ao controller correspondente
-5. O controller processa a requisição
-6. Os models validam e manipulam os dados
-7. O `PortalRepository` persiste o estado na sessão
-8. A view correspondente é renderizada
+4. O `Database` cria a conexão PDO com o MySQL
+5. O `Router` associa rota + método HTTP ao controller correspondente
+6. O controller processa a requisição
+7. Os models validam e manipulam os dados
+8. O `PortalRepository` lê e persiste o estado no banco
+9. A view correspondente é renderizada
 
 Existe uma explicação mais detalhada desse fluxo em:
 - `docs/fluxo-do-projeto.md`
 
+Documentos complementares:
+- `docs/instalacao.md`
+- `docs/banco-de-dados.md`
+
 ## Requisitos para execução
 Para executar o projeto localmente, é necessário ter:
 - PHP 8.0 ou superior
+- extensão `pdo_mysql` ativa no PHP
+- MySQL 8.0 ou MariaDB compatível
 - navegador web
 
 Nesta versão:
 - não é necessário Composer
-- não é necessário banco de dados
-- não é necessário `.env`
+- é necessário criar o banco MySQL antes de abrir a aplicação
+- é recomendado criar um arquivo `.env` baseado em `.env.example`
 
 ## Instalação e execução
 1. Clone o repositório:
@@ -165,13 +180,48 @@ git clone https://github.com/lucasvonryn/web-servidor.git
 cd web-servidor
 ```
 
-3. Inicie o servidor embutido do PHP apontando para `public`:
+3. Confira se o PHP tem o driver MySQL do PDO:
+
+```bash
+php -m | grep pdo_mysql
+```
+
+Se não aparecer `pdo_mysql`, instale o pacote do PHP para MySQL:
+
+```bash
+sudo apt install php-mysql
+```
+
+4. Crie o banco MySQL:
+
+```bash
+mysql -u root -p < database/schema.sql
+mysql -u root -p portal_editorial < database/seed.sql
+```
+
+5. Crie o arquivo `.env` a partir do exemplo:
+
+```bash
+cp .env.example .env
+```
+
+Atualize o `.env` se seu usuário/senha do MySQL forem diferentes:
+
+```env
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=portal_editorial
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+6. Inicie o servidor embutido do PHP apontando para `public`:
 
 ```bash
 php -S localhost:8000 -t public
 ```
 
-4. Abra no navegador:
+7. Abra no navegador:
 
 ```text
 http://localhost:8000
@@ -210,12 +260,12 @@ Importante:
 
 Também é possível criar uma conta pública pela tela de login/cadastro.
 
-## Funcionamento dos dados estáticos
-O sistema utiliza vetores estáticos como base de dados nesta etapa.
+## Funcionamento dos dados
+O sistema agora utiliza MySQL como fonte principal dos dados.
 
-### Origem dos dados
-Os dados iniciais do sistema ficam em:
-- `app/Data/portal_content.php`
+### Origem dos dados iniciais
+Os dados iniciais do sistema são inseridos por:
+- `database/seed.sql`
 
 Esse arquivo contém registros base de:
 - configurações
@@ -224,14 +274,36 @@ Esse arquivo contém registros base de:
 - usuários
 - comentários
 
-### Persistência temporária
+### Persistência
 Durante a execução:
-1. o `PortalRepository` carrega os dados base
-2. os dados são copiados para `$_SESSION['portal_data']`
-3. os CRUDs alteram os dados da sessão
-4. a interface pública e administrativa passa a refletir essas alterações
+1. o `Database` cria a conexão PDO
+2. o `PortalRepository` consulta as tabelas do MySQL
+3. os CRUDs alteram os dados por meio de prepared statements
+4. a interface pública e administrativa passa a refletir os dados persistidos
 
-Assim, o projeto se comporta como um sistema dinâmico sem depender de banco de dados.
+Assim, o projeto passa a ter persistência real em banco de dados.
+
+## Migração para MySQL
+A segunda etapa do trabalho iniciou a troca da persistência em sessão por tabelas MySQL.
+
+Arquivos criados:
+- `database/schema.sql`
+  Cria o banco `portal_editorial` e as tabelas `settings`, `users`, `categories`, `posts` e `comments`.
+
+- `database/seed.sql`
+  Insere os dados iniciais que antes estavam em `app/Data/portal_content.php`.
+
+- `docs/banco-de-dados.md`
+  Explica o mapeamento entre os dados da sessão e as tabelas do banco.
+
+Para preparar o banco:
+
+```bash
+mysql -u root -p < database/schema.sql
+mysql -u root -p portal_editorial < database/seed.sql
+```
+
+Nesta etapa, a estrutura de banco já está pronta e o `PortalRepository` já usa PDO para ler e gravar os dados.
 
 ## Funcionalidades implementadas
 
@@ -288,7 +360,6 @@ O feedback ao usuário é feito com:
 O sistema utiliza `$_SESSION` para:
 - autenticação do administrador
 - autenticação do usuário público
-- persistência dinâmica dos dados
 - mensagens de feedback
 - repopulação de formulários após erro de validação
 
@@ -317,7 +388,7 @@ Na versão atual, o projeto foi reorganizado para melhorar a apresentação e ad
   Controlam fluxo, autenticação e integração entre model e view.
 
 - `app/Models/PortalRepository.php`
-  Gerencia dados estáticos + sessão.
+  Gerencia a leitura e a escrita no MySQL usando PDO.
 
 - `app/Models/*Model.php`
   Regras de negócio por módulo.
@@ -328,16 +399,20 @@ Na versão atual, o projeto foi reorganizado para melhorar a apresentação e ad
 - `docs/fluxo-do-projeto.md`
   Documento de apoio para explicar a arquitetura.
 
+- `docs/instalacao.md`
+  Guia de configuração local com PHP, MySQL, `.env` e scripts SQL.
+
+- `docs/banco-de-dados.md`
+  Manual do banco, tabelas, relacionamentos, PDO e segurança contra SQL Injection.
+
 ## Limitações atuais
 Por ser um protótipo acadêmico desta etapa:
-- os dados ainda não são persistidos em banco de dados
-- o estado é perdido quando a sessão é encerrada
+- o `PortalRepository` já usa PDO, mas a autenticação ainda pode ser refinada para usar usuários do banco
 - as credenciais de login são fixas para demonstração
-- o sistema ainda pode evoluir em camadas futuras com persistência real
+- o sistema ainda pode evoluir para models com consultas específicas por entidade
 
 ## Próximos passos possíveis
-- migração dos vetores para banco de dados
-- persistência real de usuários e comentários
+- autenticação usando usuários e senhas salvos no banco
 - refinamento das regras de autenticação e permissões
 - separação ainda maior de responsabilidades por controller/model
 

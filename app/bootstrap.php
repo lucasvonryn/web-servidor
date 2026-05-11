@@ -27,12 +27,14 @@ require_once __DIR__ . '/Models/CategoriesModel.php';
 require_once __DIR__ . '/Models/UsersModel.php';
 require_once __DIR__ . '/Models/CommentsModel.php';
 require_once __DIR__ . '/Models/SettingsModel.php';
+require_once __DIR__ . '/Core/Database.php';
 require_once __DIR__ . '/Core/App.php';
 
 $basePortalData = require __DIR__ . '/Data/portal_content.php';
+$pdo            = Database::connect(dirname(__DIR__));
 
-// Dados são persistidos em sessão para simular um banco
-$repo = new PortalRepository($basePortalData, $assetUrl);
+// Dados são persistidos em banco MySQL via PDO
+$repo = new PortalRepository($basePortalData, $assetUrl, $pdo);
 $postsModel = new PostsModel($repo);
 $categoriesModel = new CategoriesModel($repo, $assetUrl);
 $usersModel = new UsersModel($repo);
@@ -97,4 +99,3 @@ $router->post('admin/configuracoes/salvar', fn () => $adminController->configura
 $app = new App($router, $view, $repo, $routeUrl, $assetUrl);
 
 return $app;
-

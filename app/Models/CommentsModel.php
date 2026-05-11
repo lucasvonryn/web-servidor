@@ -79,7 +79,7 @@ class CommentsModel
             'email'   => $commentEmail,
             'trecho'  => $commentExcerpt,
             'texto'   => $text,
-            'status'  => 'Aprovado',
+            'status'  => 'Pendente',
             'data'    => portal_format_date(),
         ];
 

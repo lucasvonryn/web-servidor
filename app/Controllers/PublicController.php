@@ -94,7 +94,7 @@ class PublicController
             exit;
         }
 
-        portal_set_alert('success', 'Comentário publicado com sucesso!');
+        portal_set_alert('success', 'Comentário enviado com sucesso e aguardando aprovação da equipe.');
         portal_redirect($redirectUrl . '#comentarios');
     }
 }

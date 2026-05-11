@@ -1,6 +1,6 @@
 # Fluxo completo do projeto (visão “do clique até salvar”)
 
-Este documento explica **todo o caminho de execução** do sistema: da URL acessada até a renderização, e como acontecem **criação/edição/exclusão** mesmo sem banco de dados nesta etapa.
+Este documento explica **todo o caminho de execução** do sistema: da URL acessada até a renderização, e como acontecem **criação/edição/exclusão** com persistência em MySQL via PDO.
 
 ---
 
@@ -24,7 +24,7 @@ Em resumo:
 
 O bootstrap é responsável por “montar” a aplicação:
 
-- inicia a sessão com `session_start()` (essencial para login, mensagens e dados do portal)
+- inicia a sessão com `session_start()` (essencial para login e mensagens)
 - habilita `error_reporting` durante desenvolvimento
 - calcula o `basePath` (permite o projeto funcionar em subpasta)
 - cria helpers:
@@ -32,7 +32,8 @@ O bootstrap é responsável por “montar” a aplicação:
   - `assetUrl($path)` para gerar links para CSS/JS/imagens
 - carrega classes e helpers do projeto
 - instancia:
-  - `PortalRepository` (camada de dados em sessão)
+  - `Database` (conexão PDO com MySQL)
+  - `PortalRepository` (camada de dados no banco)
   - Models por módulo (`PostsModel`, `CategoriesModel`, etc.)
   - Controllers (`PublicController`, `AdminController`, `AuthController`)
   - `Router` e `View`
@@ -129,29 +130,31 @@ Cada Model encapsula regras e operações do seu módulo:
 - criação/edição/exclusão
 - regras simples (ex.: impedir excluir categoria com posts vinculados, etc.)
 
-Eles trabalham com arrays e usam o repositório para obter/persistir dados.
+Eles trabalham com arrays compatíveis com as views e usam o repositório para obter/persistir dados no banco.
 
 ---
 
-## 7) PortalRepository (persistência sem banco nesta etapa)
+## 7) PortalRepository (persistência em MySQL)
 
 - **Arquivo**: `app/Models/PortalRepository.php`
 
 O repositório faz o papel de camada de dados:
 
-- **base**: `app/Data/portal_content.php`
-- **estado atual**: `$_SESSION['portal_data']`
+- lê as tabelas MySQL via PDO
+- monta o array `portalData` esperado pelas views
+- grava alterações no banco usando prepared statements
 
 Como funciona:
 
-1. Ao carregar a aplicação, os dados base são normalizados e copiados para `$_SESSION['portal_data']`
-2. Nas operações de CRUD, os Models alteram os arrays
-3. O repositório grava de volta na sessão
+1. Ao carregar a aplicação, `Database::connect()` cria a conexão PDO
+2. O repositório consulta `settings`, `users`, `categories`, `posts` e `comments`
+3. Nas operações de CRUD, os Models alteram o array em memória
+4. O repositório grava o estado atualizado no banco
 
 Consequência:
 
-- os dados **persistem enquanto a sessão existir**
-- se a sessão expirar/for limpa, o sistema volta ao estado base
+- os dados persistem mesmo após fechar o navegador
+- o sistema deixa de depender de `$_SESSION['portal_data']` para manter publicações, categorias, usuários e comentários
 
 ---
 
@@ -186,4 +189,3 @@ Esse padrão permite:
 - validar no servidor
 - redirecionar após POST
 - exibir feedback na próxima tela
-
