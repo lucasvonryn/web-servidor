@@ -85,65 +85,28 @@ Arquivos responsáveis pelo funcionamento da aplicação:
 - `app/Core/App.php`
 - `app/Core/Database.php`
 - `app/Core/Router.php`
+- `app/Core/RouteRequest.php`
 - `app/Core/View.php`
 - `app/bootstrap.php`
 - `public/index.php`
+- `public/.htaccess` (URLs transparentes em Apache/Herd)
 
-## Estrutura atual do projeto
-```bash
-web-servidor/
-├── app/
-│   ├── bootstrap.php
-│   ├── Controllers/
-│   │   ├── AdminController.php
-│   │   ├── AuthController.php
-│   │   └── PublicController.php
-│   ├── Core/
-│   │   ├── App.php
-│   │   ├── Database.php
-│   │   ├── Router.php
-│   │   └── View.php
-│   ├── Data/
-│   │   └── portal_content.php
-│   ├── Models/
-│   │   ├── CategoriesModel.php
-│   │   ├── CommentsModel.php
-│   │   ├── PortalRepository.php
-│   │   ├── PostsModel.php
-│   │   ├── SettingsModel.php
-│   │   └── UsersModel.php
-│   ├── Support/
-│   │   └── portal_helpers.php
-│   └── Views/
-│       ├── admin/
-│       ├── partials/
-│       └── public/
-├── docs/
-│   ├── banco-de-dados.md
-│   ├── escopo.md
-│   ├── fluxo-do-projeto.md
-│   └── instalacao.md
-├── database/
-│   ├── schema.sql
-│   └── seed.sql
-├── public/
-│   ├── assets/
-│   ├── css/
-│   │   └── style.css
-│   ├── favicon.svg
-│   └── index.php
-└── README.md
-```
+### Composer e autoload
+O projeto usa **Composer** com autoload PSR-4 (`App\` → `app/`) e pacotes:
+- `vlucas/phpdotenv` — variáveis de ambiente (`.env`)
+- `bramus/router` — despacho HTTP por path da URI
+
+Após clonar o repositório, execute `composer install` na raiz (veja [Instalação](#instalação-e-execução)).
 
 ## Fluxo de execução
 Resumo do fluxo atual da aplicação:
 
-1. Toda requisição entra por `public/index.php`
-2. O arquivo carrega `app/bootstrap.php`
-3. O bootstrap inicia a sessão, registra helpers, instancia models/controllers e cadastra as rotas
-4. O `Database` cria a conexão PDO com o MySQL
-5. O `Router` associa rota + método HTTP ao controller correspondente
-6. O controller processa a requisição
+1. Toda requisição entra por `public/index.php` (rewrite via `.htaccess` ou servidor configurado)
+2. O arquivo carrega `vendor/autoload.php` e `app/bootstrap.php`
+3. O bootstrap inicia a sessão, instancia models/controllers e registra rotas no `Router` interno e no `bramus/router`
+4. O `RouteRequest` resolve a rota lógica a partir do path da URI (ex.: `/publicacoes` → `publicacoes`)
+5. O `Database` cria a conexão PDO com o MySQL (credenciais em `.env` via phpdotenv)
+6. O controller correspondente processa a requisição
 7. Os models validam e manipulam os dados
 8. O `PortalRepository` lê e persiste o estado no banco
 9. A view correspondente é renderizada
@@ -158,14 +121,16 @@ Documentos complementares:
 ## Requisitos para execução
 Para executar o projeto localmente, é necessário ter:
 - PHP 8.0 ou superior
+- Composer
 - extensão `pdo_mysql` ativa no PHP
 - MySQL 8.0 ou MariaDB compatível
 - navegador web
 
 Nesta versão:
-- não é necessário Composer
+- é necessário rodar `composer install` na raiz do projeto
 - é necessário criar o banco MySQL antes de abrir a aplicação
 - é recomendado criar um arquivo `.env` baseado em `.env.example`
+- URLs públicas usam paths limpos (`/publicacoes`, `/admin/posts`)
 
 ## Instalação e execução
 1. Clone o repositório:
@@ -180,7 +145,13 @@ git clone https://github.com/lucasvonryn/web-servidor.git
 cd web-servidor
 ```
 
-3. Confira se o PHP tem o driver MySQL do PDO:
+3. Instale as dependências PHP:
+
+```bash
+composer install
+```
+
+4. Confira se o PHP tem o driver MySQL do PDO:
 
 ```bash
 php -m | grep pdo_mysql
@@ -192,14 +163,14 @@ Se não aparecer `pdo_mysql`, instale o pacote do PHP para MySQL:
 sudo apt install php-mysql
 ```
 
-4. Crie o banco MySQL:
+5. Crie o banco MySQL:
 
 ```bash
 mysql -u root -p < database/schema.sql
 mysql -u root -p portal_editorial < database/seed.sql
 ```
 
-5. Crie o arquivo `.env` a partir do exemplo:
+6. Crie o arquivo `.env` a partir do exemplo:
 
 ```bash
 cp .env.example .env
@@ -215,13 +186,13 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-6. Inicie o servidor embutido do PHP apontando para `public`:
+7. Inicie o servidor embutido do PHP apontando para `public`:
 
 ```bash
 php -S localhost:8000 -t public
 ```
 
-7. Abra no navegador:
+8. Abra no navegador:
 
 ```text
 http://localhost:8000
@@ -234,19 +205,24 @@ Importante:
 ## Rotas principais
 
 ### Área pública
-- `http://localhost:8000/index.php?url=home`
-- `http://localhost:8000/index.php?url=publicacoes`
-- `http://localhost:8000/index.php?url=login`
-- `http://localhost:8000/index.php?url=conta`
+- `http://localhost:8000/` (home)
+- `http://localhost:8000/publicacoes`
+- `http://localhost:8000/publicacoes?q=ciencia` (busca)
+- `http://localhost:8000/login`
+- `http://localhost:8000/conta`
 
 ### Área administrativa
-- `http://localhost:8000/index.php?url=admin/login`
-- `http://localhost:8000/index.php?url=admin/posts`
-- `http://localhost:8000/index.php?url=admin/usuarios`
-- `http://localhost:8000/index.php?url=admin/categorias`
-- `http://localhost:8000/index.php?url=admin/comentarios`
-- `http://localhost:8000/index.php?url=admin/configuracoes`
-- `http://localhost:8000/index.php?url=admin/logout`
+- `http://localhost:8000/admin/login`
+- `http://localhost:8000/admin/posts`
+- `http://localhost:8000/admin/usuarios`
+- `http://localhost:8000/admin/categorias`
+- `http://localhost:8000/admin/comentarios`
+- `http://localhost:8000/admin/configuracoes`
+- `http://localhost:8000/admin/logout`
+
+Com **Laravel Herd** ou Apache, aponte o document root para `public/`; o `public/.htaccess` reescreve as requisições para `index.php`.
+
+Formato legado (ainda aceito): `http://localhost:8000/index.php?url=publicacoes`
 
 ## Credenciais de teste
 
@@ -357,9 +333,10 @@ O feedback ao usuário é feito com:
 - `$_SESSION['old_publico']`
 
 ## Sessões e autenticação
+Login administrativo e de leitores usa credenciais de demonstração fixas no `AuthController` (ex.: `admin@admin.com` / `123456`). Cadastro público apenas cria a sessão do leitor, sem persistir senha no banco.
+
 O sistema utiliza `$_SESSION` para:
-- autenticação do administrador
-- autenticação do usuário público
+- manter o usuário autenticado (admin ou leitor)
 - mensagens de feedback
 - repopulação de formulários após erro de validação
 
@@ -407,14 +384,8 @@ Na versão atual, o projeto foi reorganizado para melhorar a apresentação e ad
 
 ## Limitações atuais
 Por ser um protótipo acadêmico desta etapa:
-- o `PortalRepository` já usa PDO, mas a autenticação ainda pode ser refinada para usar usuários do banco
-- as credenciais de login são fixas para demonstração
-- o sistema ainda pode evoluir para models com consultas específicas por entidade
-
-## Próximos passos possíveis
-- autenticação usando usuários e senhas salvos no banco
-- refinamento das regras de autenticação e permissões
-- separação ainda maior de responsabilidades por controller/model
+- o `PortalRepository` concentra leitura/gravação e usa estratégia de sincronização completa (delete + reinsert) em algumas operações
+- o sistema ainda pode evoluir para repositórios ou CRUDs incrementais por entidade
 
 ## Licença
 Uso acadêmico. Projeto desenvolvido para a disciplina de Desenvolvimento Web Servidor.

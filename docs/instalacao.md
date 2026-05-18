@@ -5,6 +5,7 @@ Este guia explica como configurar e executar o Portal Editorial localmente com P
 ## Requisitos
 
 - PHP 8.0 ou superior.
+- Composer
 - Extensão `pdo_mysql` ativa.
 - MySQL 8.0 ou MariaDB compatível.
 - Navegador web.
@@ -18,7 +19,21 @@ cd /home/fernanda/Documentos/GitHub/web-servidor
 
 Se o projeto estiver em outra pasta, ajuste o caminho.
 
-## 2. Iniciar o MySQL
+## 2. Instalar dependências (Composer)
+
+Na raiz do projeto:
+
+```bash
+composer install
+```
+
+Isso cria a pasta `vendor/` com o autoload PSR-4 (`App\`) e os pacotes:
+- `vlucas/phpdotenv` — leitura do `.env`
+- `bramus/router` — rotas HTTP por path da URI
+
+Sem o `vendor/`, a aplicação não inicia.
+
+## 3. Iniciar o MySQL
 
 Em Linux/Ubuntu:
 
@@ -44,7 +59,7 @@ Para sair do MySQL:
 exit;
 ```
 
-## 3. Verificar o Driver PDO do MySQL
+## 4. Verificar o Driver PDO do MySQL
 
 ```bash
 php -m | grep pdo_mysql
@@ -64,7 +79,7 @@ Depois confira novamente:
 php -m | grep pdo_mysql
 ```
 
-## 4. Criar o Banco de Dados
+## 5. Criar o Banco de Dados
 
 Na raiz do projeto, execute:
 
@@ -74,7 +89,7 @@ mysql -u root -p < database/schema.sql
 
 Esse comando cria o banco `portal_editorial` e as tabelas.
 
-## 5. Inserir os Dados Iniciais
+## 6. Inserir os Dados Iniciais
 
 ```bash
 mysql -u root -p portal_editorial < database/seed.sql
@@ -82,7 +97,7 @@ mysql -u root -p portal_editorial < database/seed.sql
 
 Esse comando popula o banco com categorias, publicações, comentários, usuários e configurações iniciais.
 
-## 6. Configurar o `.env`
+## 7. Configurar o `.env`
 
 Crie o arquivo `.env` a partir do exemplo:
 
@@ -106,7 +121,21 @@ Se o usuário `root` não tiver senha, deixe:
 DB_PASSWORD=
 ```
 
-## 7. Rodar a Aplicação
+### macOS (Laravel Herd)
+
+Com o site apontando para a pasta `public/` do projeto, o Herd usa PHP e rewrite automaticamente. Use `DB_HOST=127.0.0.1` no `.env` e o MySQL local (ou serviço do Herd, se configurado).
+
+### Docker
+
+Se o MySQL rodar em um container na rede Docker, ajuste o host:
+
+```env
+DB_HOST=mariadb
+```
+
+O nome do serviço deve coincidir com o `docker-compose.yml` do ambiente.
+
+## 8. Rodar a Aplicação
 
 Na raiz do projeto:
 
@@ -212,6 +241,7 @@ mysql -u root -p portal_editorial < database/seed.sql
 
 - `.env`: credenciais reais da máquina local. Não deve ser versionado.
 - `.env.example`: modelo seguro para documentação.
+- `composer.json` / `composer.lock`: dependências e autoload PSR-4.
 - `database/schema.sql`: criação do banco.
 - `database/seed.sql`: carga inicial.
 - `app/Core/Database.php`: conexão PDO.
