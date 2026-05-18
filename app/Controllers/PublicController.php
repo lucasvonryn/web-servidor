@@ -1,9 +1,10 @@
 <?php
 
-require_once __DIR__ . '/../Core/View.php';
-require_once __DIR__ . '/../Models/PortalRepository.php';
-require_once __DIR__ . '/../Models/CommentsModel.php';
-require_once __DIR__ . '/../Support/portal_helpers.php';
+namespace App\Controllers;
+
+use App\Core\View;
+use App\Models\CommentsModel;
+use App\Models\PortalRepository;
 
 class PublicController
 {

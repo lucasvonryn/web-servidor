@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Core;
+
 class View
 {
     private string $viewsPath;
@@ -19,7 +21,6 @@ class View
             exit;
         }
 
-        // Extrai variáveis para a view (ex.: $portalData, $routeUrl, $assetUrl)
         extract($data, EXTR_SKIP);
         include $fullPath;
     }

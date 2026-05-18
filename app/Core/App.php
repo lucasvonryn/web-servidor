@@ -1,28 +1,48 @@
 <?php
 
-require_once __DIR__ . '/Router.php';
-require_once __DIR__ . '/View.php';
+namespace App\Core;
+
+use App\Models\PortalRepository;
+use Bramus\Router\Router as BramusRouter;
 
 class App
 {
+    private BramusRouter $httpRouter;
     private Router $router;
     private View $view;
     private PortalRepository $repo;
+    private string $basePath;
+    /** @var callable */
     private $routeUrl;
+    /** @var callable */
     private $assetUrl;
 
-    public function __construct(Router $router, View $view, PortalRepository $repo, callable $routeUrl, callable $assetUrl)
-    {
-        $this->router   = $router;
-        $this->view     = $view;
-        $this->repo     = $repo;
-        $this->routeUrl = $routeUrl;
-        $this->assetUrl = $assetUrl;
+    public function __construct(
+        BramusRouter $httpRouter,
+        Router $router,
+        View $view,
+        PortalRepository $repo,
+        string $basePath,
+        callable $routeUrl,
+        callable $assetUrl
+    ) {
+        $this->httpRouter = $httpRouter;
+        $this->router     = $router;
+        $this->view       = $view;
+        $this->repo       = $repo;
+        $this->basePath   = $basePath;
+        $this->routeUrl   = $routeUrl;
+        $this->assetUrl   = $assetUrl;
     }
 
     public function router(): Router
     {
         return $this->router;
+    }
+
+    public function httpRouter(): BramusRouter
+    {
+        return $this->httpRouter;
     }
 
     public function view(): View
@@ -47,8 +67,23 @@ class App
 
     public function run(): void
     {
-        // Rota vem do query string. Ex.: index.php?url=admin/posts
-        $url = $_GET['url'] ?? 'home';
-        $this->router->dispatch($url);
+        $legacyQueryRoute = isset($_GET['url']) && is_string($_GET['url']) && $_GET['url'] !== ''
+            ? trim($_GET['url'], '/')
+            : null;
+
+        $logicalRoute = RouteRequest::resolve($this->basePath);
+        $_GET['url']  = $logicalRoute;
+
+        if ($legacyQueryRoute !== null) {
+            $this->router->dispatch($logicalRoute);
+            return;
+        }
+
+        if ($this->router->has($logicalRoute)) {
+            $this->httpRouter->run();
+            return;
+        }
+
+        $this->router->dispatch($logicalRoute);
     }
 }

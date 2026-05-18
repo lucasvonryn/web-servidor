@@ -1,16 +1,14 @@
 <?php
 
-require_once __DIR__ . '/../Models/PortalRepository.php';
-require_once __DIR__ . '/../Support/portal_helpers.php';
+namespace App\Controllers;
 
 class AuthController
 {
-    private PortalRepository $repo;
+    /** @var callable */
     private $routeUrl;
 
-    public function __construct(PortalRepository $repo, callable $routeUrl)
+    public function __construct(callable $routeUrl)
     {
-        $this->repo     = $repo;
         $this->routeUrl = $routeUrl;
     }
 

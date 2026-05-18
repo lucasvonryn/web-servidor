@@ -1,6 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../Support/portal_helpers.php';
+namespace App\Models;
+
+use PDO;
 
 class PortalRepository
 {

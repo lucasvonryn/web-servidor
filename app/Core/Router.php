@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Core;
+
 class Router
 {
     /** @var array<string, callable> */
@@ -19,11 +21,18 @@ class Router
     {
         if (! isset($this->routes[$name])) {
             http_response_code(404);
-            echo '<h1>404 - Página não encontrada</h1>';
-            echo 'URL atual: ' . htmlspecialchars($name);
+            $view = new View(dirname(__DIR__) . '/Views');
+            $view->render('errors/404.php', [
+                'route' => $name,
+            ]);
             return;
         }
 
         ($this->routes[$name])();
+    }
+
+    public function has(string $name): bool
+    {
+        return isset($this->routes[$name]);
     }
 }

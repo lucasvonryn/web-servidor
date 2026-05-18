@@ -1,58 +1,74 @@
 <?php
 
-// Registra rotas e instancia dependências
+use App\Controllers\AdminController;
+use App\Controllers\AuthController;
+use App\Controllers\PublicController;
+use App\Core\App;
+use App\Core\Database;
+use App\Core\Router;
+use App\Core\View;
+use App\Models\CategoriesModel;
+use App\Models\CommentsModel;
+use App\Models\PortalRepository;
+use App\Models\PostsModel;
+use App\Models\SettingsModel;
+use App\Models\UsersModel;
+use Bramus\Router\Router as HttpRouter;
+
+$rootPath = dirname(__DIR__);
+
+require $rootPath . '/vendor/autoload.php';
+
 session_start();
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
 $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '/index.php');
-$basePath = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
-$basePath = $basePath === '.' ? '' : $basePath;
+$basePath   = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
+$basePath   = $basePath === '.' ? '' : $basePath;
 
-// Helpers para gerar URLs
 $routeUrl = static function (string $route = 'home', array $params = []) use ($basePath): string {
-    $query = http_build_query(array_merge(['url' => $route], $params));
-    return ($basePath ?: '') . '/index.php' . ($query ? '?' . $query : '');
+    $path = $route === 'home' ? '/' : '/' . $route;
+    if ($params !== []) {
+        $path .= '?' . http_build_query($params);
+    }
+
+    return ($basePath !== '' ? $basePath : '') . $path;
 };
 
 $assetUrl = static function (string $path) use ($basePath): string {
-    return ($basePath ?: '') . '/' . ltrim($path, '/');
+    $prefix = $basePath !== '' ? $basePath : '';
+
+    return $prefix . '/' . ltrim($path, '/');
 };
 
-require_once __DIR__ . '/Support/portal_helpers.php';
-require_once __DIR__ . '/Models/PortalRepository.php';
-require_once __DIR__ . '/Models/PostsModel.php';
-require_once __DIR__ . '/Models/CategoriesModel.php';
-require_once __DIR__ . '/Models/UsersModel.php';
-require_once __DIR__ . '/Models/CommentsModel.php';
-require_once __DIR__ . '/Models/SettingsModel.php';
-require_once __DIR__ . '/Core/Database.php';
-require_once __DIR__ . '/Core/App.php';
-
 $basePortalData = require __DIR__ . '/Data/portal_content.php';
-$pdo            = Database::connect(dirname(__DIR__));
+$pdo            = Database::connect($rootPath);
 
-// Dados são persistidos em banco MySQL via PDO
-$repo = new PortalRepository($basePortalData, $assetUrl, $pdo);
-$postsModel = new PostsModel($repo);
+$repo            = new PortalRepository($basePortalData, $assetUrl, $pdo);
+$postsModel      = new PostsModel($repo);
 $categoriesModel = new CategoriesModel($repo, $assetUrl);
-$usersModel = new UsersModel($repo);
-$commentsModel = new CommentsModel($repo);
-$settingsModel = new SettingsModel($repo);
-$view = new View(__DIR__ . '/Views');
-$router = new Router();
-
-// Controllers
-require_once __DIR__ . '/Controllers/PublicController.php';
-require_once __DIR__ . '/Controllers/AdminController.php';
-require_once __DIR__ . '/Controllers/AuthController.php';
+$usersModel      = new UsersModel($repo);
+$commentsModel   = new CommentsModel($repo);
+$settingsModel   = new SettingsModel($repo);
+$view            = new View(__DIR__ . '/Views');
+$router          = new Router();
 
 $publicController = new PublicController($view, $repo, $routeUrl, $assetUrl);
-$adminController = new AdminController($view, $repo, $routeUrl, $assetUrl, $postsModel, $categoriesModel, $usersModel, $commentsModel, $settingsModel);
-$authController = new AuthController($repo, $routeUrl);
+$adminController  = new AdminController(
+    $view,
+    $repo,
+    $routeUrl,
+    $assetUrl,
+    $postsModel,
+    $categoriesModel,
+    $usersModel,
+    $commentsModel,
+    $settingsModel
+);
+$authController = new AuthController($routeUrl);
 
-// Rotas públicas
 $router->get('home', fn () => $publicController->home());
 $router->get('login', fn () => $publicController->login());
 $router->get('categoria', fn () => $publicController->categoria());
@@ -61,14 +77,12 @@ $router->get('publicacao', fn () => $publicController->publicacao());
 $router->get('conta', fn () => $publicController->conta());
 $router->post('publicacao/comentar', fn () => $publicController->comentar());
 
-// Autenticação
 $router->post('processar-login-publico', fn () => $authController->loginPublico());
 $router->post('processar-cadastro-publico', fn () => $authController->cadastroPublico());
 $router->get('logout-publico', fn () => $authController->logoutPublico());
 $router->post('processar-login', fn () => $authController->loginAdmin());
 $router->get('admin/logout', fn () => $authController->logoutAdmin());
 
-// Admin
 $router->get('admin/login', fn () => $adminController->login());
 
 $router->get('admin/posts', fn () => $adminController->postsLista());
@@ -96,6 +110,43 @@ $router->get('admin/comentarios/excluir', fn () => $adminController->comentarios
 $router->get('admin/configuracoes', fn () => $adminController->configuracoes());
 $router->post('admin/configuracoes/salvar', fn () => $adminController->configuracoesSalvar());
 
-$app = new App($router, $view, $repo, $routeUrl, $assetUrl);
+$httpRouter = new HttpRouter();
+if ($basePath !== '') {
+    $httpRouter->setBasePath($basePath);
+}
 
-return $app;
+$registerHttpRoute = static function (string $logicalRoute, string $method) use ($httpRouter, $router): void {
+    $path = $logicalRoute === 'home' ? '/' : '/' . $logicalRoute;
+    $handler = static function () use ($router, $logicalRoute): void {
+        $router->dispatch($logicalRoute);
+    };
+
+    if ($method === 'GET') {
+        $httpRouter->get($path, $handler);
+        return;
+    }
+
+    $httpRouter->post($path, $handler);
+};
+
+foreach ([
+    'home', 'login', 'categoria', 'publicacoes', 'publicacao', 'conta',
+    'logout-publico', 'admin/logout', 'admin/login',
+    'admin/posts', 'admin/posts/novo', 'admin/posts/editar', 'admin/posts/excluir',
+    'admin/usuarios', 'admin/usuarios/novo', 'admin/usuarios/editar', 'admin/usuarios/excluir',
+    'admin/categorias', 'admin/categorias/novo', 'admin/categorias/editar', 'admin/categorias/excluir',
+    'admin/comentarios', 'admin/comentarios/status', 'admin/comentarios/excluir',
+    'admin/configuracoes',
+] as $getRoute) {
+    $registerHttpRoute($getRoute, 'GET');
+}
+
+foreach ([
+    'publicacao/comentar', 'processar-login-publico', 'processar-cadastro-publico',
+    'processar-login', 'admin/posts/salvar', 'admin/usuarios/salvar',
+    'admin/categorias/salvar', 'admin/configuracoes/salvar',
+] as $postRoute) {
+    $registerHttpRoute($postRoute, 'POST');
+}
+
+return new App($httpRouter, $router, $view, $repo, $basePath, $routeUrl, $assetUrl);

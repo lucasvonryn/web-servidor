@@ -1,13 +1,14 @@
 <?php
 
-require_once __DIR__ . '/../Core/View.php';
-require_once __DIR__ . '/../Models/PostsModel.php';
-require_once __DIR__ . '/../Models/CategoriesModel.php';
-require_once __DIR__ . '/../Models/UsersModel.php';
-require_once __DIR__ . '/../Models/CommentsModel.php';
-require_once __DIR__ . '/../Models/SettingsModel.php';
-require_once __DIR__ . '/../Models/PortalRepository.php';
-require_once __DIR__ . '/../Support/portal_helpers.php';
+namespace App\Controllers;
+
+use App\Core\View;
+use App\Models\CategoriesModel;
+use App\Models\CommentsModel;
+use App\Models\PortalRepository;
+use App\Models\PostsModel;
+use App\Models\SettingsModel;
+use App\Models\UsersModel;
 
 class AdminController
 {
