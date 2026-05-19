@@ -3,6 +3,8 @@
 
 USE portal_editorial;
 
+DELETE FROM settings;
+
 INSERT INTO settings (
     id,
     nome_site,
@@ -15,7 +17,7 @@ INSERT INTO settings (
     contact_email,
     footer_links
 ) VALUES (
-    1,
+	 1,
     'O Editorial',
     'Jornalismo com profundidade e compromisso.',
     'O Editorial é um veículo jornalístico independente comprometido com a qualidade informativa e o pluralismo de ideias.',
@@ -27,20 +29,20 @@ INSERT INTO settings (
     'Fale Conosco'
 );
 
-INSERT INTO users (id, nome, email, senha_hash, papel, status, created_at) VALUES
+INSERT IGNORE INTO users (id, nome, email, senha_hash, papel, status, created_at) VALUES
 (1, 'Fernanda Pacheco', 'fernanda@oeditorial.com.br', NULL, 'Administrador', 'Ativo', '2023-01-14'),
 (2, 'Maria Beatriz', 'maria@oeditorial.com.br', NULL, 'Editora', 'Ativo', '2023-03-19'),
 (3, 'Lucas Gabriel', 'lucas@oeditorial.com.br', NULL, 'Editor', 'Ativo', '2023-04-09'),
 (4, 'Fernanda Lima', 'fernanda.lima@oeditorial.com.br', NULL, 'Editor', 'Inativo', '2023-06-04');
 
-INSERT INTO categories (id, slug, name, tag_class, accent, cover, description) VALUES
+INSERT IGNORE INTO categories (id, slug, name, tag_class, accent, cover, description) VALUES
 (1, 'tecnologia', 'Tecnologia', 'tecnologia', 'tech', 'assets/home/tecnologia-capa.png', 'Inovação, IA, software e mundo digital.'),
 (2, 'politica', 'Política', 'politica', 'politica', 'assets/home/politica-capa.png', 'Análises políticas nacionais e internacionais.'),
 (3, 'ciencia', 'Ciência', 'ciencia', 'ciencia', 'assets/home/ciencia-capa.png', 'Descobertas científicas e pesquisas relevantes.'),
 (4, 'meio-ambiente', 'Meio Ambiente', 'meio-ambiente', 'meio-ambiente', 'assets/home/meio-ambiente-capa.png', 'Sustentabilidade, clima e natureza.'),
 (5, 'cultura', 'Cultura', 'cultura', 'cultura', 'assets/home/cultura-capa.png', 'Arte, literatura, música e comportamento.');
 
-INSERT INTO posts (
+INSERT IGNORE INTO posts (
     id,
     category_id,
     slug,
@@ -61,7 +63,7 @@ INSERT INTO posts (
 (5, 5, 'arquitetura-urbana-espacos-publicos', 'Arquitetura urbana reinventa espaços públicos nas metrópoles', 'Novas tendências de design transformam centros históricos em espaços verdes e culturais multifuncionais.', 'Novas tendências de design transformam centros históricos em espaços verdes, culturais e conviviais, reconectando a população com áreas antes degradadas.', 'Juliana Azevedo', 'Juliana', '7 de mar. de 2024', 'Publicado', 0, 'assets/home/cultura-capa.png'),
 (6, 1, 'quantum-computing-fronteira-tecnologica', 'Quantum Computing: a próxima fronteira tecnológica', 'Empresas de tecnologia aceleram investimentos em computação quântica, com aplicações esperadas para criptografia e descoberta de fármacos.', 'Empresas de tecnologia aceleram investimentos em computação quântica para resolver desafios complexos em simulação, segurança e processamento científico.', 'Ana Beatriz Silva', 'Ana', '4 de mar. de 2024', 'Publicado', 0, 'assets/home/tecnologia-capa.png');
 
-INSERT INTO comments (id, post_id, autor, email, trecho, texto, status, published_label) VALUES
+INSERT IGNORE INTO comments (id, post_id, autor, email, trecho, texto, status, published_label) VALUES
 (1, 1, 'Leitor O Editorial', 'leitor@oeditorial.com.br', 'Excelente análise sobre os impactos da IA no mercado.', 'Excelente análise sobre os impactos da IA no mercado. Gostei da forma como a matéria apresentou riscos e oportunidades sem cair em alarmismo.', 'Aprovado', '18 de mar. de 2024'),
 (2, 2, 'Paula Mendes', 'paula@email.com', 'Gostaria de ver mais dados sobre financiamento climático.', 'Gostaria de ver mais dados sobre financiamento climático. Seria interessante incluir metas por continente e comparativos com acordos anteriores.', 'Pendente', '15 de mar. de 2024'),
 (3, 1, 'Mariana Costa', 'mariana@email.com', 'Muito relevante. Gostaria de ver mais sobre quais profissões vão surgir.', 'Muito relevante. Gostaria de ver mais sobre quais profissões vão surgir, não apenas as que serão extintas.', 'Aprovado', '18 de mar. de 2024'),
