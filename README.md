@@ -217,7 +217,6 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-```markdown
 > 💡 **Nota para Windows (Senha Vazia):** Se você optou por remover a senha do usuário `root` no HeidiSQL para simplificar o ambiente local, certifique-se de manter o campo `DB_PASSWORD=` completamente vazio, sem aspas ou espaços após o sinal de igual.
 
 7. Inicie o servidor embutido do PHP apontando para `public`:
