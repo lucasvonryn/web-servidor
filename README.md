@@ -119,6 +119,8 @@ Documentos complementares:
 - `docs/banco-de-dados.md`
 
 ## Requisitos para execução
+>  **Nota para usuários Windows:** Antes de iniciar a instalação, certifique-se de que o PHP e o Composer estão configurados nas Variáveis de Ambiente (`Path`) do sistema. Além disso, localize o arquivo `php.ini` na pasta de instalação do seu PHP, procure pela linha `;extension=pdo_mysql` e **remova o ponto e vírgula (`;`)** do início para ativar o driver do banco de dados.
+
 Para executar o projeto localmente, é necessário ter:
 - PHP 8.0 ou superior
 - Composer
@@ -152,6 +154,7 @@ composer install
 ```
 
 4. Confira se o PHP tem o driver MySQL do PDO:
+   * **No Linux:**
 
 ```bash
 php -m | grep pdo_mysql
@@ -162,18 +165,46 @@ Se não aparecer `pdo_mysql`, instale o pacote do PHP para MySQL:
 ```bash
 sudo apt install php-mysql
 ```
+  * **No Windows:**
+Execute o comando abaixo e verifique visualmente se `pdo_mysql` aparece na listagem gerada no terminal:
+
+```PowerShell
+php -m
+```
 
 5. Crie o banco MySQL:
+  * **No Linux:**
 
 ```bash
 mysql -u root -p < database/schema.sql
 mysql -u root -p portal_editorial < database/seed.sql
 ```
+ * **No Windows:** 
+O PowerShell do Windows não aceita o operador `<`. Além disso, a linha de comando padrão do Windows costuma apresentar o erro de falta da biblioteca `caching_sha2_password.dll`. Para contornar isso, use uma interface gráfica como o HeidiSQL:
+
+a. Baixe e instale o HeidiSQL.
+
+b. Conecte-se ao seu MySQL local utilizando Host: 127.0.0.1 e Usuário: root.
+
+c. Remover a senha do banco (Opcional): Para facilitar a conexão do PHP local e remover barreiras de acesso, clique na aba Consulta (Query), cole o comando abaixo e aperte F9:
+
+```PowerShell
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';
+FLUSH PRIVILEGES;
+```
+d. Importar o Schema: No menu superior, vá em Arquivo > Carregar arquivo SQL..., selecione o arquivo `database/schema.sql` do seu projeto e aperte F9 para criar as tabelas.
+e. Importar o Seed (Dados Iniciais): Vá novamente em Arquivo > Carregar arquivo SQL..., selecione o arquivo `database/seed.sql`.
 
 6. Crie o arquivo `.env` a partir do exemplo:
+   * **No Linux:**
 
 ```bash
 cp .env.example .env
+```
+  * **No Windows:**
+
+```PowerShell
+copy .env.example .env
 ```
 
 Atualize o `.env` se seu usuário/senha do MySQL forem diferentes:
@@ -185,6 +216,8 @@ DB_DATABASE=portal_editorial
 DB_USERNAME=root
 DB_PASSWORD=
 ```
+
+> 💡 **Nota para Windows (Senha Vazia):** Se você optou por remover a senha do usuário `root` no HeidiSQL para simplificar o ambiente local, certifique-se de manter o campo `DB_PASSWORD=` completamente vazio, sem aspas ou espaços após o sinal de igual.
 
 7. Inicie o servidor embutido do PHP apontando para `public`:
 
@@ -274,10 +307,15 @@ Arquivos criados:
 
 Para preparar o banco:
 
+* **Comando para Linux:**
+
 ```bash
 mysql -u root -p < database/schema.sql
 mysql -u root -p portal_editorial < database/seed.sql
 ```
+
+* **Procedimento para Windows:**
+Não utilize os comandos acima no PowerShell. Siga as instruções de importação manual dos arquivos schema.sql e seed.sql através do HeidiSQL detalhadas na seção de [Instalação](#instalação-e-execução).
 
 Nesta etapa, a estrutura de banco já está pronta e o `PortalRepository` já usa PDO para ler e gravar os dados.
 
