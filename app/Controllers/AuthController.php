@@ -6,10 +6,15 @@ class AuthController
 {
     /** @var callable */
     private $routeUrl;
+    private \App\Models\UsersModel $usersModel;
+    private \App\Models\PortalRepository $portalRepository;
 
-    public function __construct(callable $routeUrl)
+    
+    public function __construct(callable $routeUrl, \App\Models\UsersModel $usersModel, \App\Models\PortalRepository $portalRepository)
     {
-        $this->routeUrl = $routeUrl;
+        $this->routeUrl         = $routeUrl;
+        $this->usersModel       = $usersModel;
+        $this->portalRepository = $portalRepository;
     }
 
     public function loginAdmin(): void
@@ -102,6 +107,14 @@ class AuthController
             $erros['confirmar_senha'] = 'As senhas precisam ser iguais.';
         }
 
+       
+        $portalData = $this->portalRepository->getPortalData();
+
+        
+        if (!isset($erros['email']) && $this->usersModel->emailExists($portalData, $email)) {
+            $erros['email'] = 'Este e-mail já está cadastrado no sistema.';
+        }
+
         if ($erros) {
             $_SESSION['erros_publico'] = $erros;
             $_SESSION['old_publico']   = [
@@ -111,12 +124,32 @@ class AuthController
             portal_redirect(($this->routeUrl)('login', ['modo' => 'criar']));
         }
 
-        $_SESSION['usuario_publico_logado']    = true;
-        $_SESSION['usuario_publico_nome']      = $nome;
-        $_SESSION['usuario_publico_email']     = $email;
-        $_SESSION['usuario_publico_criado_em'] = date('d/m/Y');
-        portal_set_alert('success', 'Conta criada com sucesso. O protótipo já considera você conectado.');
-        portal_redirect(($this->routeUrl)('home'));
+        
+        try {
+            $updatedData = $this->usersModel->createPublicUser($portalData, [
+                'nome'  => $nome,
+                'email' => $email,
+                'senha' => $senha
+            ]);
+            
+            
+            $novoId = $updatedData['last_inserted_id'] ?? 0;
+
+            
+            $_SESSION['usuario_publico_logado']    = true;
+            $_SESSION['usuario_publico_id']        = $novoId;
+            $_SESSION['usuario_publico_nome']      = $nome;
+            $_SESSION['usuario_publico_email']     = $email;
+            $_SESSION['usuario_publico_criado_em'] = date('d/m/Y');
+
+            portal_set_alert('success', 'Conta criada com sucesso e salva no banco de dados!');
+            portal_redirect(($this->routeUrl)('home'));
+
+        } catch (\Throwable $e) {
+            
+            $_SESSION['erros_publico'] = ['geral' => 'Erro ao salvar os dados. Tente novamente.'];
+            portal_redirect(($this->routeUrl)('login', ['modo' => 'criar']));
+        }
     }
 
     public function logoutPublico(): void

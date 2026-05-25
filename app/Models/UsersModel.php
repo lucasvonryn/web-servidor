@@ -78,4 +78,55 @@ class UsersModel
 
         return $portalData;
     }
+    public function emailExists(array $portalData, string $email): bool
+    {
+        $users = $portalData['users'] ?? [];
+        foreach ($users as $user) {
+            if (strcasecmp(trim((string)($user['email'] ?? '')), trim($email)) === 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public function createPublicUser(array $portalData, array $input): array
+    {
+        $nome  = trim((string) ($input['nome'] ?? ''));
+        $email = trim((string) ($input['email'] ?? ''));
+        $senha = trim((string) ($input['senha'] ?? ''));
+
+        
+        $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+
+        $users = $portalData['users'] ?? [];
+        
+        
+        $nextId = 1;
+        foreach ($users as $user) {
+            $nextId = max($nextId, (int) ($user['id'] ?? 0) + 1);
+        }
+
+       
+        $newUser = [
+            'id'         => $nextId,
+            'nome'       => $nome,
+            'email'      => $email,
+            'senha_hash' => $senhaHash,
+            'papel'      => 'Editor', 
+            'status'     => 'Ativo',
+            'created_at' => date('d/m/Y'),
+        ];
+
+        $users[] = $newUser;
+        $portalData['users'] = $users;
+
+        
+        $updatedData = $this->repo->persistPortalData($portalData);
+        
+        
+        $updatedData['last_inserted_id'] = $nextId;
+
+        return $updatedData;
+    }
 }
