@@ -35,7 +35,7 @@
 
             <button type="submit" class="admin-dark-button admin-dark-button-full">Entrar no Painel</button>
 
-            <div class="admin-inline-alert">Demo: use "admin@admin.com" e senha "123456".</div>
+           
         </form>
     </div>
 </div>
