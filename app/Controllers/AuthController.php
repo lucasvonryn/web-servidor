@@ -55,12 +55,10 @@ class AuthController
             $erros['senha'] = 'Informe sua senha.';
         }
 
-        $adminEmail  = 'admin@admin.com';
-        $adminSenha  = '123456';
-        $leitorEmail = 'leitor@oeditorial.com.br';
-        $leitorSenha = '123456';
-
         if (! $erros) {
+            
+            $adminEmail  = 'admin@admin.com';
+            $adminSenha  = '123456';
             if ($email === $adminEmail && $senha === $adminSenha) {
                 $_SESSION['usuario_logado'] = true;
                 $_SESSION['usuario_nome']   = 'Administrador';
@@ -68,16 +66,49 @@ class AuthController
                 portal_redirect(($this->routeUrl)('admin/posts'));
             }
 
-            if ($email === $leitorEmail && $senha === $leitorSenha) {
-                $_SESSION['usuario_publico_logado']    = true;
-                $_SESSION['usuario_publico_nome']      = 'Leitor O Editorial';
-                $_SESSION['usuario_publico_email']     = $email;
-                $_SESSION['usuario_publico_criado_em'] = $_SESSION['usuario_publico_criado_em'] ?? date('d/m/Y');
-                portal_set_alert('success', 'Login realizado com sucesso!');
-                portal_redirect(($this->routeUrl)('home'));
-            }
+           
+            $portalData = $this->portalRepository->getPortalData();
+            
+            
+            $user = $this->usersModel->findByEmail($portalData, $email);
 
-            $erros['email'] = 'E-mail ou senha incorretos.';
+            
+            $hashNoBanco = $user['senha_hash'] ?? $user['senha'] ?? null;
+
+            if ($user && $hashNoBanco !== null) {
+                if (password_verify($senha, $hashNoBanco)) {
+                    
+                    // Garante que o usuário está ativo antes de logar
+                    if (($user['status'] ?? 'Ativo') === 'Inativo') {
+                        $erros['email'] = 'Esta conta está inativa.';
+                    } else {
+                        $_SESSION['usuario_publico_logado']    = true;
+                        $_SESSION['usuario_publico_id']        = $user['id'] ?? 0;
+                        $_SESSION['usuario_publico_nome']      = $user['nome'] ?? '';
+                        $_SESSION['usuario_publico_email']     = $user['email'] ?? '';
+                        $_SESSION['usuario_publico_criado_em'] = $user['created_at'] ?? date('d/m/Y');
+                        
+                        portal_set_alert('success', 'Login realizado com sucesso!');
+                        portal_redirect(($this->routeUrl)('home'));
+                    }
+                } else {
+                    $erros['email'] = 'E-mail ou senha incorretos.';
+                }
+            } else {
+                
+                $leitorEmail = 'leitor@oeditorial.com.br';
+                $leitorSenha = '123456';
+                if ($email === $leitorEmail && $senha === $leitorSenha) {
+                    $_SESSION['usuario_publico_logado']    = true;
+                    $_SESSION['usuario_publico_nome']      = 'Leitor O Editorial';
+                    $_SESSION['usuario_publico_email']     = $email;
+                    $_SESSION['usuario_publico_criado_em'] = date('d/m/Y');
+                    portal_set_alert('success', 'Login realizado com sucesso!');
+                    portal_redirect(($this->routeUrl)('home'));
+                } else {
+                    $erros['email'] = 'E-mail ou senha incorretos.';
+                }
+            }
         }
 
         if ($erros) {

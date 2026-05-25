@@ -67,7 +67,8 @@ $adminController  = new AdminController(
     $commentsModel,
     $settingsModel
 );
-$authController = new AuthController($routeUrl);
+
+$authController = new AuthController($routeUrl, $usersModel, $repo);
 
 $router->get('home', fn () => $publicController->home());
 $router->get('login', fn () => $publicController->login());

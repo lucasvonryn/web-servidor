@@ -112,6 +112,7 @@ class UsersModel
             'id'         => $nextId,
             'nome'       => $nome,
             'email'      => $email,
+            'senha'      => $senhaHash,
             'senha_hash' => $senhaHash,
             'papel'      => 'Editor', 
             'status'     => 'Ativo',
@@ -128,5 +129,16 @@ class UsersModel
         $updatedData['last_inserted_id'] = $nextId;
 
         return $updatedData;
+    }
+  
+    public function findByEmail(array $portalData, string $email): ?array
+    {
+        $users = $portalData['users'] ?? [];
+        foreach ($users as $user) {
+            if (strcasecmp(trim((string)($user['email'] ?? '')), trim($email)) === 0) {
+                return $user;
+            }
+        }
+        return null;
     }
 }

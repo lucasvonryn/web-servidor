@@ -102,6 +102,7 @@ class PortalRepository
                 'id'         => (int) $row['id'],
                 'nome'       => $row['nome'],
                 'email'      => $row['email'],
+                'senha_hash' => $row['senha_hash'] ?? null,
                 'papel'      => $row['papel'],
                 'status'     => $row['status'],
                 'created_at' => $this->formatDatabaseDate($row['created_at'] ?? null),
