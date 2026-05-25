@@ -141,20 +141,16 @@ class PortalRepository
         $this->pdo->beginTransaction();
 
         try {
-            $this->pdo->exec('DELETE FROM comments');
-            $this->pdo->exec('DELETE FROM posts');
-            $this->pdo->exec('DELETE FROM categories');
-            $this->pdo->exec('DELETE FROM users');
-            $this->pdo->exec('DELETE FROM settings');
+            
+            $this->saveIncrementalSettings($portalData['settings'] ?? []);
 
-            $this->insertSettings($portalData['settings'] ?? []);
-            $this->insertUsers($portalData['users'] ?? []);
-            $categoryIds = $this->insertCategories($portalData['categories'] ?? []);
-            $this->insertPosts($portalData['posts'] ?? [], $categoryIds);
-            $this->insertComments($portalData['comments'] ?? []);
+            $this->saveIncrementalUsers($portalData['users'] ?? []);
+            $this->saveIncrementalCategories($portalData['categories'] ?? []);
+            $this->saveIncrementalPosts($portalData['posts'] ?? []);
+            $this->saveIncrementalComments($portalData['comments'] ?? []);
 
             $this->pdo->commit();
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
@@ -165,6 +161,231 @@ class PortalRepository
         $this->resetAutoIncrement('categories', $portalData['categories'] ?? []);
         $this->resetAutoIncrement('posts', $portalData['posts'] ?? []);
         $this->resetAutoIncrement('comments', $portalData['comments'] ?? []);
+    }
+
+    private function saveIncrementalSettings(array $settings): void
+    {
+        $check = $this->pdo->query('SELECT id FROM settings WHERE id = 1')->fetch();
+        
+        if ($check) {
+            $stmt = $this->pdo->prepare(
+                'UPDATE settings SET 
+                    nome_site = :nome_site, slogan = :slogan, about_text = :about_text, 
+                    itens_home = :itens_home, show_featured = :show_featured, show_latest = :show_latest,
+                    exibir_comentarios = :exibir_comentarios, contact_email = :contact_email, footer_links = :footer_links
+                 WHERE id = 1'
+            );
+        } else {
+            $stmt = $this->pdo->prepare(
+                'INSERT INTO settings (
+                    id, nome_site, slogan, about_text, itens_home, show_featured, show_latest,
+                    exibir_comentarios, contact_email, footer_links
+                ) VALUES (
+                    1, :nome_site, :slogan, :about_text, :itens_home, :show_featured, :show_latest,
+                    :exibir_comentarios, :contact_email, :footer_links
+                )'
+            );
+        }
+
+        $stmt->execute([
+            'nome_site'          => $settings['nome_site'] ?? 'O Editorial',
+            'slogan'             => $settings['slogan'] ?? '',
+            'about_text'         => $settings['about_text'] ?? ($settings['sobre'] ?? ''),
+            'itens_home'         => (int) ($settings['itens_home'] ?? 6),
+            'show_featured'      => ! empty($settings['show_featured']) ? 1 : 0,
+            'show_latest'        => ! empty($settings['show_latest']) ? 1 : 0,
+            'exibir_comentarios' => ! empty($settings['exibir_comentarios']) ? 1 : 0,
+            'contact_email'      => $settings['contact_email'] ?? '',
+            'footer_links'       => $settings['footer_links'] ?? '',
+        ]);
+    }
+
+    private function saveIncrementalUsers(array $users): void
+    {
+        $stmtInsert = $this->pdo->prepare(
+            'INSERT INTO users (id, nome, email, senha_hash, papel, status, created_at)
+             VALUES (:id, :nome, :email, :senha_hash, :papel, :status, :created_at)'
+        );
+
+        $stmtUpdate = $this->pdo->prepare(
+            'UPDATE users SET nome = :nome, email = :email, senha_hash = :senha_hash, 
+                               papel = :papel, status = :status, created_at = :created_at 
+             WHERE id = :id'
+        );
+
+      
+        $currentIds = array_filter(array_column($users, 'id'));
+        if (!empty($currentIds)) {
+            $inClause = implode(',', array_map('intval', $currentIds));
+            $this->pdo->exec("DELETE FROM users WHERE id NOT IN ($inClause)");
+        }
+
+        foreach ($users as $user) {
+            $id = (int) ($user['id'] ?? 0);
+            $check = $this->pdo->query("SELECT id FROM users WHERE id = $id")->fetch();
+
+            $params = [
+                'id'         => $id,
+                'nome'       => $user['nome'] ?? '',
+                'email'      => $user['email'] ?? '',
+                'senha_hash' => $user['senha_hash'] ?? null,
+                'papel'      => $user['papel'] ?? 'Editor',
+                'status'     => $user['status'] ?? 'Ativo',
+                'created_at' => $this->parseBrazilianDate($user['created_at'] ?? null),
+            ];
+
+            if ($check) {
+                $stmtUpdate->execute($params);
+            } else {
+                $stmtInsert->execute($params);
+            }
+        }
+    }
+
+    private function saveIncrementalCategories(array $categories): void
+    {
+        $stmtInsert = $this->pdo->prepare(
+            'INSERT INTO categories (id, slug, name, tag_class, accent, cover, description)
+             VALUES (:id, :slug, :name, :tag_class, :accent, :cover, :description)'
+        );
+
+        $stmtUpdate = $this->pdo->prepare(
+            'UPDATE categories SET slug = :slug, name = :name, tag_class = :tag_class, 
+                                    accent = :accent, cover = :cover, description = :description 
+             WHERE id = :id'
+        );
+
+        $currentIds = array_filter(array_column($categories, 'id'));
+        if (!empty($currentIds)) {
+            $inClause = implode(',', array_map('intval', $currentIds));
+            $this->pdo->exec("DELETE FROM categories WHERE id NOT IN ($inClause)");
+        }
+
+        foreach ($categories as $slug => $category) {
+            $categorySlug = (string) ($category['slug'] ?? $slug);
+            $id = (int) ($category['id'] ?? 0);
+            $check = $this->pdo->query("SELECT id FROM categories WHERE id = $id")->fetch();
+
+            $params = [
+                'id'          => $id,
+                'slug'        => $categorySlug,
+                'name'        => $category['name'] ?? $categorySlug,
+                'tag_class'   => $category['tag_class'] ?? $categorySlug,
+                'accent'      => $category['accent'] ?? 'tech',
+                'cover'       => $this->stripAssetBase((string) ($category['cover'] ?? '')),
+                'description' => $category['description'] ?? '',
+            ];
+
+            if ($check) {
+                $stmtUpdate->execute($params);
+            } else {
+                $stmtInsert->execute($params);
+            }
+        }
+    }
+
+    private function saveIncrementalPosts(array $posts): void
+    {
+        
+        $categoryRows = $this->pdo->query('SELECT id, slug FROM categories')->fetchAll();
+        $categoryIds = array_column($categoryRows, 'id', 'slug');
+
+        $stmtInsert = $this->pdo->prepare(
+            'INSERT INTO posts (
+                id, category_id, slug, title, excerpt, content, author, author_short,
+                published_label, status, featured, cover
+            ) VALUES (
+                :id, :category_id, :slug, :title, :excerpt, :content, :author, :author_short,
+                :published_label, :status, :featured, :cover
+            )'
+        );
+
+        $stmtUpdate = $this->pdo->prepare(
+            'UPDATE posts SET 
+                category_id = :category_id, slug = :slug, title = :title, excerpt = :excerpt, 
+                content = :content, author = :author, author_short = :author_short,
+                published_label = :published_label, status = :status, featured = :featured, cover = :cover
+             WHERE id = :id'
+        );
+
+        $currentIds = array_filter(array_column($posts, 'id'));
+        if (!empty($currentIds)) {
+            $inClause = implode(',', array_map('intval', $currentIds));
+            $this->pdo->exec("DELETE FROM posts WHERE id NOT IN ($inClause)");
+        }
+
+        foreach ($posts as $post) {
+            $categorySlug = (string) ($post['category'] ?? '');
+            if (! isset($categoryIds[$categorySlug])) {
+                continue; 
+            }
+
+            $id = (int) ($post['id'] ?? 0);
+            $check = $this->pdo->query("SELECT id FROM posts WHERE id = $id")->fetch();
+
+            $params = [
+                'id'              => $id,
+                'category_id'     => $categoryIds[$categorySlug],
+                'slug'            => $post['slug'] ?? '',
+                'title'           => $post['title'] ?? '',
+                'excerpt'         => $post['excerpt'] ?? '',
+                'content'         => $post['content'] ?? '',
+                'author'          => $post['author'] ?? '',
+                'author_short'    => $post['author_short'] ?? $this->shortAuthorName((string) ($post['author'] ?? '')),
+                'published_label' => $post['date'] ?? null,
+                'status'          => $post['status'] ?? 'Rascunho',
+                'featured'        => ! empty($post['featured']) ? 1 : 0,
+                'cover'           => $this->stripAssetBase((string) ($post['cover'] ?? '')),
+            ];
+
+            if ($check) {
+                $stmtUpdate->execute($params);
+            } else {
+                $stmtInsert->execute($params);
+            }
+        }
+    }
+
+    private function saveIncrementalComments(array $comments): void
+    {
+        $stmtInsert = $this->pdo->prepare(
+            'INSERT INTO comments (id, post_id, autor, email, trecho, texto, status, published_label)
+             VALUES (:id, :post_id, :autor, :email, :trecho, :texto, :status, :published_label)'
+        );
+
+        $stmtUpdate = $this->pdo->prepare(
+            'UPDATE comments SET post_id = :post_id, autor = :autor, email = :email, 
+                                  trecho = :trecho, texto = :texto, status = :status, published_label = :published_label 
+             WHERE id = :id'
+        );
+
+        $currentIds = array_filter(array_column($comments, 'id'));
+        if (!empty($currentIds)) {
+            $inClause = implode(',', array_map('intval', $currentIds));
+            $this->pdo->exec("DELETE FROM comments WHERE id NOT IN ($inClause)");
+        }
+
+        foreach ($comments as $comment) {
+            $id = (int) ($comment['id'] ?? 0);
+            $check = $this->pdo->query("SELECT id FROM comments WHERE id = $id")->fetch();
+
+            $params = [
+                'id'              => $id,
+                'post_id'         => (int) ($comment['post_id'] ?? 0),
+                'autor'           => $comment['autor'] ?? 'Leitor',
+                'email'           => $comment['email'] ?? '',
+                'trecho'          => $comment['trecho'] ?? portal_excerpt((string) ($comment['texto'] ?? ''), 220),
+                'texto'           => $comment['texto'] ?? '',
+                'status'          => $comment['status'] ?? 'Pendente',
+                'published_label' => $comment['data'] ?? null,
+            ];
+
+            if ($check) {
+                $stmtUpdate->execute($params);
+            } else {
+                $stmtInsert->execute($params);
+            }
+        }
     }
 
     private function insertSettings(array $settings): void

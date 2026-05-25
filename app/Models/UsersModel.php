@@ -25,7 +25,16 @@ class UsersModel
             return $portalData;
         }
 
-        $users = $portalData['users'];
+        $users = $portalData['users'] ?? [];
+
+       
+        foreach ($users as $user) {
+            if ((int)($user['id'] ?? 0) !== $userId && strtolower(trim($user['email'] ?? '')) === strtolower($email)) {
+                portal_set_alert('danger', 'Este e-mail já está cadastrado para outro membro da equipe.');
+                return $portalData;
+            }
+        }
+
         if ($userId > 0) {
             foreach ($users as &$user) {
                 if ((int) ($user['id'] ?? 0) === $userId) {
@@ -33,6 +42,12 @@ class UsersModel
                     $user['email']  = $email;
                     $user['papel']  = $papel === 'admin' ? 'Administrador' : 'Editor';
                     $user['status'] = $status === 'Inativo' ? 'Inativo' : 'Ativo';
+                    
+                    
+                    if ($senha !== '') {
+                        $user['senha_hash'] = password_hash($senha, PASSWORD_DEFAULT);
+                        $user['senha']      = $user['senha_hash']; 
+                    }
                     break;
                 }
             }
@@ -42,13 +57,19 @@ class UsersModel
             foreach ($users as $user) {
                 $nextId = max($nextId, (int) ($user['id'] ?? 0) + 1);
             }
+
+            
+            $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+
             $users[] = [
                 'id'         => $nextId,
                 'nome'       => $nome,
                 'email'      => $email,
+                'senha_hash' => $senhaHash, 
+                'senha'      => $senhaHash, 
                 'papel'      => $papel === 'admin' ? 'Administrador' : 'Editor',
                 'status'     => $status === 'Inativo' ? 'Inativo' : 'Ativo',
-                'created_at' => date('d/m/Y'),
+                'created_at' => date('Y-m-d'), 
             ];
         }
 

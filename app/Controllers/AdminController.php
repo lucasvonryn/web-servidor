@@ -138,17 +138,18 @@ class AdminController
     }
 
     public function usuariosSalvar(): void
-    {
-        $this->requireAdmin();
-        $portalData = $this->repo->getPortalData();
-        $userId     = (int) ($_POST['id'] ?? 0);
-        $saved      = $this->usersModel->save($portalData, $_POST);
-        if ($saved !== $portalData) {
-            portal_set_alert('success', $userId > 0 ? 'Usuário atualizado com sucesso!' : 'Membro da equipe salvo com sucesso!');
-            portal_redirect(($this->routeUrl)('admin/usuarios'));
-        }
-        portal_redirect(($this->routeUrl)($userId > 0 ? 'admin/usuarios/editar' : 'admin/usuarios/novo', $userId > 0 ? ['id' => $userId] : []));
+{
+    $this->requireAdmin();
+    $portalData = $this->repo->getPortalData();
+    $userId     = (int) ($_POST['id'] ?? 0);
+    $saved      = $this->usersModel->save($portalData, $_POST);
+    
+    if ($saved !== $portalData) { 
+        portal_set_alert('success', $userId > 0 ? 'Usuário adicionado com sucesso!' : 'Membro adicionado com sucesso!');
+        portal_redirect(($this->routeUrl)('admin/usuarios'));
     }
+    portal_redirect(($this->routeUrl)($userId > 0 ? 'admin/usuarios/editar' : 'admin/usuarios/novo', $userId > 0 ? ['id' => $userId] : []));
+}
 
     public function usuariosExcluir(): void
     {

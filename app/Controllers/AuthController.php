@@ -9,7 +9,7 @@ class AuthController
     private \App\Models\UsersModel $usersModel;
     private \App\Models\PortalRepository $portalRepository;
 
-    
+
     public function __construct(callable $routeUrl, \App\Models\UsersModel $usersModel, \App\Models\PortalRepository $portalRepository)
     {
         $this->routeUrl         = $routeUrl;
@@ -22,11 +22,40 @@ class AuthController
         $emailDigitado = trim($_POST['email'] ?? '');
         $senhaDigitada = trim($_POST['senha'] ?? '');
 
+        $portalData = $this->portalRepository->getPortalData();
+        $user = $this->usersModel->findByEmail($portalData, $emailDigitado);
+
+
+        $hashNoBanco = $user['senha_hash'] ?? $user['senha'] ?? null;
+
+        if ($user && $hashNoBanco !== null) {
+            if (password_verify($senhaDigitada, $hashNoBanco)) {
+                
+                if (($user['status'] ?? 'Ativo') === 'Inativo') {
+                    $_SESSION['erros']['email'] = 'Esta conta está desativada!';
+                    $_SESSION['old']['email']   = $emailDigitado;
+                    portal_redirect(($this->routeUrl)('admin/login'));
+                }
+
+                
+                $_SESSION['usuario_logado']        = true;
+                $_SESSION['usuario_id']            = $user['id'] ?? 0;
+                $_SESSION['usuario_nome']          = $user['nome'] ?? 'Integrante';
+                $_SESSION['usuario_email']         = $user['email'] ?? $emailDigitado;
+                $_SESSION['usuario_papel']         = $user['papel'] ?? 'Editor'; 
+                $_SESSION['usuario_publico_logado'] = false; 
+                
+                portal_set_alert('success', 'Bem-vindo ao Painel!');
+                portal_redirect(($this->routeUrl)('admin/posts'));
+            }
+        } 
+        
         if ($emailDigitado === 'admin@admin.com' && $senhaDigitada === '123456') {
             $_SESSION['usuario_logado'] = true;
             $_SESSION['usuario_nome']   = 'Administrador';
             $_SESSION['usuario_email']  = $emailDigitado;
-            portal_set_alert('success', 'Bem-vindo ao Painel!');
+            $_SESSION['usuario_papel']  = 'Administrador';
+            portal_set_alert('success', 'Bem-vindo ao Painel (Modo de Teste)!');
             portal_redirect(($this->routeUrl)('admin/posts'));
         }
 
@@ -78,7 +107,7 @@ class AuthController
             if ($user && $hashNoBanco !== null) {
                 if (password_verify($senha, $hashNoBanco)) {
                     
-                    // Garante que o usuário está ativo antes de logar
+                  
                     if (($user['status'] ?? 'Ativo') === 'Inativo') {
                         $erros['email'] = 'Esta conta está inativa.';
                     } else {
@@ -138,7 +167,7 @@ class AuthController
             $erros['confirmar_senha'] = 'As senhas precisam ser iguais.';
         }
 
-       
+        
         $portalData = $this->portalRepository->getPortalData();
 
         
